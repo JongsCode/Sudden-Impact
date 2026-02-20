@@ -160,11 +160,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   myRigidbody: {fileID: 6879509315689305081}
   myTransformView: {fileID: 788179651339884033}
+  weaponAttachPoint: {fileID: 5063920808464830962}
   maxHp: 100
   moveSpeed: 10
   sprintSpeed: 2
   rollDistance: 2
   rollDuration: 0.2
+  pickUpDistance: 1
+  curHp: 0
+  closestWeapon: {fileID: 0}
+  myEquippedWeapon: {fileID: 0}
 --- !u!114 &4920232383521831332
 MonoBehaviour:
   m_ObjectHideFlags: 0

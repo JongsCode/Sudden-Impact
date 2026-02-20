@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 using Photon.Pun;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviourPun, IAttackReceiver
 {
     [SerializeField] private Rigidbody myRigidbody;
     [SerializeField] private PhotonTransformView myTransformView;
+    [SerializeField] private Transform weaponAttachPoint;
 
     [Header("Parameters")]
     [SerializeField] private float maxHp = 100f;
@@ -17,7 +18,13 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float rollDuration = 2.0f;
     [SerializeField] private float pickUpDistance = 1f;
 
-    private float curHp;
+    [Header("ForDebug")]
+    [SerializeField] private float curHp;
+
+    [SerializeField] private TestWeapon closestWeapon;
+    [SerializeField] private TestWeapon myEquippedWeapon;
+
+    private List<TestWeapon> nearbyItems = new List<TestWeapon>();
 
     public enum PlayerState
     {
@@ -52,6 +59,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Quaternion moveDir = Quaternion.Euler(0f, _moveAngle, 0f);
         myRigidbody.rotation = moveDir;
     }
+
 
     #region 구르기 로직
     public void TryRoll(InputAction.CallbackContext ctx)
@@ -121,14 +129,88 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 
     }
 
+    #region 던지기 , 줍기
+
     public void PickUpAndDrop(InputAction.CallbackContext ctx)
     {
         Debug.Log("[PlayerController] Im Droping");
 
+        if (!closestWeapon) return;
+        photonView.RPC(nameof(PickUpItem), RpcTarget.All);
+
 
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!photonView.IsMine) return;
+
+        TestWeapon weapon;
+        if(other.TryGetComponent<TestWeapon>(out weapon))
+        {
+            if (other.CompareTag("EquippedWeapon")) return;
+            nearbyItems.Add(weapon);
+
+            if (closestWeapon == null)
+            {
+                closestWeapon = weapon;
+                StartCoroutine(CheckClosestWeapon());
+            }
+        }
+
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!photonView.IsMine) return;
+
+        TestWeapon weapon;
+        if (other.TryGetComponent<TestWeapon>(out weapon))
+        {
+            if (!nearbyItems.Remove(weapon)) return;
+
+            if (nearbyItems.Count == 0)
+            {
+                StopCoroutine(CheckClosestWeapon());
+                closestWeapon = null;
+            }
+        }
+    }
+
+    private IEnumerator CheckClosestWeapon()
+    {
+        while (nearbyItems.Count > 0)
+        {
+            yield return new WaitForSeconds(5f / 60f); // 5프레임마다 
+
+            foreach (var weapon in nearbyItems)
+            {
+                float newItemDis = Vector3.Distance(transform.position,weapon.transform.position);
+                float curItemDis = Vector3.Distance(transform.position,closestWeapon.transform.position);
+
+                if (newItemDis < curItemDis)
+                {
+                    closestWeapon = weapon;
+                }
+            }
+        }
+    }
+
+    [PunRPC]
+    public void PickUpItem()
+    {
+        closestWeapon.transform.SetParent(weaponAttachPoint);
+        closestWeapon.transform.localPosition = Vector3.zero;
+        closestWeapon.transform.localRotation = Quaternion.identity;
+
+        myEquippedWeapon = closestWeapon;
+    }
+
     #endregion
 
+    #endregion
+
+    #region OnImpact
     public void OnReceiveImpact(ImpactData _data)
     {
         //Debug.Log($"[PlayerController] Receive Trying");
@@ -156,4 +238,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         curHp -= _damage;
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
     }
+
+    #endregion
+
 }
