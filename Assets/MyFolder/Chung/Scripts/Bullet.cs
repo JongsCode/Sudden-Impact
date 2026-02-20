@@ -6,6 +6,7 @@ public class Bullet : MonoBehaviourPun
     [SerializeField] private float bulletDamage = 10f;
     [SerializeField] private int myTeam = 0;
 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<IAttackReceiver>(out var receiver))
