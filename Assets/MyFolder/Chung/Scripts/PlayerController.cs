@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float sprintSpeed = 2f;
     [SerializeField] private float rollDistance = 2.0f;
     [SerializeField] private float rollDuration = 2.0f;
+    [SerializeField] private float pickUpDistance = 1f;
 
     private float curHp;
 
@@ -55,8 +56,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region 구르기 로직
     public void TryRoll(InputAction.CallbackContext ctx)
     {
+        // 이동 코루틴
         StartCoroutine(RollCoroutine());
 
+        // 무적 RPC
         photonView.RPC(nameof(StartRollCRP), RpcTarget.All);
     }
 
@@ -118,21 +121,27 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 
     }
 
-    public void Drop(InputAction.CallbackContext ctx)
+    public void PickUpAndDrop(InputAction.CallbackContext ctx)
     {
         Debug.Log("[PlayerController] Im Droping");
+
+
     }
     #endregion
 
     public void OnReceiveImpact(ImpactData _data)
     {
-            Debug.Log($"[PlayerController] Receive Trying");
+        //Debug.Log($"[PlayerController] Receive Trying");
+
+        // 상태 검사
         if (curHp <= 0 || 
             playerState == PlayerState.NotReady || 
             playerState == PlayerState.Dead || 
             playerState == PlayerState.Rolling) { return; }
 
-            Debug.Log($"[PlayerController] Receive State is Ok");
+            //Debug.Log($"[PlayerController] Receive State is Ok");
+
+        //내가 쏜 총알이 아니면 데미지 RPC호출
         if(_data.attackerActorNumber != photonView.Owner.ActorNumber)
         {
         photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage);

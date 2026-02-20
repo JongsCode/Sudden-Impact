@@ -76,7 +76,7 @@ public class InputManager : MonoBehaviour
         onSprintAction.performed += player.SprintStart;
         onSprintAction.canceled += player.SprintEnd;
         onRollAction.performed += player.TryRoll;
-        onDropAction.performed += player.Drop;
+        onDropAction.performed += player.PickUpAndDrop;
 
         onFireAction.performed += OnFire;
 
