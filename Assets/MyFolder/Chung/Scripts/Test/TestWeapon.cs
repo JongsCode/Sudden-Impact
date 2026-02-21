@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class TestWeapon : MonoBehaviour
+public class TestWeapon : MonoBehaviourPun
 {
     public bool IsEquit;
 

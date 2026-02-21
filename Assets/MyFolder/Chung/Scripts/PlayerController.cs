@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log("[PlayerController] Im Droping");
 
         if (!closestWeapon) return;
-        photonView.RPC(nameof(PickUpItem), RpcTarget.All);
+        photonView.RPC(nameof(PickUpItem), RpcTarget.All ,closestWeapon.photonView.ViewID);
 
 
     }
@@ -197,13 +197,18 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     }
 
     [PunRPC]
-    public void PickUpItem()
+    public void PickUpItem(int _viewID)
     {
+        if(!photonView.IsMine)
+        {
+            closestWeapon = PhotonView.Find(_viewID).GetComponent<TestWeapon>();
+        }
+        myEquippedWeapon = closestWeapon;
+
         closestWeapon.transform.SetParent(weaponAttachPoint);
         closestWeapon.transform.localPosition = Vector3.zero;
         closestWeapon.transform.localRotation = Quaternion.identity;
 
-        myEquippedWeapon = closestWeapon;
     }
 
     #endregion
