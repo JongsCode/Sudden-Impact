@@ -9,21 +9,24 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private Rigidbody myRigidbody;
     [SerializeField] private PhotonTransformView myTransformView;
     [SerializeField] private Transform weaponAttachPoint;
+    [SerializeField] private TestWeapon myKnife;
 
     [Header("Parameters")]
     [SerializeField] private float maxHp = 100f;
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float sprintSpeed = 2f;
     [SerializeField] private float rollDistance = 2.0f;
-    [SerializeField] private float rollDuration = 2.0f;
+    [SerializeField] private float rollDuration = 0.2f;
     [SerializeField] private float pickUpDistance = 1f;
+    [SerializeField] private float stunDuration = 1.5f;
 
     [Header("ForDebug")]
     [SerializeField] private float curHp;
+    [SerializeField] private TestWeapon closestGun;
+    [SerializeField] private TestWeapon myEquippedGun;
+    [SerializeField] private bool useGun;
 
-    [SerializeField] private TestWeapon closestWeapon;
-    [SerializeField] private TestWeapon myEquippedWeapon;
-
+    private Coroutine curCheakClosestWeaponCoroutine;
     private List<TestWeapon> nearbyItems = new List<TestWeapon>();
 
     public enum PlayerState
@@ -36,6 +39,14 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         curHp = maxHp;
         SetPlayerState(PlayerState.Idel);
+    }
+
+    public void Respawn(Vector3 spawnPos)
+    {
+        curHp = maxHp;
+        SetPlayerState(PlayerState.Idel);
+        transform.position = spawnPos;
+        gameObject.SetActive(true);
     }
 
     private void SetPlayerState(PlayerState _state)
@@ -79,7 +90,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private IEnumerator RollCoroutine()
     {
-        Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}"); 
+        Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}");
 
         Vector3 rollDirection = transform.forward;
         Vector3 startPos = transform.position;
@@ -111,6 +122,24 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     #endregion
 
+    public void TrySwapWeapon(InputAction.CallbackContext ctx)
+    {
+        if (myEquippedGun != null)
+        {
+            useGun = useGun ? false : true;
+
+            photonView.RPC(nameof(SwapWeapon), RpcTarget.All, useGun);
+        }
+    }
+
+    [PunRPC]
+    private void SwapWeapon(bool _useGun)
+    {
+        myEquippedGun.gameObject.SetActive(_useGun);
+        myKnife.gameObject.SetActive(!_useGun);
+    }
+
+
     public void SprintStart(InputAction.CallbackContext ctx)
     {
         Debug.Log("[PlayerController] Im Start Sprinting");
@@ -123,9 +152,18 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log("[PlayerController] Im end Sprinting");
     }
 
-    public void Fire(Vector2 _mousePos)
+    public void TryAttack(Vector2 _mousePos)
     {
-        Debug.Log("[PlayerController] Im Start Sprinting");
+
+        if (useGun)
+        {
+        Debug.Log("[PlayerController] Im Start Fire");
+        }
+
+        else
+        {
+        Debug.Log("[PlayerController] Im Start MeleeAtack"); 
+        }
                 
     }
 
@@ -133,14 +171,19 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     public void PickUpAndDrop(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerController] Im Droping");
+        Debug.Log("[PlayerController] Im Equiet or Throwing");
 
-        if (!closestWeapon) return;
-        photonView.RPC(nameof(PickUpItem), RpcTarget.All ,closestWeapon.photonView.ViewID);
+        if (!closestGun)
+        {
+            Debug.Log("[PlayerController] Try Throw");
+            return;
+        }
+        photonView.RPC(nameof(PickUpItem), RpcTarget.All ,closestGun.photonView.ViewID);
 
 
     }
 
+    #region 줍기
     private void OnTriggerEnter(Collider other)
     {
         if (!photonView.IsMine) return;
@@ -151,10 +194,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             if (other.CompareTag("EquippedWeapon")) return;
             nearbyItems.Add(weapon);
 
-            if (closestWeapon == null)
+            if (closestGun == null)
             {
-                closestWeapon = weapon;
-                StartCoroutine(CheckClosestWeapon());
+                closestGun = weapon;
+                curCheakClosestWeaponCoroutine = StartCoroutine(CheckClosestWeapon());
             }
         }
 
@@ -171,8 +214,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
             if (nearbyItems.Count == 0)
             {
-                StopCoroutine(CheckClosestWeapon());
-                closestWeapon = null;
+                StopCoroutine(curCheakClosestWeaponCoroutine);
+                closestGun = null;
             }
         }
     }
@@ -186,11 +229,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             foreach (var weapon in nearbyItems)
             {
                 float newItemDis = Vector3.Distance(transform.position,weapon.transform.position);
-                float curItemDis = Vector3.Distance(transform.position,closestWeapon.transform.position);
+                float curItemDis = Vector3.Distance(transform.position,closestGun.transform.position);
 
                 if (newItemDis < curItemDis)
                 {
-                    closestWeapon = weapon;
+                    closestGun = weapon;
                 }
             }
         }
@@ -201,15 +244,29 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         if(!photonView.IsMine)
         {
-            closestWeapon = PhotonView.Find(_viewID).GetComponent<TestWeapon>();
+            closestGun = PhotonView.Find(_viewID).GetComponent<TestWeapon>();
         }
-        myEquippedWeapon = closestWeapon;
+        myEquippedGun = closestGun;
 
-        closestWeapon.transform.SetParent(weaponAttachPoint);
-        closestWeapon.transform.localPosition = Vector3.zero;
-        closestWeapon.transform.localRotation = Quaternion.identity;
+        myEquippedGun.transform.SetParent(weaponAttachPoint);
+        myEquippedGun.transform.localPosition = Vector3.zero;
+        myEquippedGun.transform.localRotation = Quaternion.identity;
+
+        useGun = true;
+
+        SwapWeapon(useGun);
 
     }
+    #endregion
+
+    #region 던지기
+
+    private void TryThrow()
+    {
+
+    }
+
+    #endregion
 
     #endregion
 
@@ -228,10 +285,15 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
             //Debug.Log($"[PlayerController] Receive State is Ok");
 
+        if(_data.type == DamageType.Throw)
+        {
+            StunPlayer();
+        }
+
         //내가 쏜 총알이 아니면 데미지 RPC호출
         if(_data.attackerActorNumber != photonView.Owner.ActorNumber)
         {
-        photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage);
+            photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage);
             Debug.Log($"[PlayerController] Received");
         }
 
@@ -242,6 +304,38 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         curHp -= _damage;
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
+
+        if (curHp <= 0)
+        {
+            DiePlayer();
+        }
+    }
+
+    private void DiePlayer()
+    {
+        // 게임 메니저의 이벤트 버스 호출 필요
+        // 인풋 메니저에게 콜백 필요
+        DebugGameManager.Instance?.OnPlayerDied(this);
+        this.gameObject.SetActive(false);
+    }
+
+    private void StunPlayer()
+    {
+        photonView.RPC(nameof(StunRPC), photonView.Owner);
+    }
+
+    [PunRPC]
+    private void StunRPC()
+    {
+        StartCoroutine(StunCoroutine());
+    }
+
+    private IEnumerator StunCoroutine()
+    {
+        Debug.Log($"[PlayerController] {photonView.Owner.ActorNumber} is Stuned");
+        playerState = PlayerState.Stunned;
+        yield return new WaitForSeconds(stunDuration);
+        playerState = PlayerState.Idel;
     }
 
     #endregion

@@ -18,6 +18,7 @@ public class InputManager : MonoBehaviour
     private InputAction onRollAction;
     private InputAction onDropAction;
     private InputAction onFireAction;
+    private InputAction onSwapAction;
 
 
     private void Awake()
@@ -31,6 +32,7 @@ public class InputManager : MonoBehaviour
         onRollAction = myInputAction.FindAction("Roll");
         onDropAction = myInputAction.FindAction("Drop");
         onFireAction = myInputAction.FindAction("Fire");
+        onSwapAction = myInputAction.FindAction("Swap");
 
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
@@ -68,7 +70,7 @@ public class InputManager : MonoBehaviour
 
     private void OnFire(InputAction.CallbackContext ctx)
     {
-        player.Fire(onMousePosAction.ReadValue<Vector2>());
+        player.TryAttack(onMousePosAction.ReadValue<Vector2>());
     }
 
     private void SetPlayerAction()
@@ -77,6 +79,7 @@ public class InputManager : MonoBehaviour
         onSprintAction.canceled += player.SprintEnd;
         onRollAction.performed += player.TryRoll;
         onDropAction.performed += player.PickUpAndDrop;
+        onSwapAction.performed += player.TrySwapWeapon;
 
         onFireAction.performed += OnFire;
 
