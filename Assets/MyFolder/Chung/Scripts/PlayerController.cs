@@ -316,6 +316,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // 게임 메니저의 이벤트 버스 호출 필요
         // 인풋 메니저에게 콜백 필요
         DebugGameManager.Instance?.OnPlayerDied(this);
+
+        myEquippedGun.transform.SetParent(null);
+        myEquippedGun = null;
+
         this.gameObject.SetActive(false);
     }
 
