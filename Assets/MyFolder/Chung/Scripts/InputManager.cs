@@ -20,6 +20,8 @@ public class InputManager : MonoBehaviour
     private InputAction onFireAction;
     private InputAction onSwapAction;
 
+    private float angle = 0f;
+
 
     private void Awake()
     {
@@ -46,7 +48,7 @@ public class InputManager : MonoBehaviour
 
     private IEnumerator GetInputValue()
     {
-        while (player)
+        while (player != null)
         {
             yield return null;
             OnMove(onMoveAction.ReadValue<Vector2>());
@@ -64,7 +66,7 @@ public class InputManager : MonoBehaviour
     {
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Vector2 direction = _mouseScreenPos - screenCenter;
-        float angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+        angle = Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
         player.RotatePlayer(angle);
     }
 

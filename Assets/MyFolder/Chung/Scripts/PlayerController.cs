@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log("[PlayerController] Im end Sprinting");
     }
 
-    public void TryAttack(Vector2 _mousePos)
+    public void TryAttack(Vector3 _mousePos)
     {
 
         if (useGun)
@@ -234,7 +234,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 if (newItemDis < curItemDis)
                 {
                     closestGun = weapon;
-                    continue;
                 }
             }
         }
