@@ -1,0 +1,13 @@
+#pragma kernel Fow
+
+Texture2D<float4> RT_Current;
+RWTexture2D<float4> RT_Overlap;
+
+[numthreads(8, 8, 1)]
+void Fow(uint3 id : SV_DispatchThreadID)
+{
+    float4 currentPixel = RT_Current[id.xy];
+    float4 overlapPixel = RT_Overlap[id.xy];
+
+    RT_Overlap[id.xy] = max(currentPixel, overlapPixel);
+}
