@@ -458,7 +458,7 @@ GameObject:
   - component: {fileID: 403230765}
   - component: {fileID: 403230764}
   - component: {fileID: 403230763}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Target5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1412,7 +1412,7 @@ MonoBehaviour:
   roundAngle: 270
   targetMask:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 64
   obstacleMask:
     serializedVersion: 2
     m_Bits: 128
@@ -1436,7 +1436,7 @@ GameObject:
   - component: {fileID: 895655673}
   - component: {fileID: 895655672}
   - component: {fileID: 895655671}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Target3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1774,7 +1774,7 @@ GameObject:
   - component: {fileID: 1184564234}
   - component: {fileID: 1184564233}
   - component: {fileID: 1184564232}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Target4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1977,7 +1977,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 256
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: ed0edfeffe7f1a94daa5aae69556ff61, type: 2}
   m_TargetDisplay: 0
@@ -2351,7 +2351,7 @@ GameObject:
   - component: {fileID: 1510405990}
   - component: {fileID: 1510405988}
   - component: {fileID: 1510405989}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: ViewRound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2442,7 +2442,7 @@ GameObject:
   - component: {fileID: 1678305176}
   - component: {fileID: 1678305175}
   - component: {fileID: 1678305174}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Target1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2779,7 +2779,7 @@ GameObject:
   - component: {fileID: 1844629025}
   - component: {fileID: 1844629027}
   - component: {fileID: 1844629026}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2983,7 +2983,7 @@ GameObject:
   - component: {fileID: 1941322013}
   - component: {fileID: 1941322012}
   - component: {fileID: 1941322011}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Target2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
