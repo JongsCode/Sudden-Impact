@@ -28,6 +28,7 @@ public class Bullet : MonoBehaviourPun
 
         if (other.TryGetComponent<IAttackReceiver>(out var receiver))
         {
+
             ImpactData data = new ImpactData
             {
                 damage = damage,
