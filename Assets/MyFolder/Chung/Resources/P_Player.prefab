@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 549301471454438696}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -49,7 +49,7 @@ GameObject:
   - component: {fileID: 4920232383521831332}
   - component: {fileID: 788179651339884033}
   - component: {fileID: 1034599055269598696}
-  m_Layer: 0
+  m_Layer: 20
   m_Name: P_Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -195,7 +195,8 @@ MonoBehaviour:
   myRigidbody: {fileID: 6879509315689305081}
   myTransformView: {fileID: 788179651339884033}
   weaponAttachPoint: {fileID: 107669909597435356}
-  myKnife: {fileID: 7129430255442502873}
+  myKnife: {fileID: 298153680274639072}
+  registry: {fileID: 11400000, guid: 59eed9396b7e5a0419003df23a221d5b, type: 2}
   maxHp: 100
   moveSpeed: 10
   sprintSpeed: 2
@@ -507,7 +508,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 445013442759223281, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 445013442759223281, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -541,20 +542,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestKnife
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2036661494383781945, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
+    - {fileID: 7780509836708098207, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5477186897425599038, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 7129430255442502873}
+      addedObject: {fileID: 298153680274639072}
   m_SourcePrefab: {fileID: 100100000, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
 --- !u!1 &894325225134799933 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5477186897425599038, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}
   m_PrefabInstance: {fileID: 4641989089060369923}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7129430255442502873
+--- !u!114 &298153680274639072
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -563,10 +566,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 894325225134799933}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dbc5fd9f693d8545b86fbc4cbb34676, type: 3}
+  m_Script: {fileID: 11500000, guid: b6d2decebd02d1c4a8f4f5f88a57d7f5, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestWeapon
-  IsEquit: 0
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeKnife
+  damage: 50
+  boxSize: {x: 2, y: 1, z: 1.5}
+  attackOffset: 1
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 1048576
+  isDebugMode: 0
 --- !u!4 &5063920808464830962 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 445013442759223281, guid: 7e2f1d166290d5f4dbd8f7afb23caac1, type: 3}

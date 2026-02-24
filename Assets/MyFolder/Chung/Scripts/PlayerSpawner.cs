@@ -40,6 +40,13 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
             props["viewID"] = _viewID;
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
         }
+            SetPlayerInfo(player,_team);
+    }
+
+    private void SetPlayerInfo(PlayerController _player, int _team)
+    {
+        _player.Init(_team);
     }
 }

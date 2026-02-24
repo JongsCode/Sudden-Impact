@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "PlayerRegistry", menuName = "SuddenImpact/PlayerRegistry")]
@@ -43,5 +44,6 @@ public class PlayerRegistry : ScriptableObject
         localPlayer = null;
         teamA.Clear();
         teamB.Clear();
+        myTeam = int.MaxValue;
     }
 }

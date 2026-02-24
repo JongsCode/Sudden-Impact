@@ -23,7 +23,6 @@ public class InputManager : MonoBehaviour
     private Camera myMainCamera;
     private Plane aimPlane;
     private Vector3 worldAimPosition;
-    private float angle = 0f;
 
 
     private void Awake()
@@ -50,12 +49,21 @@ public class InputManager : MonoBehaviour
 
     }
 
+    private void SetConnectActionMap(bool _isConnect)
+    {
+        if (_isConnect)
+            playerMap.Enable();
+        else
+            playerMap.Disable();
+    }
 
     private IEnumerator GetInputValue()
     {
         while (player != null)
         {
             yield return new WaitForFixedUpdate();
+
+            if (!playerMap.enabled) continue;
 
             OnMove(onMoveAction.ReadValue<Vector2>());
             OnRotate(onMousePosAction.ReadValue<Vector2>());
@@ -101,6 +109,8 @@ public class InputManager : MonoBehaviour
     {
         player = _player;
         SetPlayerAction();
+
+        player.StunCallback = SetConnectActionMap;
 
         aimPlane = new Plane(Vector3.up, new Vector3(0, player.transform.position.y, 0));
 
