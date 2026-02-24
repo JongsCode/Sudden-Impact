@@ -12,7 +12,7 @@ public abstract class Gun : Weapon
     [SerializeField] protected Transform firePoint;
     [SerializeField] protected GameObject meshObject;    // 던질 때 ThrownGun에 넘겨줄 총 메쉬
     [SerializeField] protected float fireRate = 1f;      // 초당 발사 횟수
-    private float lastFireTime = -999f;
+    protected float lastFireTime = -999f;
 
     protected virtual void Awake()
     {
@@ -66,12 +66,21 @@ public void ThrowWeapon()
         if (!photonView.IsMine) return;
 
         //transform.LookAt(transform.position + throwDirection);
+        
+        object[] instantiationData = new object[] {
+        OwnerActorNumberLazy,
+        ownerTeam,
+        photonView.ViewID,
+        1
+        };
 
         // ThrownGun 프리팹 네트워크 생성
         GameObject thrownObj = PhotonNetwork.Instantiate(
             "ThrownGunPrefab",
             firePoint.position,
-            firePoint.rotation
+            firePoint.rotation,
+            0,
+            instantiationData
         );
 
         // 확장된 Init 호출
@@ -80,9 +89,11 @@ public void ThrowWeapon()
             thrownGun.Init(OwnerActorNumberLazy, ownerTeam, meshObject);
         }
 
+
         ClearOwner();
         Debug.Log("[Gun] 던지기");
     }
+
 
     public bool IsAmmoEmpty() => curAmmo <= 0;
     public int CurAmmo => curAmmo;

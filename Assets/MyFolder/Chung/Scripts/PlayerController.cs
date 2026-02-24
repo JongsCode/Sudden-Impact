@@ -174,7 +174,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [PunRPC]
     private void SwapWeapon(bool _useGun)
     {
-        myEquippedGun.gameObject.SetActive(_useGun);
+
+        if(myEquippedGun != null)
+        {
+            myEquippedGun.gameObject.SetActive(_useGun);
+        }
         myKnife.gameObject.SetActive(!_useGun);
     }
 
@@ -214,13 +218,16 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         Debug.Log("[PlayerController] Im Equiet or Throwing");
 
-        if (!closestGun)
+        if (closestGun == null && myEquippedGun != null)
         {
-            photonView.RPC(nameof(TryThrow), RpcTarget.All, closestGun.photonView.ViewID);
+            photonView.RPC(nameof(TryThrow), RpcTarget.All, myEquippedGun.photonView.ViewID);
             Debug.Log("[PlayerController] Try Throw");
             return;
         }
-        photonView.RPC(nameof(PickUpItem), RpcTarget.All ,closestGun.photonView.ViewID);
+        else if(closestGun != null)
+        {
+            photonView.RPC(nameof(PickUpItem), RpcTarget.All, closestGun.photonView.ViewID);
+        }
 
 
     }
@@ -233,7 +240,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Weapon weapon;
         if(other.TryGetComponent<Weapon>(out weapon))
         {
-            if (other.CompareTag("EquippedWeapon")) return;
+            if (weapon == myEquippedGun) return;
             nearbyItems.Add(weapon);
 
             if (closestGun == null)
@@ -323,7 +330,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
 
         myEquippedGun = closestGun;
+        nearbyItems.Remove(closestGun);
         closestGun = null;
+
+        myEquippedGun.gameObject.layer = 11;
 
         if(photonView.IsMine)
         {
@@ -352,10 +362,21 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     #region ´øÁö±â
 
-    private void TryThrow()
+    [PunRPC]
+    private void TryThrow(int _viewID)
     {
         Gun mygun = (Gun)myEquippedGun;
         mygun.ThrowWeapon();
+
+        if(photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(myEquippedGun.gameObject);
+        }
+
+        myEquippedGun = null;
+
+        useGun = false;
+        SwapWeapon(false);
     }
 
     #endregion

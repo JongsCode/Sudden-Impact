@@ -61,7 +61,19 @@ public class ThrownGun : Bullet
             receiver.OnReceiveImpact(data);
             Debug.Log("[ThrownGun] 맞았음 스턴 걸림");
 
-            photonView.RPC(nameof(RPC_DestroyBullet), RpcTarget.All);
+            PhotonNetwork.Destroy(gameObject);
         }
+    }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] data = info.photonView.InstantiationData;
+
+        PhotonView pv = PhotonView.Find((int)data[2]);
+        GameObject MeshGo = pv.transform.GetChild((int)data[3]).gameObject;
+
+        // 여기서 meshIdx를 보고 자신의 자식 오브젝트 중 해당 번호를 활성화
+        // 예: transform.GetChild(meshIdx).gameObject.SetActive(true);
+        Init((int)data[0], (int)data[1], MeshGo);
     }
 }

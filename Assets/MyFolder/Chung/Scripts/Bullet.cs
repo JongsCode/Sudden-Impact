@@ -41,13 +41,9 @@ public class Bullet : MonoBehaviourPun
 
             receiver.OnReceiveImpact(data);
             Debug.Log("ÃÑ¾Ë ¸ÂÃã");
-            photonView.RPC(nameof(RPC_DestroyBullet), RpcTarget.All);
+            PhotonNetwork.Destroy(gameObject);
+
         }
     }
 
-    [PunRPC]
-    protected void RPC_DestroyBullet()
-    {
-        PhotonNetwork.Destroy(gameObject);
-    }
 }
