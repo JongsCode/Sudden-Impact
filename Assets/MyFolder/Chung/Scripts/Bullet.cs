@@ -28,6 +28,7 @@ public class Bullet : MonoBehaviourPun
 
         if (other.TryGetComponent<IAttackReceiver>(out var receiver))
         {
+
             ImpactData data = new ImpactData
             {
                 damage = damage,
@@ -40,13 +41,9 @@ public class Bullet : MonoBehaviourPun
 
             receiver.OnReceiveImpact(data);
             Debug.Log("ÃÑ¾Ë ¸ÂÃã");
-            photonView.RPC(nameof(RPC_DestroyBullet), RpcTarget.All);
+            PhotonNetwork.Destroy(gameObject);
+
         }
     }
 
-    [PunRPC]
-    protected void RPC_DestroyBullet()
-    {
-        PhotonNetwork.Destroy(gameObject);
-    }
 }

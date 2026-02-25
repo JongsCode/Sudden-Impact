@@ -27,6 +27,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float pickUpDistance = 1f;
     [SerializeField] private float stunDuration = 1.5f;
 
+    [Header("Interaction Settings")]
+    [SerializeField] private float interactRadius = 2.0f;
+    [SerializeField] private LayerMask interactableLayer;
+
+
     [Header("ForDebug")]
     [SerializeField] private float curHp;
     [SerializeField] private Weapon closestGun;
@@ -174,7 +179,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [PunRPC]
     private void SwapWeapon(bool _useGun)
     {
-        myEquippedGun.gameObject.SetActive(_useGun);
+
+        if(myEquippedGun != null)
+        {
+            myEquippedGun.gameObject.SetActive(_useGun);
+        }
         myKnife.gameObject.SetActive(!_useGun);
     }
 
@@ -214,13 +223,16 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         Debug.Log("[PlayerController] Im Equiet or Throwing");
 
-        if (!closestGun)
+        if (closestGun == null && myEquippedGun != null)
         {
-            photonView.RPC(nameof(TryThrow), RpcTarget.All, closestGun.photonView.ViewID);
+            photonView.RPC(nameof(TryThrow), RpcTarget.All, myEquippedGun.photonView.ViewID);
             Debug.Log("[PlayerController] Try Throw");
             return;
         }
-        photonView.RPC(nameof(PickUpItem), RpcTarget.All ,closestGun.photonView.ViewID);
+        else if(closestGun != null)
+        {
+            photonView.RPC(nameof(PickUpItem), RpcTarget.All, closestGun.photonView.ViewID);
+        }
 
 
     }
@@ -233,7 +245,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Weapon weapon;
         if(other.TryGetComponent<Weapon>(out weapon))
         {
-            if (other.CompareTag("EquippedWeapon")) return;
+            if (weapon == myEquippedGun) return;
             nearbyItems.Add(weapon);
 
             if (closestGun == null)
@@ -310,9 +322,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [PunRPC]
     public void PickUpItem(int _viewID)
     {
-        if(!photonView.IsMine)
+        if (!photonView.IsMine)
         {
-            closestGun = PhotonView.Find(_viewID).GetComponent<Weapon>();
+            PhotonView targetView = PhotonView.Find(_viewID);
+            
+            if (targetView == null) return;
+            closestGun = targetView.GetComponent<Weapon>();
         }
 
         DropWeapon();
@@ -323,7 +338,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
 
         myEquippedGun = closestGun;
+        nearbyItems.Remove(closestGun);
         closestGun = null;
+
+        myEquippedGun.gameObject.layer = 11;
 
         if(photonView.IsMine)
         {
@@ -352,15 +370,47 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     #region 던지기
 
-    private void TryThrow()
+    [PunRPC]
+    private void TryThrow(int _viewID)
     {
+        // [방어 코드] 내 손에 총이 없거나, 던지라는 총의 ID가 내 손의 총과 다르면 무시
+        if (myEquippedGun == null || myEquippedGun.photonView.ViewID != _viewID) return;
+
         Gun mygun = (Gun)myEquippedGun;
         mygun.ThrowWeapon();
+
+        if(photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(myEquippedGun.gameObject);
+        }
+
+        myEquippedGun = null;
+
+        useGun = false;
+        SwapWeapon(false);
     }
 
     #endregion
 
     #endregion
+
+    public void TryInteract(InputAction.CallbackContext ctx)
+    {
+        // 1. 내 주변 2m 안의 가구/오브젝트 검색
+        Collider[] hits = Physics.OverlapSphere(transform.position, interactRadius, interactableLayer);
+
+        foreach (var hit in hits)
+        {
+            // 2. 인터페이스 추출 시도
+            if (hit.TryGetComponent<IInteractable>(out var target))
+            {
+                // 3. 된다면 실행
+                target.Interact(this);
+                
+                break; // 한 번에 하나만 상호작용
+            }
+        }
+    }
 
     #endregion
 
@@ -413,6 +463,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
 
         this.gameObject.SetActive(false);
+        
     }
 
     private void StunPlayer()

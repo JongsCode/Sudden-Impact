@@ -19,8 +19,8 @@ TagManager:
   - 
   - Item
   - EquippedItem
-  - 
-  - 
+  - Bullet
+  - Furniture
   - 
   - 
   - 
@@ -28,7 +28,7 @@ TagManager:
   - 
   - 
   - Player
-  - 
+  - LocalPlayer
   - 
   - 
   - 

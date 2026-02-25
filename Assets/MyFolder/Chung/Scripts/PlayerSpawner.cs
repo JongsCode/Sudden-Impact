@@ -6,12 +6,14 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private PlayerRegistry playerRegistry;
+    [SerializeField] private int layerNumber;
 
     public override void OnJoinedRoom()
     {
         int team = PhotonNetwork.LocalPlayer.ActorNumber % 2; // 0 또는 1
         var go = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
 
+        
         go.SetActive(false); // 경기 시작 전 비활성
 
                              // AllBuffered로 내 viewID랑 팀을 전파
@@ -33,6 +35,7 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
         {
             playerRegistry.RegisterLocalPlayer(player); // 로컬 플레이어 주입
             playerRegistry.RegisterMyTeam(_team);
+            player.gameObject.layer = layerNumber;
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
 

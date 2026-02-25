@@ -9,19 +9,33 @@ public class ThrownGun : Bullet
     [SerializeField] private float spinSpeed = 360f;    // 초당 회전 각도
     [SerializeField] private float throwSpeed = 15f;    // 던지기 이동 속도
 
-    private GameObject gunMesh;
+    [SerializeField] private GameObject gunMesh;
 
-    public void Init(int _actorId, int _team, GameObject _targetMesh)
+    private Rigidbody Rigidbody;
+
+    //public void Init(int _actorId, int _team, GameObject _targetMesh)
+    //{
+    //    base.Init(_actorId, _team, 0f);    //던지기는 데미지 없음!!
+
+    //    // 던져진 총만 특수 초기화 : 메쉬 주입
+    //    gunMesh = _targetMesh;
+    //    gunMesh.transform.SetParent(this.transform);
+    //    gunMesh.transform.localPosition = Vector3.zero;
+    //    gunMesh.transform.localRotation = Quaternion.identity;
+
+    //    // 회전 애니메이션
+    //    StartCoroutine(SpinMesh());
+    //}
+
+    private void Awake()
     {
-        base.Init(_actorId, _team, 0f);    //던지기는 데미지 없음!!
+        Rigidbody = GetComponent<Rigidbody>();
+    }
 
-        // 던져진 총만 특수 초기화 : 메쉬 주입
-        gunMesh = _targetMesh;
-        gunMesh.transform.SetParent(this.transform);
-        gunMesh.transform.localPosition = Vector3.zero;
-        gunMesh.transform.localRotation = Quaternion.identity;
+    public override void Init(int _actorId, int _team, float _damage)
+    {
+        base.Init(_actorId, _team, _damage);
 
-        // 회전 애니메이션
         StartCoroutine(SpinMesh());
     }
 
@@ -38,7 +52,8 @@ public class ThrownGun : Bullet
     // 부모(Bullet) Update
     protected override void Update()
     {
-        GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * throwSpeed * Time.deltaTime);
+        // 기존의 매 프레임 겟 컴포넌트 방식에서 어웨이크에서 미리 저장하여 겟 컴포턴트 비용 절감
+        Rigidbody.MovePosition(transform.position + transform.forward * throwSpeed * Time.deltaTime);
     }
 
     // 충돌 : 스턴 유발 (DamageType.Throw)
@@ -61,7 +76,20 @@ public class ThrownGun : Bullet
             receiver.OnReceiveImpact(data);
             Debug.Log("[ThrownGun] 맞았음 스턴 걸림");
 
-            photonView.RPC(nameof(RPC_DestroyBullet), RpcTarget.All);
+            PhotonNetwork.Destroy(gameObject);
         }
     }
+
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
+        object[] data = info.photonView.InstantiationData;
+        if (data != null && data.Length >= 3)
+        {
+            int actorId = (int)data[0];
+            int team = (int)data[1];
+            float dmg = (float)data[2];
+            Init(actorId, team, dmg); // 모든 클라이언트에서 초기화 실행
+        }
+    }
+
 }

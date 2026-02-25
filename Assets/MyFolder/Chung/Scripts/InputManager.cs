@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
     private InputAction onDropAction;
     private InputAction onFireAction;
     private InputAction onSwapAction;
+    private InputAction onInteractAction;
 
     private Camera myMainCamera;
     private Plane aimPlane;
@@ -37,6 +38,7 @@ public class InputManager : MonoBehaviour
         onDropAction = myInputAction.FindAction("Drop");
         onFireAction = myInputAction.FindAction("Fire");
         onSwapAction = myInputAction.FindAction("Swap");
+        onInteractAction = myInputAction.FindAction("Interact");
 
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
@@ -100,6 +102,7 @@ public class InputManager : MonoBehaviour
         onRollAction.performed += player.TryRoll;
         onDropAction.performed += player.PickUpAndDrop;
         onSwapAction.performed += player.TrySwapWeapon;
+        onInteractAction.performed += player.TryInteract;
 
         onFireAction.performed += OnFire;
 
