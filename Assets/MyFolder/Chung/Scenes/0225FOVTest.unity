@@ -4152,7 +4152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9955a38f8c536146ba6b419459851a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DebugJoiner
-  roomName: DebugRoom
+  roomName: DebugRoom_CH
   maxPlayers: 4
   playerPrefab: {fileID: 2143100945692910762, guid: a93199657776f0e429e5ab77ef838db6, type: 3}
   spawnPoints: []

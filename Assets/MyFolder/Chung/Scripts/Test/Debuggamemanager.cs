@@ -65,6 +65,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         bool teamAAlive = IsTeamAlive(playerRegistry.TeamA);
         bool teamBAlive = IsTeamAlive(playerRegistry.TeamB);
 
+        Debug.Log($"[GameManager] Team A Alive : {teamAAlive}, Team B Alive : {teamBAlive}");
+
         if (!teamAAlive)
         {
             // BÆÀ ½Â¸®
