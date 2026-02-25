@@ -33,6 +33,9 @@ public class MeleeKnife : Weapon
             // 나 자신(또는 내 캐릭터 최상단)은 제외
             if (hit.transform.root == transform.root) continue;
 
+            if (isDebugMode)
+                damage = 50;
+
             // 인터페이스 추출
             IAttackReceiver receiver = hit.GetComponent<IAttackReceiver>();
 

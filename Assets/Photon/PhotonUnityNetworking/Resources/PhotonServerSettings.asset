@@ -50,6 +50,8 @@ MonoBehaviour:
   - SwapWeapon
   - RPC_DestroyBullet
   - RPC_ApplyDamage
+  - TryThrow
+  - RPC_ToggleDoor
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
