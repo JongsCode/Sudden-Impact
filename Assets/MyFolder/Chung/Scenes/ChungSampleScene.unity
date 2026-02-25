@@ -1770,6 +1770,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
   playerPrefab: {fileID: 2143100945692910762, guid: a93199657776f0e429e5ab77ef838db6, type: 3}
+  FOVPrefab: {fileID: 9168041380215925514, guid: 09d27feb8a8a8244798b2ea61d6f8fe5, type: 3}
   playerRegistry: {fileID: 11400000, guid: 59eed9396b7e5a0419003df23a221d5b, type: 2}
   layerNumber: 21
 --- !u!4 &1121756409

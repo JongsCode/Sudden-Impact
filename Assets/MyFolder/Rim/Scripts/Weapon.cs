@@ -5,8 +5,7 @@ using Photon.Pun;
 // Gun, Knife 등 여기서 상속받음
 public abstract class Weapon : MonoBehaviourPun
 {
-    [SerializeField]
-    protected float damage;
+    [SerializeField] protected float damage;
     protected int ownerActorNumber = -1;
     protected int ownerTeam = -1;
 

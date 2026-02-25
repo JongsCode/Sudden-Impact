@@ -79,6 +79,7 @@ public void ThrowWeapon()
             0,
             new object[] { OwnerActorNumberLazy, ownerTeam, 0f }
             // 포톤 네트워크 인스턴티에이트는 해당 객체에게 값을 넘겨주는 기능이 있음
+            // 추후 불렛에도 적용
         );
 
          //확장된 Init 호출
