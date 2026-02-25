@@ -1204,6 +1204,7 @@ MonoBehaviour:
   fogCompute: {fileID: 7200000, guid: 97995130d1621aa43ac3930fb4178e13, type: 3}
   rt_Current: {fileID: 8400000, guid: ed0edfeffe7f1a94daa5aae69556ff61, type: 2}
   rt_Overlap: {fileID: 8400000, guid: 1ac1b52f65671ec4dbd55769736d8ec4, type: 2}
+  blurDetail: 1
 --- !u!4 &410505835
 Transform:
   m_ObjectHideFlags: 0
@@ -3008,6 +3009,7 @@ MonoBehaviour:
   fogCompute: {fileID: 7200000, guid: 97995130d1621aa43ac3930fb4178e13, type: 3}
   rt_Current: {fileID: 8400000, guid: ed0edfeffe7f1a94daa5aae69556ff61, type: 2}
   rt_Overlap: {fileID: 8400000, guid: 1ac1b52f65671ec4dbd55769736d8ec4, type: 2}
+  blurDetail: 5
 --- !u!1 &1320515685
 GameObject:
   m_ObjectHideFlags: 0
