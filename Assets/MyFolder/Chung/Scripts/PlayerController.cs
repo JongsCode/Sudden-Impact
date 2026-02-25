@@ -457,6 +457,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
 
         this.gameObject.SetActive(false);
+        
     }
 
     private void StunPlayer()

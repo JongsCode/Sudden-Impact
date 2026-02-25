@@ -9,10 +9,13 @@ public abstract class Gun : Weapon
     protected int curAmmo;
 
     [SerializeField] protected GameObject bulletPrefab;  // 꼭 Resources 폴더에 있어야
+    [SerializeField] protected GameObject thrownPrefab;
     [SerializeField] protected Transform firePoint;
-    [SerializeField] protected GameObject meshObject;    // 던질 때 ThrownGun에 넘겨줄 총 메쉬
+    //[SerializeField] protected GameObject meshObject;    // 던질 때 ThrownGun에 넘겨줄 총 메쉬 // 수정됨 단순 프리팹 소환으로 수정됨
     [SerializeField] protected float fireRate = 1f;      // 초당 발사 횟수
     protected float lastFireTime = -999f;
+
+
 
     protected virtual void Awake()
     {
@@ -66,28 +69,26 @@ public void ThrowWeapon()
         if (!photonView.IsMine) return;
 
         //transform.LookAt(transform.position + throwDirection);
-        
-        object[] instantiationData = new object[] {
-        OwnerActorNumberLazy,
-        ownerTeam,
-        photonView.ViewID,
-        1
-        };
+
 
         // ThrownGun 프리팹 네트워크 생성
         GameObject thrownObj = PhotonNetwork.Instantiate(
-            "ThrownGunPrefab",
+            thrownPrefab.name,
             firePoint.position,
             firePoint.rotation,
             0,
-            instantiationData
+            new object[] { OwnerActorNumberLazy, ownerTeam, 0f }
+            // 포톤 네트워크 인스턴티에이트는 해당 객체에게 값을 넘겨주는 기능이 있음
         );
 
-        // 확장된 Init 호출
-        if (thrownObj.TryGetComponent<ThrownGun>(out var thrownGun))
-        {
-            thrownGun.Init(OwnerActorNumberLazy, ownerTeam, meshObject);
-        }
+         //확장된 Init 호출
+         // 기존의 불릿의 Init 사용
+        //if (thrownObj.TryGetComponent<ThrownGun>(out var thrownGun))
+        //{
+        //    thrownGun.Init(OwnerActorNumberLazy, ownerTeam, 0f);
+        //}
+
+
 
 
         ClearOwner();
