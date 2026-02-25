@@ -22,10 +22,12 @@ public class FogOfWar : MonoBehaviour
 
         fogCompute.SetTexture(kernel, "RT_Current", rt_Current);
         fogCompute.SetTexture(kernel, "RT_Overlap", rt_Overlap);
-
+        Shader.SetGlobalTexture("_GlobalMap", rt_Overlap);
+        Shader.SetGlobalTexture("_GlobalCurrentMap", rt_Current);
         int threadGroupsX = Mathf.CeilToInt(rt_Overlap.width / 8.0f);
         int threadGroupsY = Mathf.CeilToInt(rt_Overlap.height / 8.0f);
         fogCompute.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
+        Shader.SetGlobalVector("_MapParams", new Vector4(0, 0, 100, 0));
     }
 
     private void ClearRenderTexture(RenderTexture _rt)

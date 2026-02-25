@@ -7,6 +7,7 @@ RWTexture2D<float4> RT_Overlap;
 void Fow(uint3 id : SV_DispatchThreadID)
 {
     float4 currentPixel = RT_Current[id.xy];
+    currentPixel = ceil(currentPixel);
     float4 overlapPixel = RT_Overlap[id.xy];
 
     RT_Overlap[id.xy] = max(currentPixel, overlapPixel);
