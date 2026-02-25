@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class TestGun : Gun
 {
-    private float lastFireTime = -999f;
+
     public override void Attack(Vector3 direction)
     {
         if (!photonView.IsMine) return;

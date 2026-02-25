@@ -8,6 +8,13 @@ public class Bullet : MonoBehaviourPun
     protected int attackerId;
     protected int teamId;
 
+    protected Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
     // Gun이 스폰 직후 데미지/공격자 정보
     // ThrownGun이 base.Init()으로 호출 가능
     public virtual void Init(int _actorId, int _team, float _damage)
@@ -19,7 +26,7 @@ public class Bullet : MonoBehaviourPun
 
     protected virtual void Update()
     {
-        GetComponent<Rigidbody>().MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
+        rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
     }
 
     protected virtual void OnTriggerEnter(Collider other)
@@ -28,6 +35,7 @@ public class Bullet : MonoBehaviourPun
 
         if (other.TryGetComponent<IAttackReceiver>(out var receiver))
         {
+
             ImpactData data = new ImpactData
             {
                 damage = damage,
@@ -40,13 +48,9 @@ public class Bullet : MonoBehaviourPun
 
             receiver.OnReceiveImpact(data);
             Debug.Log("총알 맞춤");
-            photonView.RPC(nameof(RPC_DestroyBullet), RpcTarget.All);
+            PhotonNetwork.Destroy(gameObject);
+
         }
     }
 
-    [PunRPC]
-    protected void RPC_DestroyBullet()
-    {
-        PhotonNetwork.Destroy(gameObject);
-    }
 }

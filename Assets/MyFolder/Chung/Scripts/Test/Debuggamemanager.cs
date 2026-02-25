@@ -79,12 +79,26 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     private bool IsTeamAlive(List<PlayerController> team)
     {
+        if (team == null) return false;
+
         foreach (var player in team)
         {
-            if (player.gameObject.activeSelf) return true;
+            // 1단계: 메모리 상에 객체가 존재하는지 (MissingReference 방지)
+            if (player == null) continue;
+
+            // 2단계: 유니티 객체로서 유효한지 확인
+            if (!player.gameObject) continue;
+
+            // 3단계: 꺼져있는지 확인 
+            // 만약 Active를 끄는 방식이라, activeInHierarchy가 false인 것이 '죽은 상태'를 의미함
+            if (player.gameObject.activeInHierarchy)
+            {
+                return true; // 한 명이라도 켜져 있으면 팀은 살아있음
+            }
         }
         return false;
     }
+
 
     // -----------------------------------------------
     // 라운드 종료

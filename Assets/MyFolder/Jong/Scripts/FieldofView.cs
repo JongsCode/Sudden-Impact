@@ -1,7 +1,6 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
-using UnityEditor;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class FieldofView : MonoBehaviour
 {
@@ -53,6 +52,9 @@ public class FieldofView : MonoBehaviour
     public MeshFilter roundMeshFilter;
     private Mesh viewMesh;
     private Mesh roundMesh;
+
+    // Ghost Object 구현
+    List<GhostItem> ghostItems = new List<GhostItem>();
     
     private void Start()
     {
@@ -71,6 +73,7 @@ public class FieldofView : MonoBehaviour
         DrawFieldOfView();
         DrawFieldOfViewRound();
         FindVisibleTargets();
+        FindGhostTargets();
     }
     private IEnumerator FindTargetsWithDelay(float _delay)
     {
@@ -80,42 +83,82 @@ public class FieldofView : MonoBehaviour
             yield return new WaitForSeconds(_delay);
         }
     }
+
+    public bool CheckVisible(Transform _target)
+    {
+        if (_target == null)
+            return false;
+        Vector3 dirToTarget = (_target.position - transform.position).normalized;
+        float distToTarget = Vector3.Distance(transform.position, _target.position);
+        bool checkView = Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2 && (distToTarget <= viewRadius); ;
+        bool checkRound = distToTarget <= roundRadius;
+        if (checkView || checkRound)
+        {
+            if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     private void FindVisibleTargets()
     {
         foreach (Transform visibleTarget in visibleTargets)
         {
-            MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
-            if (meshRender != null)
-            {
-                meshRender.enabled = false;
-            }
+            //TODO : 시야 내에 없을 시 처리할 데이터 처리
+            //MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
+            //if (meshRender != null)
+            //{
+            //    meshRender.enabled = false;
+            //}
         }
         visibleTargets.Clear();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
         for (int i = 0; i < targetsInViewRadius.Length; ++i)
         {
             Transform target = targetsInViewRadius[i].transform;
-            Vector3 dirToTarget = (target.position - transform.position).normalized;
-            bool checkView = Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2;
-            float distToTarget = Vector3.Distance(transform.position, target.position);
-            bool checkRound = distToTarget <= roundRadius;
-            if (checkView || checkRound)
-            {
-                
-
-                if(!Physics.Raycast(transform.position,dirToTarget,distToTarget,obstacleMask))
-                {
+            if(CheckVisible(target))
+            { 
                     visibleTargets.Add(target);
-                    foreach(Transform visibleTarget in visibleTargets)
-                    {
-                        MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
-                        if(meshRender != null)
-                        {
-                            meshRender.enabled = true;
-                        }
-                    }
-                }
+                    // TODO : 시야내에 들어왔을 처리할 데이터 처리
+                    //foreach(Transform visibleTarget in visibleTargets)
+                    //{
+                    //    MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
+                    //    if(meshRender != null)
+                    //    {
+                    //        meshRender.enabled = true;
+                    //    }
+                    //}
+              
             }
+        }
+    }
+
+    private void FindGhostTargets()
+    {
+        if (ghostItems.Count == 0) return;
+        for(int i = ghostItems.Count -1; i>= 0; --i)
+        {
+            if (ghostItems[i] == null)
+            {
+                ghostItems.RemoveAt(i); 
+                continue; 
+            }
+            GhostItem ghostitem = ghostItems[i];
+            if (CheckVisible(ghostitem.transform))
+            {
+                ghostitem.DeleteItem();
+                ghostItems.RemoveAt(i);
+            }
+            
+        }
+    }
+
+    public void RegisterGhostItems(GhostItem _ghostItem)
+    {
+        if (!ghostItems.Contains(_ghostItem))
+        {
+            ghostItems.Add(_ghostItem);
         }
     }
     private void DrawFieldOfView()

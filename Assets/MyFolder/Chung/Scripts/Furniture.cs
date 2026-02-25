@@ -15,7 +15,7 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     protected virtual void Awake()
     {
         curHp = maxHp;
-        if (normalModel) normalModel.SetActive(true);
+        if (normalModel) normalModel.SetActive(true);   
         if (brokenModel) brokenModel.SetActive(false);
     }
 
