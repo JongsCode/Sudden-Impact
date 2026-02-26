@@ -347,6 +347,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         {
             myEquippedGun.photonView.RequestOwnership();
         }
+        Item item = myEquippedGun.GetComponent<Item>();
+        item.PickItem();
+        Debug.Log("PickItem");
 
         myEquippedGun.transform.SetParent(weaponAttachPoint);
         myEquippedGun.transform.localPosition = Vector3.zero;
@@ -354,7 +357,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         useGun = true;
         SwapWeapon(useGun);
-
+        
     }
 
     private void DropWeapon()

@@ -73,7 +73,7 @@ public class FieldofView : MonoBehaviour
         DrawFieldOfView();
         DrawFieldOfViewRound();
         FindVisibleTargets();
-        FindGhostTargets();
+        FindGhostItems();
     }
     private IEnumerator FindTargetsWithDelay(float _delay)
     {
@@ -134,7 +134,7 @@ public class FieldofView : MonoBehaviour
         }
     }
 
-    private void FindGhostTargets()
+    private void FindGhostItems()
     {
         if (ghostItems.Count == 0) return;
         for(int i = ghostItems.Count -1; i>= 0; --i)
