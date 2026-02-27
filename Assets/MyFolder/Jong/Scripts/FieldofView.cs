@@ -59,6 +59,7 @@ public class FieldofView : MonoBehaviour
     public List<GhostItem> ghostItems = new List<GhostItem>();
     private List<Vector3> visiblePoints = new List<Vector3>();
     public List<Item> items = new List<Item>();
+    public float itemViewBuffer = 3f;
     
     private void Start()
     {
@@ -192,24 +193,22 @@ public class FieldofView : MonoBehaviour
         }
     }
 
-    // Item 처리
     private void FindItem()
     {
         HashSet<Item> itemsInView = new HashSet<Item>();
-        Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius, furnitureMask);
+        Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius + itemViewBuffer, furnitureMask);
         for(int i = 0; i< itemsCol.Length; ++i)
         {
             Item item = itemsCol[i].GetComponentInParent<Item>();
-            if(item != null)
+            if (item == null || item.IsBroken) continue;
+
+            if (CheckVisible(item.transform))
             {
-                if(CheckVisible(item.transform))
+                itemsInView.Add(item);
+                if (!items.Contains(item))
                 {
-                    itemsInView.Add(item);
-                    if(!items.Contains(item))
-                    {
-                        items.Add(item);
-                        item.SetVisible(true);
-                    }
+                    items.Add(item);
+                    item.SetVisible(true);
                 }
             }
         }

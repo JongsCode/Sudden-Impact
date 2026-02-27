@@ -291,3 +291,9 @@ MonoBehaviour:
   equipShader: {fileID: 4800000, guid: 48cd43ea7bded754c853720fb892de73, type: 3}
   itemShader: {fileID: 4800000, guid: 6235747a74ba3b14db2200bb3697ff1f, type: 3}
   originShader: {fileID: 0}
+  fow: {fileID: 0}
+  ghostObject: {fileID: 0}
+  itemObject: {fileID: 0}
+  brokenObject: {fileID: 0}
+  originPivot: {fileID: 0}
+  ghostPivot: {fileID: 0}
