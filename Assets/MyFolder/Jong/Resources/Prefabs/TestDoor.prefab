@@ -145,6 +145,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6787678104508774536}
   - {fileID: 5685500815062064898}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -208,7 +209,9 @@ MonoBehaviour:
   originShader: {fileID: 0}
   fow: {fileID: 0}
   ghostObject: {fileID: 5552816698718159849}
-  doorObject: {fileID: 1873862367087184677}
+  itemObject: {fileID: 1873862367087184677}
+  originPivot: {fileID: 5382474087113564320}
+  ghostPivot: {fileID: 9093690061912126895}
 --- !u!65 &4796039372055295796
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -241,7 +244,7 @@ GameObject:
   - component: {fileID: 5678544271853226187}
   - component: {fileID: 5735531458258477790}
   - component: {fileID: 2309596279490638606}
-  m_Layer: 10
+  m_Layer: 13
   m_Name: BrokenMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -329,7 +332,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5685500815062064898}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: RotatePivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -350,7 +353,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8470442387150196741}
-  - {fileID: 642372812653175943}
   - {fileID: 5678544271853226187}
   m_Father: {fileID: 7612633409095307621}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -381,12 +383,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5552816698718159849}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1, y: 1.5, z: -0.2}
-  m_LocalScale: {x: 2, y: 3, z: 0.2}
+  m_LocalScale: {x: 2, y: 3, z: 0.20000002}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5685500815062064898}
+  m_Father: {fileID: 6787678104508774536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6790105843204220460
 MeshFilter:
@@ -466,3 +468,35 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &9093690061912126895
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6787678104508774536}
+  m_Layer: 13
+  m_Name: GhostRotatePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6787678104508774536
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9093690061912126895}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 642372812653175943}
+  m_Father: {fileID: 7612633409095307621}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

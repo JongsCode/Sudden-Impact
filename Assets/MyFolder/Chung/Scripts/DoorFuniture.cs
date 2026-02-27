@@ -28,12 +28,7 @@ public class Door : Furniture, IInteractable
         isOpen = !isOpen;
         // 기존에 움직이고 있었다면 멈추고 새로 시작
         if (doorCoroutine != null) return;
-        Item item = GetComponent<Item>();
-        if (item != null)
-        {
-            Debug.Log("SetGhostFurniture");
-            item.CheckVisible();
-        } 
+       
         float targetAngle = 0f;
         if (isOpen)
         {

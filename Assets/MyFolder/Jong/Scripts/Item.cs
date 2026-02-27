@@ -1,4 +1,3 @@
-using Photon.Pun;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -9,39 +8,17 @@ public class Item : MonoBehaviour
     public Shader originShader;
     public FieldofView fow;
     public GameObject ghostObject;
-    public GameObject doorObject;
+    public GameObject itemObject;
+    public GameObject originPivot;
+    public GameObject ghostPivot;
     private MeshRenderer[] mrs;
-    private bool wasVisible = true;
     private void Awake()
     {
         mrs = GetComponentsInChildren<MeshRenderer>();
 
     }
     
-    public void CheckVisible()
-    {
-        if (fow == null)
-        {
-            fow = FindFirstObjectByType<FieldofView>();
-        }
-
-        bool isVisible = fow.CheckVisible(transform);
-        if (isVisible != wasVisible)
-        {
-            wasVisible = isVisible;
-            Debug.Log("wasVisible : " + wasVisible);
-            if (wasVisible)
-            {
-                SetRender(true);
-                SetGhostItem(false);
-            }
-            else
-            {
-                SetRender(false);
-                SetGhostItem(true);
-            }
-        }
-    }      
+       
     public void PickItem()
     {
         if (ghostPrefab == null) return;
@@ -70,28 +47,39 @@ public class Item : MonoBehaviour
         }
     }
 
+    
+    public void SetVisible(bool _isVisible)
+    {
+        if (_isVisible)
+        {
+            SetRender(true);
+            SetGhostItem(false);
+        }
+        else
+        {
+            SetRender(false);
+            SetGhostItem(true);
+        }
+
+    }
+    private void SetRender(bool _isVisible)
+    {
+        itemObject.GetComponent<MeshRenderer>().enabled = _isVisible;
+    }
     private void SetGhostItem(bool _isActive)
     {
         if (ghostObject == null) return;
         if (_isActive == true)
         {
-            ghostObject.gameObject.transform.position = doorObject.transform.position;
-            ghostObject.gameObject.transform.rotation = doorObject.transform.rotation;
+            ghostPivot.gameObject.transform.position = originPivot.transform.position;
+            ghostPivot.gameObject.transform.rotation = originPivot.transform.rotation;
         }
         if (ghostObject.gameObject.activeSelf == _isActive) return;
-        ghostObject.gameObject.SetActive(_isActive); 
-        
-    }
-    private void SetRender(bool _isVisible)
-    {
-        foreach (MeshRenderer mr in mrs)
-        {
-            mr.enabled = _isVisible;
-        }
+        ghostObject.gameObject.SetActive(_isActive);
+
     }
     public void SetShader(Shader _shader)
     {
-        MeshRenderer[] mrs = GetComponentsInChildren<MeshRenderer>();
         foreach (MeshRenderer mr in mrs)
         {
             Material[] mats = mr.materials;
@@ -105,4 +93,7 @@ public class Item : MonoBehaviour
             }
         }
     }
+
+    
+
 }

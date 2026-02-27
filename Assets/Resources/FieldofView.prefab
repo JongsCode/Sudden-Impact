@@ -236,7 +236,11 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 8320
+  furnitureMask:
+    serializedVersion: 2
+    m_Bits: 8192
   visibleTargets: []
+  furnitures: []
   meshResolution: 3
   edgeResolveIterations: 4
   edgeDistanceThreshold: 0.5
@@ -244,3 +248,5 @@ MonoBehaviour:
   maskCutawayDistance: 0.1
   viewMeshFilter: {fileID: 8964903957867739947}
   roundMeshFilter: {fileID: 3900807416272822414}
+  ghostItems: []
+  items: []

@@ -78,15 +78,7 @@ public class FieldofView : MonoBehaviour
         DrawFieldOfViewRound();
         FindVisibleTargets();
         FindGhostItems();
-        FindItems();
-    }
-    private IEnumerator FindTargetsWithDelay(float _delay)
-    {
-        while(true)
-        {
-            FindVisibleTargets();
-            yield return new WaitForSeconds(_delay);
-        }
+        FindItem();
     }
 
     public bool CheckVisible(Transform _target)
@@ -102,7 +94,7 @@ public class FieldofView : MonoBehaviour
             visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.min.z));
             visiblePoints.Add(new Vector3(bound.max.x, bound.center.y, bound.min.z));
             visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.max.z));
-            visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.max.z));
+            visiblePoints.Add(new Vector3(bound.max.x, bound.center.y, bound.max.z));
 
         }
         foreach (Vector3 point in visiblePoints)
@@ -191,26 +183,7 @@ public class FieldofView : MonoBehaviour
         }
     }
 
-    private void FindItems()
-    {
-        if (items.Count == 0) return;
-        for (int i = items.Count - 1; i >= 0; --i)
-        {
-            if (items[i] == null)
-            {
-                items.RemoveAt(i);
-                continue;
-            }
-            Item item = items[i];
-            if (CheckVisible(item.transform))
-            {
-                item.CheckVisible();
-                items.RemoveAt(i);
-            }
-
-        }
-    }
-
+  
     public void RegisterGhostItems(GhostItem _ghostItem)
     {
         if (!ghostItems.Contains(_ghostItem))
@@ -219,13 +192,39 @@ public class FieldofView : MonoBehaviour
         }
     }
 
-    public void RegisterItems(Item _item)
+    // Item 처리
+    private void FindItem()
     {
-        if(!items.Contains(_item))
+        HashSet<Item> itemsInView = new HashSet<Item>();
+        Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius, furnitureMask);
+        for(int i = 0; i< itemsCol.Length; ++i)
         {
-            items.Add(_item);
+            Item item = itemsCol[i].GetComponentInParent<Item>();
+            if(item != null)
+            {
+                if(CheckVisible(item.transform))
+                {
+                    itemsInView.Add(item);
+                    if(!items.Contains(item))
+                    {
+                        items.Add(item);
+                        item.SetVisible(true);
+                    }
+                }
+            }
+        }
+
+        for(int i = items.Count -1; i >=0; --i)
+        {
+            Item item = items[i];
+            if (!itemsInView.Contains(item))
+            {
+                item.SetVisible(false);
+                items.RemoveAt(i);
+            }
         }
     }
+    
     private void DrawFieldOfView()
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
