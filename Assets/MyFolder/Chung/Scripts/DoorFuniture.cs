@@ -44,7 +44,6 @@ public class Door : Furniture, IInteractable
     {
         Quaternion targetRot = Quaternion.Euler(0, targetAngle, 0);
 
-       collider.isTrigger = true;
         while (Quaternion.Angle(doorPivot.localRotation, targetRot) > 0.1f)
         {
             doorPivot.localRotation = Quaternion.Slerp(
@@ -54,7 +53,6 @@ public class Door : Furniture, IInteractable
             );
             yield return null;
         }
-        collider.isTrigger = false; 
 
         doorPivot.localRotation = targetRot;
         doorCoroutine = null;
