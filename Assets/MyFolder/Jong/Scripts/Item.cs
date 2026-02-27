@@ -9,16 +9,24 @@ public class Item : MonoBehaviour
     public FieldofView fow;
     public GameObject ghostObject;
     public GameObject itemObject;
+    public GameObject brokenObject;
     public GameObject originPivot;
     public GameObject ghostPivot;
     private MeshRenderer[] mrs;
+    private bool isBroken = false;
+    public bool IsBroken
+    {
+        set { isBroken = value; }
+        get { return isBroken; }
+    }
     private void Awake()
     {
         mrs = GetComponentsInChildren<MeshRenderer>();
 
     }
+
     
-       
+
     public void PickItem()
     {
         if (ghostPrefab == null) return;
@@ -50,6 +58,7 @@ public class Item : MonoBehaviour
     
     public void SetVisible(bool _isVisible)
     {
+        if (isBroken) return;
         if (_isVisible)
         {
             SetRender(true);
@@ -65,6 +74,7 @@ public class Item : MonoBehaviour
     private void SetRender(bool _isVisible)
     {
         itemObject.GetComponent<MeshRenderer>().enabled = _isVisible;
+        brokenObject.GetComponent<MeshRenderer>().enabled = _isVisible;
     }
     private void SetGhostItem(bool _isActive)
     {
@@ -92,6 +102,17 @@ public class Item : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void SetBrokenState(bool _isBroken)
+    {
+        isBroken = _isBroken;
+        if(ghostObject.gameObject.activeSelf)
+        {
+            ghostObject.gameObject.GetComponent<MeshRenderer>().enabled = !_isBroken; // ghostobject 비활
+
+        }
+
     }
 
     

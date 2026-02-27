@@ -52,6 +52,7 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
         {
             Debug.Log("SetGhostFurniture");
             item.MakeGhostItem(transform.position);
+            item.SetBrokenState(isDestroyed);
         }
     }
 }

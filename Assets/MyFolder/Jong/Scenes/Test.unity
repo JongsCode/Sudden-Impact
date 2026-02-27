@@ -710,11 +710,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7612633409095307621, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.23
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 7612633409095307621, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 6.99
+      value: 5.96
       objectReference: {fileID: 0}
     - target: {fileID: 7612633409095307621, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3819,7 +3819,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3312090987127175721, guid: 9bcc96784a29b7648a16e9ff35a412c6, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 25.65
+      value: -1.57
       objectReference: {fileID: 0}
     - target: {fileID: 3312090987127175721, guid: 9bcc96784a29b7648a16e9ff35a412c6, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3827,7 +3827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3312090987127175721, guid: 9bcc96784a29b7648a16e9ff35a412c6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.72
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 3312090987127175721, guid: 9bcc96784a29b7648a16e9ff35a412c6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4245,6 +4245,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   player: {fileID: 0}
   playerRegistry: {fileID: 11400000, guid: 59eed9396b7e5a0419003df23a221d5b, type: 2}
+  camHight: 20
 --- !u!114 &1925595135
 MonoBehaviour:
   m_ObjectHideFlags: 0
