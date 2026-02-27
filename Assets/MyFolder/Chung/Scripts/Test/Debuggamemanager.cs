@@ -217,6 +217,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         StartRound();
     }
 
+
+
     #endregion
 
     #region 라운드 시작
@@ -234,6 +236,11 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartRoundRPC()
     {
+        for (int i = 0; i < mapFlags.Length; i++)
+        {
+            mapFlags[i].RespawnFlag();
+        }
+
         RespawnTeam(playerRegistry.TeamA, teamASpawnPoints);
         RespawnTeam(playerRegistry.TeamB, teamBSpawnPoints);
         Debug.Log("[GameManager] 라운드 시작");

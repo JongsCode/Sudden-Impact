@@ -384,8 +384,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         closestGun = null;
 
         myEquippedGun.gameObject.layer = 11;
+        myEquippedGun.SetOwner(PhotonNetwork.LocalPlayer.ActorNumber, myTeam);
 
-        if(photonView.IsMine)
+        if (photonView.IsMine)
         {
             myEquippedGun.photonView.RequestOwnership();
         }
@@ -462,6 +463,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region OnImpact
     public void OnReceiveImpact(ImpactData _data)
     {
+        Debug.Log($"[PlayerController] On Impact actor: {_data.attackerActorNumber}, ATKteam : {_data.attackerTeam}, myTeam{myTeam} , Data : {_data.type}" );
         // 상태 검사
         if (
             curHp <= 0 
