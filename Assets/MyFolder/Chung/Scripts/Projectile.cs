@@ -8,14 +8,22 @@ public class Projectile : MonoBehaviourPun, IPunInstantiateMagicCallback
     protected int attackActorNum;
     protected int team;
 
+    protected Rigidbody rb;
+
     [SerializeField]
-    protected DamageType damageType = DamageType.Bullet;
+    protected DamageType damageType;
     [SerializeField]
     private LayerMask obstacleLayer;
 
+    protected virtual void Awake()
+    {
+        
+        rb = GetComponent<Rigidbody>();
+    }
+
     protected virtual void Update()
     {
-        transform.position = transform.position + transform.forward * speed * Time.deltaTime;
+        rb.MovePosition(transform.position + transform.forward * speed * Time.deltaTime);
     }
 
     protected virtual void OnTriggerEnter(Collider other)
