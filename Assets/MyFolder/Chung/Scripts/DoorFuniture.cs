@@ -6,6 +6,7 @@ public class Door : Furniture, IInteractable
 {
     [Header("Door Controls")]
     [SerializeField] private Transform doorPivot;
+    [SerializeField] private Transform spawnPivot;
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
     [SerializeField] private Collider collider;
@@ -25,10 +26,9 @@ public class Door : Furniture, IInteractable
         if (isDestroyed) return;
 
         isOpen = !isOpen;
-
         // 기존에 움직이고 있었다면 멈추고 새로 시작
-        if (doorCoroutine != null) StopCoroutine(doorCoroutine);
-
+        if (doorCoroutine != null) return;
+       
         float targetAngle = 0f;
         if (isOpen)
         {

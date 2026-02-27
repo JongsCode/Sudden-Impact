@@ -12,6 +12,7 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private GameObject normalModel;
     [SerializeField] private GameObject brokenModel;
 
+
     protected virtual void Awake()
     {
         curHp = maxHp;
@@ -33,6 +34,7 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
         curHp -= _damage;
         if (curHp <= 0 && !isDestroyed)
         {
+            
             OnBroken();
         }
     }
@@ -45,5 +47,11 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
         
         // 부서진 후 물리 판정 제거
         if (TryGetComponent<Collider>(out var col)) col.enabled = false;
+        Item item = GetComponent<Item>();
+        if (item != null)
+        {
+            Debug.Log("SetGhostFurniture");
+            item.MakeGhostItem(transform.position);
+        }
     }
 }
