@@ -211,6 +211,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
             photonView.RPC(nameof(SwapWeapon), RpcTarget.All, useGun);
         }
+        else
+        {
+            useGun = false;
+            photonView.RPC(nameof(SwapWeapon), RpcTarget.All, useGun);
+        }
     }
 
     [PunRPC]
