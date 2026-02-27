@@ -39,8 +39,10 @@ public class FieldofView : MonoBehaviour
 
     public LayerMask targetMask;
     public LayerMask obstacleMask;
+    public LayerMask furnitureMask;
 
     public List<Transform> visibleTargets = new List<Transform>();
+    public List<Transform> furnitures = new List<Transform>();
 
     public float meshResolution;
     public int edgeResolveIterations;
@@ -54,7 +56,9 @@ public class FieldofView : MonoBehaviour
     private Mesh roundMesh;
 
     // Ghost Object 구현
-    List<GhostItem> ghostItems = new List<GhostItem>();
+    public List<GhostItem> ghostItems = new List<GhostItem>();
+    private List<Vector3> visiblePoints = new List<Vector3>();
+    public List<Item> items = new List<Item>();
     
     private void Start()
     {
@@ -74,6 +78,7 @@ public class FieldofView : MonoBehaviour
         DrawFieldOfViewRound();
         FindVisibleTargets();
         FindGhostItems();
+        FindItems();
     }
     private IEnumerator FindTargetsWithDelay(float _delay)
     {
@@ -86,18 +91,49 @@ public class FieldofView : MonoBehaviour
 
     public bool CheckVisible(Transform _target)
     {
+        visiblePoints.Clear();
         if (_target == null)
             return false;
-        Vector3 dirToTarget = (_target.position - transform.position).normalized;
-        float distToTarget = Vector3.Distance(transform.position, _target.position);
+        visiblePoints.Add(_target.position);
+        Renderer mr = _target.GetComponentInChildren<Renderer>();
+        if( mr != null)
+        {
+            Bounds bound = mr.bounds;
+            visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.min.z));
+            visiblePoints.Add(new Vector3(bound.max.x, bound.center.y, bound.min.z));
+            visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.max.z));
+            visiblePoints.Add(new Vector3(bound.min.x, bound.center.y, bound.max.z));
+
+        }
+        foreach (Vector3 point in visiblePoints)
+        {
+            if (IsVisible(point,_target))
+            {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    private bool IsVisible(Vector3 _targetPos, Transform _targetTransform)
+    {
+        if (_targetPos == null) return false;
+        Vector3 dirToTarget = (_targetPos - transform.position).normalized;
+        float distToTarget = Vector3.Distance(transform.position, _targetPos);
         bool checkView = Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2 && (distToTarget <= viewRadius); ;
         bool checkRound = distToTarget <= roundRadius;
         if (checkView || checkRound)
         {
-            if (!Physics.Raycast(transform.position, dirToTarget, distToTarget, obstacleMask))
+            RaycastHit hitInfo;
+            if (Physics.Raycast(transform.position, dirToTarget, out hitInfo, distToTarget, obstacleMask))
             {
-                return true;
+                if (hitInfo.transform == _targetTransform || hitInfo.transform.IsChildOf(_targetTransform) || _targetTransform.IsChildOf(hitInfo.transform))
+                    return true;
+                return false;
             }
+            return true;
+
         }
         return false;
     }
@@ -134,6 +170,7 @@ public class FieldofView : MonoBehaviour
         }
     }
 
+   
     private void FindGhostItems()
     {
         if (ghostItems.Count == 0) return;
@@ -154,11 +191,39 @@ public class FieldofView : MonoBehaviour
         }
     }
 
+    private void FindItems()
+    {
+        if (items.Count == 0) return;
+        for (int i = items.Count - 1; i >= 0; --i)
+        {
+            if (items[i] == null)
+            {
+                items.RemoveAt(i);
+                continue;
+            }
+            Item item = items[i];
+            if (CheckVisible(item.transform))
+            {
+                item.CheckVisible();
+                items.RemoveAt(i);
+            }
+
+        }
+    }
+
     public void RegisterGhostItems(GhostItem _ghostItem)
     {
         if (!ghostItems.Contains(_ghostItem))
         {
             ghostItems.Add(_ghostItem);
+        }
+    }
+
+    public void RegisterItems(Item _item)
+    {
+        if(!items.Contains(_item))
+        {
+            items.Add(_item);
         }
     }
     private void DrawFieldOfView()

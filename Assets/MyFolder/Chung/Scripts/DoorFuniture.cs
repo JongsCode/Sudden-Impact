@@ -6,6 +6,7 @@ public class Door : Furniture, IInteractable
 {
     [Header("Door Controls")]
     [SerializeField] private Transform doorPivot;
+    [SerializeField] private Transform spawnPivot;
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
     [SerializeField] private Collider collider;
@@ -25,10 +26,14 @@ public class Door : Furniture, IInteractable
         if (isDestroyed) return;
 
         isOpen = !isOpen;
-
         // 기존에 움직이고 있었다면 멈추고 새로 시작
-        if (doorCoroutine != null) StopCoroutine(doorCoroutine);
-
+        if (doorCoroutine != null) return;
+        Item item = GetComponent<Item>();
+        if (item != null)
+        {
+            Debug.Log("SetGhostFurniture");
+            item.CheckVisible();
+        } 
         float targetAngle = 0f;
         if (isOpen)
         {
@@ -44,7 +49,6 @@ public class Door : Furniture, IInteractable
     {
         Quaternion targetRot = Quaternion.Euler(0, targetAngle, 0);
 
-       collider.isTrigger = true;
         while (Quaternion.Angle(doorPivot.localRotation, targetRot) > 0.1f)
         {
             doorPivot.localRotation = Quaternion.Slerp(
@@ -54,7 +58,6 @@ public class Door : Furniture, IInteractable
             );
             yield return null;
         }
-        collider.isTrigger = false; 
 
         doorPivot.localRotation = targetRot;
         doorCoroutine = null;
