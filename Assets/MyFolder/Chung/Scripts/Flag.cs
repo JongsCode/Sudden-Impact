@@ -8,6 +8,15 @@ public class Flag : MonoBehaviour
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private Collider triggerCollider;
 
+    public void RespawnFlag()
+    {
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        meshRenderer.enabled = true;
+        triggerCollider.enabled = true;
+    }
+
     // 매니저의 지시를 받아 스스로를 숨기는 함수
     public void HideFlag()
     {
