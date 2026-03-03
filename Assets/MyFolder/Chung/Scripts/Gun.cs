@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using Unity.Cinemachine;
 
 public abstract class Gun : Weapon
 {
@@ -7,6 +8,7 @@ public abstract class Gun : Weapon
     [SerializeField] protected GameObject projectilePrefab;     // 쏘는 총알 프리팹
     [SerializeField] protected GameObject thrownWeaponPrefab; // 던지는 총(무기) 프리팹
     [SerializeField] protected Transform muzzlePoint;         // 총구 위치
+    [SerializeField] private CinemachineImpulseSource impulseSource;
 
     [Header("Parameter")]
     [SerializeField] protected int maxAmmo = 30;
@@ -26,7 +28,7 @@ public abstract class Gun : Weapon
 
     public override void Attack(Vector3 aimPos)
     {
-        // 부모가 여기서 모든 쿨다운과 잔탄을 엄격하게 통제합니다.
+        // 쿨다운 및 잔탄 확인 공통로직
         if (Time.time < lastFireTime + fireRate) return;
 
         if (currentAmmo <= 0)
@@ -35,22 +37,31 @@ public abstract class Gun : Weapon
             return;
         }
 
-        // 검사 통과! 시간 갱신 및 탄약 소모
+        // 검사 통과 시간 갱신 및 탄약 소모
         lastFireTime = Time.time;
         currentAmmo--;
 
-        // 2. 자식아, 검사는 끝났다. 이제 진짜 총알을 쏴라!
+        // 실제 탄환 생성 로직
         FireProjectile(aimPos);
+
+        if (photonView.IsMine && impulseSource != null)
+        {
+
+            Vector3 baseVelocity = impulseSource.DefaultVelocity;
+            Vector3 rotatedVelocity = transform.rotation * baseVelocity;
+            impulseSource.GenerateImpulse(rotatedVelocity);
+        }
     }
 
     // 3. 자식 클래스들이 반드시 구현해야 하는 '순수 발사 로직'
     protected abstract void FireProjectile(Vector3 aimPos);
 
-    // PlayerController에서 호출했던 무기 던지기 기능
+    // PlayerController에서 호출하는 무기 던지기 기능
     public virtual void ThrowWeapon()
     {
         if (thrownWeaponPrefab == null) return;
 
+        // 포톤 콜백 사용
         object[] info = new object[]
         {
             ownerActorNumber, ownerTeam, 0f
