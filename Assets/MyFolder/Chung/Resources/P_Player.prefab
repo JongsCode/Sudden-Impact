@@ -252,7 +252,7 @@ MonoBehaviour:
   dummyFlagMesh: {fileID: 6935043748650806786}
   maxHp: 100
   moveSpeed: 10
-  sprintSpeed: 2
+  sprintSpeed: 1.4
   rollDistance: 5
   rollDuration: 0.2
   pickUpDistance: 1

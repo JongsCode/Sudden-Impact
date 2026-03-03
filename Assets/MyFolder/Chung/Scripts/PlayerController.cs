@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [Header("Parameters")]
     [SerializeField] private float maxHp = 100f;
     [SerializeField] private float moveSpeed = 10f;
-    [SerializeField] private float sprintSpeed = 2f;
+    [SerializeField] private float sprintSpeed = 1.4f;
     [SerializeField] private float rollDistance = 2.0f;
     [SerializeField] private float rollDuration = 0.2f;
     [SerializeField] private float pickUpDistance = 1f;
@@ -49,7 +49,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private Coroutine curCheakClosestWeaponCoroutine;
     private List<Weapon> nearbyItems = new List<Weapon>();
+    private Vector3 curMoveInput;
     private Vector3 lastMoveDir;
+    private bool isSprinting;
 
     public int MyTeam {  get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
@@ -77,6 +79,43 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         {
             stunCallback?.Invoke(true);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (!photonView.IsMine) return;
+
+        // 구르기 중에는 구르기 코루틴이 처리.
+        if (playerState == PlayerState.Rolling) return;
+
+        // 상태 이상일 때는 강제로 속도를 0으로 만들고 기절
+        if (playerState == PlayerState.Stunned || playerState == PlayerState.Dead || playerState == PlayerState.NotReady)
+        {
+            myRigidbody.linearVelocity = Vector3.zero;
+            myRigidbody.angularVelocity = Vector3.zero;
+            return;
+        }
+
+        // MovePosition을 버리고 linearVelocity(물리 속도)를 직접 제어합니다.
+        if (curMoveInput.sqrMagnitude > 0.01f)
+        {
+            float currentSpeed = isSprinting ? (moveSpeed * sprintSpeed) : moveSpeed;
+
+            // 입력 방향으로 목표 속도를 계산합니다.
+            Vector3 targetVelocity = curMoveInput.normalized * currentSpeed;
+
+            // 물리 엔진의 속도(Velocity)에 직접 값을 넣습니다. 
+            // 엔진이 스스로 충돌을 계산하므로 아무리 얇은 벽이라도 절대 뚫지 못합니다.
+            myRigidbody.linearVelocity = targetVelocity;
+        }
+        else
+        {
+            // 입력이 없을 때는 즉시 속도를 0으로 만들어 빙판길 미끄러짐(하키볼)을 막습니다.
+            myRigidbody.linearVelocity = Vector3.zero;
+        }
+
+        // 회전력은 매 프레임 죽여서 오뚝이처럼 넘어지는 것을 막습니다.
+        myRigidbody.angularVelocity = Vector3.zero;
     }
 
     public void Init(int _myTeam)
@@ -129,10 +168,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region 조작 로직
     public void MovePlayer(Vector3 _moveAxis)
     {
-            lastMoveDir = _moveAxis.normalized;
-        
-            Vector3 moveVector = transform.position + ((_moveAxis.normalized * moveSpeed) * Time.deltaTime);
-        myRigidbody.MovePosition(moveVector);
+        lastMoveDir = _moveAxis.normalized;
+        curMoveInput = _moveAxis;
+        //Vector3 moveVector = transform.position + ((_moveAxis.normalized * moveSpeed) * Time.deltaTime);
+        //myRigidbody.MovePosition(moveVector);
     }
 
     public void RotatePlayer(Vector3 _aimPos)
@@ -175,7 +214,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}");
 
-        if (playerState == PlayerState.Rolling || playerState == PlayerState.Stunned || playerState == PlayerState.Dead) yield break;
+        if (playerState == PlayerState.Rolling 
+            || playerState == PlayerState.Stunned 
+            || playerState == PlayerState.Dead) 
+            yield break;
 
         Vector3 rollDirection;
         if (Vector3.SqrMagnitude(lastMoveDir) > 0.2f)
@@ -186,13 +228,34 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         {
             rollDirection = transform.forward;
         }
-            Vector3 startPos = transform.position;
-        Vector3 targetPos = startPos + rollDirection * rollDistance;
+
+        //SweepTest로 구르기 궤적 사전 검사]
+        float actualRollDistance = rollDistance;
+
+        //  [이중 검사] 
+        // 1. 벽에 붙어 비비고 있을 때 SweepTest가 무시되는 현상을 막기 위해, 잛은 거리의 레이케스트 추가
+        if (Physics.Raycast(transform.position, rollDirection, out RaycastHit rayHit, 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+        {
+            // 0.6m 이내에 벽이 있다면, 부딪히기 직전까지만 
+            actualRollDistance = Mathf.Max(0f, rayHit.distance - 0.4f);
+            Debug.Log($"[Roll] Raycast 벽 감지, 거리 단축: {actualRollDistance}");
+        }
+        // 2. 코앞에 벽이 없다면, 정상적으로 내 몸통(콜라이더)을 날려보는 SweepTest를 실행합니다.
+        else if (myRigidbody.SweepTest(rollDirection, out RaycastHit sweepHit, rollDistance, QueryTriggerInteraction.Ignore))
+        {
+            actualRollDistance = Mathf.Max(0f, sweepHit.distance - 0.05f);
+            Debug.Log($"[Roll] SweepTest 감지, 거리 단축: {actualRollDistance}");
+        }
+
+        // 2. 잘라낸 안전한 거리(actualRollDistance)를 바탕으로 목표 위치 설정
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + rollDirection * actualRollDistance;
+
         float elapsed = 0f;
 
         while (elapsed < rollDuration)
         {
-            elapsed += Time.deltaTime;
+            elapsed += Time.fixedDeltaTime;
             float t = elapsed / rollDuration;
 
             // EaseOut 느낌으로 초반 빠르고 후반 느리게
@@ -200,12 +263,13 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
 
             //Debug.Log($"[PlayerController] while Is Working / Progress: { t }, Position Value : { Vector3.Lerp(startPos, targetPos, t * t * (3f - 2f * t)) }");
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
 
         //myRigidbody.MovePosition(targetPos);
     }
 
+    // 상태 설정용
     private IEnumerator RollingStateCoroutine()
     {
         playerState = PlayerState.Rolling;
@@ -244,13 +308,17 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     public void SprintStart(InputAction.CallbackContext ctx)
     {
+        // 기절, 사망 등 조작 불능 상태면 달리기 무시
+        if (playerState == PlayerState.NotReady || playerState == PlayerState.Stunned || playerState == PlayerState.Dead) return;
+
+        isSprinting = true;
+        // 필요하다면 여기서 playerState = PlayerState.Sprint; 로 변경해도 좋습니다.
         Debug.Log("[PlayerController] Im Start Sprinting");
-        moveSpeed *= sprintSpeed;
     }
 
     public void SprintEnd(InputAction.CallbackContext ctx)
     {
-        moveSpeed /= sprintSpeed;
+        isSprinting = false;
         Debug.Log("[PlayerController] Im end Sprinting");
     }
 
