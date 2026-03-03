@@ -1529,6 +1529,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PistolGunPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.73
+      objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.54
+      objectReference: {fileID: 0}
     - target: {fileID: 7341825512618504134, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
       propertyPath: sceneViewId
       value: 4
@@ -2316,6 +2324,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PistolGunPrefab (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -5.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.04
+      objectReference: {fileID: 0}
     - target: {fileID: 7341825512618504134, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
       propertyPath: sceneViewId
       value: 6
@@ -2806,6 +2822,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: PistolGunPrefab (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 7341825512618504134, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
       propertyPath: sceneViewId
       value: 5
@@ -2870,6 +2894,14 @@ PrefabInstance:
     - target: {fileID: 3162508920375278610, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
       propertyPath: m_Name
       value: PistolGunPrefab (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.79
+      objectReference: {fileID: 0}
+    - target: {fileID: 6794957697243901711, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 28.48
       objectReference: {fileID: 0}
     - target: {fileID: 7341825512618504134, guid: ae829416b42ffc145ae0a4681dcd391a, type: 3}
       propertyPath: sceneViewId
