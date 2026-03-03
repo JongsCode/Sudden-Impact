@@ -26,8 +26,11 @@ public abstract class Gun : Weapon
         lastFireTime = 0f;     // 무기를 꺼내자마자 바로 쏠 수 있도록 타이머 초기화
     }
 
-    public override void Attack(Vector3 aimPos)
+    public override void Attack(Vector3 aimPos, bool isHeld = false)
     {
+        // 단발 무기 && 마우스를 꾹 누르고 있는(Hold) 호출이면 무시
+        if (!isAutomatic && isHeld) return;
+
         // 쿨다운 및 잔탄 확인 공통로직
         if (Time.time < lastFireTime + fireRate) return;
 

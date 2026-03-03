@@ -15,8 +15,10 @@ public class MeleeKnife : Weapon
     [Header("ForDebug")]
     [SerializeField] private bool isDebugMode;
     
-    public override void Attack(Vector3 direction)
+    public override void Attack(Vector3 direction, bool _isHeld = true)
     {
+        if(_isHeld) { return; }
+
         // 1. 판정 중심점 계산 (에임 방향으로 attackOffset만큼 떨어진 곳)
         Vector3 attackPos = transform.position + direction.normalized * attackOffset;
         Quaternion orientation = Quaternion.LookRotation(direction);

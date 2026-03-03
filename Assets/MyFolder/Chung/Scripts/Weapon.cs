@@ -18,5 +18,5 @@ public abstract class Weapon : MonoBehaviourPun
     }
 
     // PlayerController에서 호출하는 공격 명령 (추상 메서드로 강제)
-    public abstract void Attack(Vector3 aimPos);
+    public abstract void Attack(Vector3 aimPos, bool isHeld = false);
 }

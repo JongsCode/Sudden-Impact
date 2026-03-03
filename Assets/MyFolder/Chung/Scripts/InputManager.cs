@@ -24,6 +24,7 @@ public class InputManager : MonoBehaviour
     private Camera myMainCamera;
     private Plane aimPlane;
     private Vector3 worldAimPosition;
+    private bool isFireHeld = false;
 
 
     private void Awake()
@@ -43,6 +44,8 @@ public class InputManager : MonoBehaviour
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
         myMainCamera = Camera.main;
+
+
 
     }
 
@@ -69,8 +72,12 @@ public class InputManager : MonoBehaviour
 
             OnMove(onMoveAction.ReadValue<Vector2>());
             OnRotate(onMousePosAction.ReadValue<Vector2>());
-        }
 
+            if (isFireHeld)
+            {
+                player.TryAttack(worldAimPosition, true);
+            }
+        }
     }
 
     private void OnMove(Vector2 _moveAxis)
@@ -90,9 +97,15 @@ public class InputManager : MonoBehaviour
         player.RotatePlayer(worldAimPosition);
     }
 
-    private void OnFire(InputAction.CallbackContext ctx)
+    private void OnFireStart(InputAction.CallbackContext ctx)
     {
-        player.TryAttack(worldAimPosition);
+        isFireHeld = true;
+        player.TryAttack(worldAimPosition, false);
+    }
+
+    private void OnFireEnd(InputAction.CallbackContext ctx)
+    {
+        isFireHeld = false;
     }
 
     private void SetPlayerAction()
@@ -104,7 +117,8 @@ public class InputManager : MonoBehaviour
         onSwapAction.performed += player.TrySwapWeapon;
         onInteractAction.performed += player.TryInteract;
 
-        onFireAction.performed += OnFire;
+        onFireAction.performed += OnFireStart;
+        onFireAction.canceled += OnFireEnd;
 
     }
 
