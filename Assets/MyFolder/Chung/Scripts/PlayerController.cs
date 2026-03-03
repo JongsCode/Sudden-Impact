@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private Coroutine curCheakClosestWeaponCoroutine;
     private List<Weapon> nearbyItems = new List<Weapon>();
+    private Vector3 lastMoveDir;
 
     public int MyTeam {  get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
@@ -83,6 +84,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         myTeam = _myTeam;
     }
 
+    // 라운드 시작시 초기화 목적으로 호출
     public void Respawn(Vector3 spawnPos)
     {
         curHp = maxHp;
@@ -127,9 +129,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region 조작 로직
     public void MovePlayer(Vector3 _moveAxis)
     {
-
-
-        Vector3 moveVector = transform.position + ((_moveAxis * moveSpeed) * Time.deltaTime);
+            lastMoveDir = _moveAxis.normalized;
+        
+            Vector3 moveVector = transform.position + ((_moveAxis.normalized * moveSpeed) * Time.deltaTime);
         myRigidbody.MovePosition(moveVector);
     }
 
@@ -173,8 +175,18 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}");
 
-        Vector3 rollDirection = transform.forward;
-        Vector3 startPos = transform.position;
+        if (playerState == PlayerState.Rolling || playerState == PlayerState.Stunned || playerState == PlayerState.Dead) yield break;
+
+        Vector3 rollDirection;
+        if (Vector3.SqrMagnitude(lastMoveDir) > 0.2f)
+        {
+            rollDirection = lastMoveDir;
+        }
+        else
+        {
+            rollDirection = transform.forward;
+        }
+            Vector3 startPos = transform.position;
         Vector3 targetPos = startPos + rollDirection * rollDistance;
         float elapsed = 0f;
 
