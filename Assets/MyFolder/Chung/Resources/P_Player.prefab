@@ -96,10 +96,10 @@ GameObject:
   - component: {fileID: 6250438029055740684}
   - component: {fileID: 4815647748377248281}
   - component: {fileID: 8887055471966068752}
-  - component: {fileID: 6879509315689305081}
   - component: {fileID: 6355518173395185663}
   - component: {fileID: 4920232383521831332}
   - component: {fileID: 788179651339884033}
+  - component: {fileID: 6390642938741679145}
   m_Layer: 20
   m_Name: P_Player
   m_TagString: Untagged
@@ -189,7 +189,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2143100945692910762}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 09e17a2b031918e469a779c4ff0717c4, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -205,33 +205,6 @@ CapsuleCollider:
   m_Height: 3.0704443
   m_Direction: 1
   m_Center: {x: 0, y: 0.5352222, z: 0}
---- !u!54 &6879509315689305081
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2143100945692910762}
-  serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 84
-  m_CollisionDetection: 1
 --- !u!114 &6355518173395185663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,7 +217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f71e17f934160ac488c693cc719d310a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  myRigidbody: {fileID: 6879509315689305081}
+  myRigidbody: {fileID: 6390642938741679145}
   myTransformView: {fileID: 788179651339884033}
   weaponAttachPoint: {fileID: 107669909597435356}
   myKnife: {fileID: 298153680274639072}
@@ -307,6 +280,33 @@ MonoBehaviour:
   m_SynchronizeRotation: 1
   m_SynchronizeScale: 0
   m_UseLocal: 1
+--- !u!54 &6390642938741679145
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143100945692910762}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 1
+  m_Constraints: 116
+  m_CollisionDetection: 0
 --- !u!1 &5759328712903560562
 GameObject:
   m_ObjectHideFlags: 0

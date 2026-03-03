@@ -229,44 +229,27 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             rollDirection = transform.forward;
         }
 
-        //SweepTest로 구르기 궤적 사전 검사]
-        float actualRollDistance = rollDistance;
-
-        //  [이중 검사] 
-        // 1. 벽에 붙어 비비고 있을 때 SweepTest가 무시되는 현상을 막기 위해, 잛은 거리의 레이케스트 추가
-        if (Physics.Raycast(transform.position, rollDirection, out RaycastHit rayHit, 0.6f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-        {
-            // 0.6m 이내에 벽이 있다면, 부딪히기 직전까지만 
-            actualRollDistance = Mathf.Max(0f, rayHit.distance - 0.4f);
-            Debug.Log($"[Roll] Raycast 벽 감지, 거리 단축: {actualRollDistance}");
-        }
-        // 2. 코앞에 벽이 없다면, 정상적으로 내 몸통(콜라이더)을 날려보는 SweepTest를 실행합니다.
-        else if (myRigidbody.SweepTest(rollDirection, out RaycastHit sweepHit, rollDistance, QueryTriggerInteraction.Ignore))
-        {
-            actualRollDistance = Mathf.Max(0f, sweepHit.distance - 0.05f);
-            Debug.Log($"[Roll] SweepTest 감지, 거리 단축: {actualRollDistance}");
-        }
-
-        // 2. 잘라낸 안전한 거리(actualRollDistance)를 바탕으로 목표 위치 설정
-        Vector3 startPos = transform.position;
-        Vector3 targetPos = startPos + rollDirection * actualRollDistance;
+        float startSpeed = (rollDistance / rollDuration) * 2f;
 
         float elapsed = 0f;
 
         while (elapsed < rollDuration)
         {
+            // 물리 프레임 시간 누적
             elapsed += Time.fixedDeltaTime;
             float t = elapsed / rollDuration;
 
-            // EaseOut 느낌으로 초반 빠르고 후반 느리게
-            myRigidbody.MovePosition(Vector3.Lerp(startPos, targetPos, t * t * (3f - 2f * t)));
+            // 속도를 선형적으로 줄임(EaseOut)
+            float currentSpeed = Mathf.Lerp(startSpeed, 0f, t);
 
+            // 오직 벨로시티(Velocity)만으로 구르기
+            myRigidbody.linearVelocity = rollDirection * currentSpeed;
 
-            //Debug.Log($"[PlayerController] while Is Working / Progress: { t }, Position Value : { Vector3.Lerp(startPos, targetPos, t * t * (3f - 2f * t)) }");
             yield return new WaitForFixedUpdate();
         }
 
-        //myRigidbody.MovePosition(targetPos);
+        // 구르기가 끝난 후 잔여 속도를 소멸시켜 미끄러짐 방지
+        myRigidbody.linearVelocity = Vector3.zero;
     }
 
     // 상태 설정용
