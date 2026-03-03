@@ -305,18 +305,18 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log("[PlayerController] Im end Sprinting");
     }
 
-    public void TryAttack(Vector3 _aimPos)
+    public void TryAttack(Vector3 _aimPos, bool _isHeld = false)
     {
 
         if (useGun)
         {
-            myEquippedGun.Attack(_aimPos);
+            myEquippedGun.Attack(_aimPos, _isHeld);
         Debug.Log("[PlayerController] Im Start Fire");
         }
 
         else
         {
-            myKnife.Attack(_aimPos);
+            myKnife.Attack(_aimPos, _isHeld);
             Debug.Log("[PlayerController] Im Start MeleeAtack"); 
         }
                 
