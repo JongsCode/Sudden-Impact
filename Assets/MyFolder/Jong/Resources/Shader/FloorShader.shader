@@ -32,6 +32,8 @@ Shader "Custom/FloorShader"
             
             sampler2D _GlobalMap;
             sampler2D _GlobalCurrentMap;
+            sampler2D _GlobalTempMap;
+
             float4 _MapParams;
 
             v2f vert (appdata v)
@@ -57,8 +59,10 @@ Shader "Custom/FloorShader"
                 // 전역 텍스처에서 UV에 해당하는 값을 변수로 저장
                 fixed overlapValue = tex2D(_GlobalMap, fogUV).r;
                 fixed currentValue = tex2D(_GlobalCurrentMap, fogUV).r;
+                fixed tempValue = tex2D(_GlobalTempMap, fogUV).r;
 
-                fixed finalValue = max(overlapValue * 0.3, currentValue);
+                fixed finalCurrent = max(currentValue,tempValue);
+                fixed finalValue = max(overlapValue * 0.3, finalCurrent);
                 return baseColor * finalValue;
                 //return fixed4(overlapValue, overlapValue, overlapValue, 1.0);
                 //return baseColor * fogValue;

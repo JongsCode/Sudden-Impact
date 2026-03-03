@@ -10,7 +10,9 @@ Shader "Custom/SoftFlash"
     {
         Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" }
         
-        Blend SrcAlpha One 
+        BlendOp Max
+        Blend One One 
+        
         ZWrite Off
 
         Pass
@@ -23,7 +25,8 @@ Shader "Custom/SoftFlash"
             struct Attributes
             {
                 float4 positionOS : POSITION;
-                float4 color : COLOR;             };
+                float4 color : COLOR;             
+            };
 
             struct Varyings
             {
@@ -34,7 +37,6 @@ Shader "Custom/SoftFlash"
             CBUFFER_START(UnityPerMaterial)
                 half4 _LightColor;
                 float _Intensity;
-
             CBUFFER_END
 
             Varyings vert(Attributes IN)
@@ -47,7 +49,12 @@ Shader "Custom/SoftFlash"
 
             half4 frag(Varyings IN) : SV_Target
             {
-                return half4(_LightColor.rgb * _Intensity, _LightColor.a * IN.color.a);
+               
+                
+                float finalAlpha = _LightColor.a * IN.color.a;
+                float3 finalColor = _LightColor.rgb * _Intensity * finalAlpha;
+
+                return half4(finalColor, finalAlpha);
             }
             ENDHLSL
         }

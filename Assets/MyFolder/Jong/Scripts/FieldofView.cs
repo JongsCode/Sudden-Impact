@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -59,6 +58,7 @@ public class FieldofView : MonoBehaviour
     public List<GhostItem> ghostItems = new List<GhostItem>();
     private List<Vector3> visiblePoints = new List<Vector3>();
     public List<Item> items = new List<Item>();
+    public List<Item> dropItems = new List<Item>();
     public float itemViewBuffer = 3f;
     
     private void Start()
@@ -196,6 +196,7 @@ public class FieldofView : MonoBehaviour
     // Item 처리
     private void FindItem()
     {
+
         HashSet<Item> itemsInView = new HashSet<Item>();
         Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius+ itemViewBuffer, furnitureMask);
         for(int i = 0; i< itemsCol.Length; ++i)
@@ -224,7 +225,44 @@ public class FieldofView : MonoBehaviour
             }
         }
     }
-    
+    private void FindDropItems() // FOV에서 계속 호출해줘야 하는 거고.
+    {
+        if (dropItems.Count == 0) return;
+        for (int i = dropItems.Count - 1; i >= 0; --i)
+        {
+            if (dropItems[i] == null)
+            {
+                dropItems.RemoveAt(i);
+                continue;
+            }
+            Item item = dropItems[i];
+            if (CheckVisible(item.transform))
+            {
+                dropItems[i].SetShader(dropItems[i].itemShader);
+                dropItems.RemoveAt(i);
+            }
+
+        }
+    }
+
+
+    public void AddDropItems(Item _dropItem) // 무기를 버릴 때 리스트에 추가를 해야 하고
+    {
+        if (!dropItems.Contains(_dropItem))
+        {
+            dropItems.Add(_dropItem);
+        }
+    }
+
+    public void RemoveDropItems(Item _dropItem) // 리스트에 있는 걸 주웠을 때 호출 해야 되고
+    {
+        if (dropItems.Contains(_dropItem))
+        {
+            
+        }
+    }
+
+
     private void DrawFieldOfView()
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
