@@ -138,6 +138,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7395db57e5f3c2e4aa44bd20ecee1188, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8790478406642834363}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7395db57e5f3c2e4aa44bd20ecee1188, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7522976907634161060}
   m_SourcePrefab: {fileID: 100100000, guid: 7395db57e5f3c2e4aa44bd20ecee1188, type: 3}
 --- !u!1 &2791450672355909779 stripped
 GameObject:
@@ -198,6 +201,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   ghostPrefab: {fileID: 8134609767606666254, guid: 24b6173f06b105a4ba3ecd1f99d10d6b, type: 3}
   equipShader: {fileID: 4800000, guid: 48cd43ea7bded754c853720fb892de73, type: 3}
+  itemShader: {fileID: 0}
+  originShader: {fileID: 0}
+  fow: {fileID: 0}
+  ghostObject: {fileID: 0}
+  itemObject: {fileID: 0}
+  brokenObject: {fileID: 0}
+  originPivot: {fileID: 0}
+  ghostPivot: {fileID: 0}
 --- !u!65 &8790478406642834363
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -219,6 +230,59 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.024618346, y: 0.15611799, z: 0.24049868}
   m_Center: {x: 0.0501602, y: 0.07900258, z: 0.022868894}
+--- !u!114 &7522976907634161060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2791450672355909779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
+  ImpulseDefinition:
+    ImpulseChannel: 1
+    ImpulseShape: 1
+    CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    ImpulseDuration: 0.2
+    ImpulseType: 0
+    DissipationRate: 0.25
+    RawSignal: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    RepeatMode: 0
+    Randomize: 1
+    TimeEnvelope:
+      AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      AttackTime: 0
+      SustainTime: 0.2
+      DecayTime: 0.7
+      ScaleWithImpact: 1
+      HoldForever: 0
+    ImpactRadius: 100
+    DirectionMode: 0
+    DissipationMode: 2
+    DissipationDistance: 100
+    PropagationSpeed: 343
+  DefaultVelocity: {x: 0, y: 0, z: -1}
 --- !u!4 &3312090987127175721 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7395db57e5f3c2e4aa44bd20ecee1188, type: 3}

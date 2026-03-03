@@ -162,6 +162,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Door
   maxHp: 50
+  normalModel: {fileID: 1873862367087184677}
+  brokenModel: {fileID: 5357611823959341975}
   doorPivot: {fileID: 5685500815062064898}
   spawnPivot: {fileID: 8470442387150196741}
   openAngle: 90

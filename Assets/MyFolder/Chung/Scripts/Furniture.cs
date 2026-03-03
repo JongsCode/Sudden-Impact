@@ -1,5 +1,6 @@
 using UnityEngine;
 using Photon.Pun;
+using UnityEditor.UIElements;
 
 public class Furniture : MonoBehaviourPun, IAttackReceiver
 {
@@ -8,16 +9,11 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     protected float curHp;
     protected bool isDestroyed = false;
 
-    [Header("Visual Components")]
-    [SerializeField] private GameObject normalModel;
-    [SerializeField] private GameObject brokenModel;
 
 
     protected virtual void Awake()
     {
         curHp = maxHp;
-        if (normalModel) normalModel.SetActive(true);   
-        if (brokenModel) brokenModel.SetActive(false);
     }
 
     // IAttackReceiver 구현
@@ -42,17 +38,14 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     protected virtual void OnBroken()
     {
         isDestroyed = true;
-        if (normalModel) normalModel.SetActive(false);
-        if (brokenModel) brokenModel.SetActive(true);
         
-        // 부서진 후 물리 판정 제거
-        if (TryGetComponent<Collider>(out var col)) col.enabled = false;
         Item item = GetComponent<Item>();
         if (item != null)
         {
             Debug.Log("SetGhostFurniture");
-            item.MakeGhostItem(transform.position);
             item.SetBrokenState(isDestroyed);
         }
+        // 부서진 후 물리 판정 제거
+        if (TryGetComponent<Collider>(out var col)) col.enabled = false;
     }
 }

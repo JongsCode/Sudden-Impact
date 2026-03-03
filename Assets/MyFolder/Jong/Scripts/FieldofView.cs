@@ -193,24 +193,25 @@ public class FieldofView : MonoBehaviour
         }
     }
 
+    // Item 처리
     private void FindItem()
     {
         HashSet<Item> itemsInView = new HashSet<Item>();
-        Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius + itemViewBuffer, furnitureMask);
+        Collider[] itemsCol = Physics.OverlapSphere(transform.position, viewRadius+ itemViewBuffer, furnitureMask);
         for(int i = 0; i< itemsCol.Length; ++i)
         {
             Item item = itemsCol[i].GetComponentInParent<Item>();
-            if (item == null || item.IsBroken) continue;
-
-            if (CheckVisible(item.transform))
-            {
-                itemsInView.Add(item);
-                if (!items.Contains(item))
+            if (item == null) continue;
+            
+                if(CheckVisible(item.transform))
                 {
-                    items.Add(item);
-                    item.SetVisible(true);
+                    itemsInView.Add(item);
+                    if(!items.Contains(item))
+                    {
+                        items.Add(item);
+                        item.SetVisible(true);
+                    }
                 }
-            }
         }
 
         for(int i = items.Count -1; i >=0; --i)
