@@ -16,7 +16,7 @@ TagManager:
   - Target
   - Obstacle
   - FOW
-  - 
+  - FOWTemp
   - Item
   - EquippedItem
   - Bullet
