@@ -169,9 +169,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shotgun
   damage: 10
+  attackPoint: {fileID: 9004452560616142900}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
   thrownWeaponPrefab: {fileID: 4539979239478777330, guid: 7bb7bef01f2c1b24787acf6f54f8a846, type: 3}
-  muzzlePoint: {fileID: 9004452560616142900}
   impulseSource: {fileID: 6094253173441992267}
   maxAmmo: 30
   fireRate: 0.1

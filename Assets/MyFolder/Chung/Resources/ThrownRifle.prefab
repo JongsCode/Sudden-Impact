@@ -53,7 +53,7 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
-  visualMesh: {fileID: 0}
+  visualMesh: {fileID: 5372019198559546043}
   rotateSpeed: 1080
 --- !u!65 &8724774015892951047
 BoxCollider:
