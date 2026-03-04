@@ -11,7 +11,7 @@ public class TempVision : MonoBehaviour
         MeshRenderer mr = GetComponent<MeshRenderer>();
         if (mr != null)
         {
-            myMaterial = mr.material; // 복사본 생성 (다른 파동과 겹쳐도 독립적으로 작동)
+            myMaterial = mr.material; 
         }
         Destroy(gameObject, lifeTime);
     }
