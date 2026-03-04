@@ -506,16 +506,23 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // [방어 코드] 내 손에 총이 없거나, 던지라는 총의 ID가 내 손의 총과 다르면 무시
         if (myEquippedGun == null || myEquippedGun.photonView.ViewID != _viewID) return;
 
-        Gun mygun = (Gun)myEquippedGun;
-        mygun.ThrowWeapon();
+        // [핵심 수정] 무기가 Gun일 때만 던지기(ThrowWeapon) 실행! (칼이면 에러 없이 무시됨)
+        if (myEquippedGun is Gun myGun)
+        {
+            myGun.ThrowWeapon();
+        }
+        else
+        {
+            // 만약 칼(MeleeKnife)도 나중에 던지는 기능이 생긴다면
+            Debug.Log("이 무기는 던질 수 없는 무기입니다 (Gun이 아님).");
+        }
 
-        if(photonView.IsMine)
+        if (photonView.IsMine)
         {
             PhotonNetwork.Destroy(myEquippedGun.gameObject);
         }
 
         myEquippedGun = null;
-
         useGun = false;
         SwapWeapon(false);
     }

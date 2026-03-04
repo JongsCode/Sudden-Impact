@@ -18,7 +18,6 @@ public class Shotgun : Gun
 
     protected override void FireProjectile()
     {
-        // 1. 역방향 발사 방지: 마우스 위치 상관없이 무조건 총구가 향한 정면(Forward)으로
         Vector3 direction = attackPoint.forward;
         direction.y = 0;
 
@@ -28,7 +27,7 @@ public class Shotgun : Gun
             baseRotation = Quaternion.LookRotation(direction);
         }
 
-        // 2. 산탄 공식 
+        // 산탄 공식 
         for (int i = 0; i < pelletCount; i++)
         {
             // -10도부터 시작해 5도씩 더하고, 거기에 -2 ~ 2도의 랜덤 노이즈

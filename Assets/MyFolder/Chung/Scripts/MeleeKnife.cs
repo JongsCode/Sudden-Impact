@@ -20,8 +20,8 @@ public class MeleeKnife : Weapon
         if(_isHeld) { return; }
 
         // 1. 판정 중심점 계산 (에임 방향으로 attackOffset만큼 떨어진 곳)
-        Vector3 attackPos = transform.position + attackPoint.position.normalized * attackOffset;
-        Quaternion orientation = Quaternion.LookRotation(attackPoint.position);
+        Vector3 attackPos = attackPoint.position;
+        Quaternion orientation = attackPoint.rotation;
         Vector3 halfExtents = boxSize / 2f;
 
         // 2. 해당 영역 내의 모든 콜라이더 검출
@@ -54,7 +54,7 @@ public class MeleeKnife : Weapon
                     attackerTeam = ownerTeam,
                     type = DamageType.Melee,
                     hitPoint = impactPoint,
-                    hitNormal = attackPoint.position.normalized,
+                    hitNormal = attackPoint.forward,
                 };
 
                 // 4. 데미지 전송 (모든 클라이언트에서 동일하게 처리되도록 RPC 호출)
@@ -73,17 +73,9 @@ public class MeleeKnife : Weapon
 
         Gizmos.color = Color.red;
 
-        // OnRotate 로직에서 worldAimPosition이 갱신되고 있다고 가정
-        Vector3 direction = transform.forward; // 에디터 뷰에서는 일단 forward 기준
-        Quaternion orientation = Quaternion.LookRotation(direction);
-        Vector3 center = transform.position + (direction.normalized * attackOffset);
-
-        // Matrix를 설정하면 회전된 박스를 그릴 수 있습니다.
         Matrix4x4 oldMatrix = Gizmos.matrix;
-        Gizmos.matrix = Matrix4x4.TRS(center, orientation, Vector3.one);
-
-        Gizmos.DrawWireCube(Vector3.zero, boxSize); // TRS 행렬을 썼으므로 위치는 zero
-
+        Gizmos.matrix = Matrix4x4.TRS(attackPoint.position, attackPoint.rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, boxSize);
         Gizmos.matrix = oldMatrix;
     }
 
