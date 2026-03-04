@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,6 +27,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     [Header("Flags")]
     [SerializeField] private Flag[] mapFlags;
+    [SerializeField] private FlagPointer flagPointer;
 
     [Header("ForDebug")]
     [SerializeField] private int teamAScore = 0;
@@ -74,6 +76,10 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     private void DropFlagRPC(int _flagIndex, Vector3 _dropPos)
     {
         mapFlags[_flagIndex].DropFlag(_dropPos);
+        if(mapFlags[_flagIndex].myTeam == playerRegistry.MyTeam)
+        {
+            flagPointer.UpdateFlagObject(mapFlags[_flagIndex].gameObject);
+        }
     }
 
     #endregion
@@ -128,6 +134,10 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         if (!playerRegistry.TryGetPlayerByActorNumber(_myActorNumber, out PlayerController myPlayer)) return;
 
         myPlayer.GetFlag();
+        if (_flagIndex == playerRegistry.MyTeam)
+        {
+            flagPointer.UpdateFlagObject(myPlayer.gameObject);
+        }
 
         if (_flagIndex >= 0 && _flagIndex < mapFlags.Length)
         {
