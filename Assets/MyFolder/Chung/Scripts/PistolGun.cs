@@ -3,14 +3,13 @@ using UnityEngine;
 
 public class PistolGun : Gun
 {
-    protected override void FireProjectile(Vector3 aimPos)
+    protected override void FireProjectile()
     {
-        // 1. 넘겨받은 마우스 위치(aimPos)를 향해 날아가도록 회전 방향 계산
-        Vector3 direction = (aimPos - muzzlePoint.position).normalized;
+        Vector3 direction = attackPoint.forward;
         direction.y = 0; // 총알이 바닥에 박히거나 하늘로 날아가지 않게 수평(y축) 고정
 
         // 2. 방향이 0이 아닐 때만 회전값 적용 (제자리 클릭 에러 방지)
-        Quaternion bulletRotation = muzzlePoint.rotation;
+        Quaternion bulletRotation = attackPoint.rotation;
         if (direction.sqrMagnitude > 0.001f)
         {
             bulletRotation = Quaternion.LookRotation(direction);
@@ -22,7 +21,7 @@ public class PistolGun : Gun
         // 4. Instantiate의 5번째 매개변수에 이 배열을 꽂아 넣습니다.
         PhotonNetwork.Instantiate(
             projectilePrefab.name,
-            muzzlePoint.position,
+            attackPoint.position,
             bulletRotation,
             0,
             bulletData 

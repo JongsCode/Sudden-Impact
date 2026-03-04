@@ -1,8 +1,9 @@
+using Photon.Pun;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
-using Photon.Pun;
-using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviourPun, IAttackReceiver
 {
@@ -176,19 +177,39 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     public void RotatePlayer(Vector3 _aimPos)
     {
-
-        // 1. 에임 위치를 받아 상대위치 계산
         Vector3 lookPos = _aimPos - transform.position;
+        lookPos.y = 0;
 
-       lookPos.y = 0; // 2. x , z 만 가지고 계산하면 y축의 회전만 사용
+        float distance = lookPos.magnitude;
 
-        // 3. 방향이 0이 아닐 때만 회전 처리 (제자리에서 에러 방지)
-        if (lookPos.sqrMagnitude > 0.001f)
+        if (distance > 0.001f)
         {
-            // 4. 방향을 Quaternion으로 변환
+            // 1. 에임을 향하는 기본 회전값
             Quaternion targetRotation = Quaternion.LookRotation(lookPos);
 
-            // 5. 리지드바디를 통해 물리적으로 회전 
+            if (myEquippedGun != null)
+            {
+                Transform muzzleTransform = myEquippedGun.AttackPoint;
+
+                if (muzzleTransform != null)
+                {
+                    // [핵심 수정] 총구의 '전체 대각선 거리'가 아니라, 
+                    // 캐릭터(transform) 기준으로 순수하게 '우측으로 몇 미터 떨어져 있는지(로컬 X좌표)'만 가져옵니다!
+                    float rightOffset = transform.InverseTransformPoint(muzzleTransform.position).x;
+
+                    // 마우스가 우측 오프셋보다 멀리 있을 때만 역산 적용 (아크사인 에러/NaN 방지)
+                    if (distance > Mathf.Abs(rightOffset))
+                    {
+                        // 3. 순수 우측 오프셋(rightOffset)만을 사용해 정확한 비틀림 각도 계산
+                        float correctionAngle = Mathf.Asin(rightOffset / distance) * Mathf.Rad2Deg;
+
+                        // 4. 회전 적용 (오른쪽(양수)에 있으면 음수 각도로 왼쪽으로 틂)
+                        targetRotation *= Quaternion.Euler(0f, -correctionAngle, 0f);
+                    }
+                }
+            }
+
+            // 5. 최종 물리 회전
             myRigidbody.MoveRotation(targetRotation);
         }
     }
@@ -310,13 +331,13 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         if (useGun)
         {
-            myEquippedGun.Attack(_aimPos, _isHeld);
+            myEquippedGun.Attack(_isHeld);
         Debug.Log("[PlayerController] Im Start Fire");
         }
 
         else
         {
-            myKnife.Attack(_aimPos, _isHeld);
+            myKnife.Attack(_isHeld);
             Debug.Log("[PlayerController] Im Start MeleeAtack"); 
         }
                 
