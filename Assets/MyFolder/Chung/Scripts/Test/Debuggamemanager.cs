@@ -44,6 +44,11 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         startButton.onClick.AddListener(StartRound);
     }
 
+    private void Start()
+    {
+        
+    }
+
     public override void OnDisable()
     {
         base.OnDisable();
@@ -79,6 +84,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         if(mapFlags[_flagIndex].myTeam == playerRegistry.MyTeam)
         {
             flagPointer.UpdateFlagObject(mapFlags[_flagIndex].gameObject);
+            flagPointer.HasFlag = false;
+            flagPointer.FlagState(false);
         }
     }
 
@@ -137,6 +144,9 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         if (_flagIndex == playerRegistry.MyTeam)
         {
             flagPointer.UpdateFlagObject(myPlayer.gameObject);
+            flagPointer.HasFlag = true;
+            flagPointer.FlagState(true);
+            Debug.Log("HasFlag : " + flagPointer.HasFlag);
         }
 
         if (_flagIndex >= 0 && _flagIndex < mapFlags.Length)
@@ -239,6 +249,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     public void StartRound()
     {
+
         if (!PhotonNetwork.IsMasterClient) return;
         photonView.RPC(nameof(StartRoundRPC), RpcTarget.All);
     }
@@ -249,6 +260,18 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         for (int i = 0; i < mapFlags.Length; i++)
         {
             mapFlags[i].RespawnFlag();
+        }
+
+        for (int i = 0; i < mapFlags.Length; i++)   // 나중에 리펙토링
+        {
+            if (mapFlags[i].myTeam != playerRegistry.MyTeam)
+            {
+                flagPointer.UpdateFlagObject(mapFlags[i].gameObject);
+            }
+            else
+            {
+                // 같은 팀 플래그 넣는 메소드 호출
+            }
         }
 
         RespawnTeam(playerRegistry.TeamA, teamASpawnPoints);
