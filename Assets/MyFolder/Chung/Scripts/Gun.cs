@@ -7,7 +7,6 @@ public abstract class Gun : Weapon
     [Header("Gun References")]
     [SerializeField] protected GameObject projectilePrefab;     // 쏘는 총알 프리팹
     [SerializeField] protected GameObject thrownWeaponPrefab; // 던지는 총(무기) 프리팹
-    [SerializeField] protected Transform muzzlePoint;         // 총구 위치
     [SerializeField] private CinemachineImpulseSource impulseSource;
 
     [Header("Parameter")]
@@ -20,13 +19,14 @@ public abstract class Gun : Weapon
     protected int currentAmmo;
     protected float lastFireTime;                             // 마지막으로 총을 쏜 시간을 기억하는 변수
 
+
     protected virtual void OnEnable()
     {
         currentAmmo = maxAmmo; // 총을 꺼낼 때 장탄수 채우기
         lastFireTime = 0f;     // 무기를 꺼내자마자 바로 쏠 수 있도록 타이머 초기화
     }
 
-    public override void Attack(Vector3 aimPos, bool isHeld = false)
+    public override void Attack(bool isHeld = false)
     {
         // 단발 무기 && 마우스를 꾹 누르고 있는(Hold) 호출이면 무시
         if (!isAutomatic && isHeld) return;
@@ -45,7 +45,7 @@ public abstract class Gun : Weapon
         currentAmmo--;
 
         // 실제 탄환 생성 로직
-        FireProjectile(aimPos);
+        FireProjectile();
 
         if (photonView.IsMine && impulseSource != null)
         {
@@ -57,7 +57,7 @@ public abstract class Gun : Weapon
     }
 
     // 3. 자식 클래스들이 반드시 구현해야 하는 '순수 발사 로직'
-    protected abstract void FireProjectile(Vector3 aimPos);
+    protected abstract void FireProjectile();
 
     // PlayerController에서 호출하는 무기 던지기 기능
     public virtual void ThrowWeapon()

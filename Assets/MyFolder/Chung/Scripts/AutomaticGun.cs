@@ -35,13 +35,13 @@ public class AutomaticGun : Gun
         }
     }
 
-    protected override void FireProjectile(Vector3 aimPos)
+    protected override void FireProjectile()
     {
         // 1. 기본 방향 계산
-        Vector3 direction = (aimPos - muzzlePoint.position).normalized;
+        Vector3 direction = attackPoint.forward;
         direction.y = 0;
 
-        Quaternion baseRotation = muzzlePoint.rotation;
+        Quaternion baseRotation = attackPoint.rotation;
         if (direction.sqrMagnitude > 0.001f)
         {
             baseRotation = Quaternion.LookRotation(direction);
@@ -57,10 +57,10 @@ public class AutomaticGun : Gun
         // 초기화 데이터 전달
         object[] bulletData = new object[] { ownerActorNumber, ownerTeam, damage };
 
-        // 4. 꺾인 각도(finalSpreadRotation)로 인스턴스
+        // 꺾인 각도(finalSpreadRotation)로 인스턴스
         PhotonNetwork.Instantiate(
             projectilePrefab.name,
-            muzzlePoint.position,
+            attackPoint.position,
             finalSpreadRotation,
             0,
             bulletData

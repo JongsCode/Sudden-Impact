@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PistolGun
   damage: 20
+  attackPoint: {fileID: 4291946686586418355}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
   thrownWeaponPrefab: {fileID: 4169968286877203950, guid: 00a6436c68d2d784fb7ccae7f1c269dd, type: 3}
-  muzzlePoint: {fileID: 4291946686586418355}
   impulseSource: {fileID: 1475068453982772007}
   maxAmmo: 30
   fireRate: 0.1
@@ -175,7 +175,7 @@ MonoBehaviour:
     DissipationMode: 2
     DissipationDistance: 100
     PropagationSpeed: 343
-  DefaultVelocity: {x: 0, y: 0, z: -1}
+  DefaultVelocity: {x: 0, y: 0, z: -0.1}
 --- !u!1 &8192041232168938075
 GameObject:
   m_ObjectHideFlags: 0
