@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Pointer : MonoBehaviour
+public class FlagPointer : MonoBehaviour
 {
-    public static Pointer Instance;
+    //public static FlagPointer Instance;
     
     public GameObject flagObject;
     public GameObject goalObject;
@@ -24,10 +24,10 @@ public class Pointer : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
+        //if(Instance == null)
+        //{
+        //    Instance = this;
+        //}
         
         mainCam = Camera.main;
         
@@ -51,6 +51,11 @@ public class Pointer : MonoBehaviour
     {
         DisplayPointerToTarget(targetObject);
         FlagToGoal(hasFlag);
+    }
+
+    public void UpdateFlagObject(GameObject _target)
+    {
+        targetObject = _target;
     }
 
     private void DisplayPointerToTarget(GameObject _target)
