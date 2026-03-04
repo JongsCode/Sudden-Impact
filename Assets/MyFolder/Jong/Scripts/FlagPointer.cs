@@ -21,6 +21,11 @@ public class FlagPointer : MonoBehaviour
     public float border = 50f;
     public float hideDistance = 5f;
     private bool hasFlag = false;
+    public bool HasFlag
+    {
+        set { hasFlag = value; }
+        get { return hasFlag; }
+    }
 
     private void Awake()
     {
@@ -50,7 +55,7 @@ public class FlagPointer : MonoBehaviour
     private void Update()
     {
         DisplayPointerToTarget(targetObject);
-        FlagToGoal(hasFlag);
+       // FlagToGoal(hasFlag);
     }
 
     public void UpdateFlagObject(GameObject _target)
@@ -76,12 +81,34 @@ public class FlagPointer : MonoBehaviour
         if (isOutScreen)
         {
             imageArrow.enabled = true;
-            Vector3 outScreenPosition = targetScreenPosition;
-            outScreenPosition.x = Mathf.Clamp(outScreenPosition.x, border, Screen.width - border);
-            outScreenPosition.y = Mathf.Clamp(outScreenPosition.y, border, Screen.height - border);
-            outScreenPosition.z = 0f;
-            pointerTransform.position = outScreenPosition;
-            etcTransform.position = outScreenPosition - offsetEtc;
+            if (hasFlag)
+            {
+                imageFlag.enabled = true;
+                textDistance.enabled = true;
+            }
+
+            // 1. 타겟이 화면 중심에서 얼마나 떨어져 있는지(방향과 거리)를 구합니다.
+            Vector3 centerToTarget = targetScreenPosition - screenCenter;
+
+            // 2. 화면의 절반 크기에서 테두리 여백(border)을 뺀 '실제 허용 공간'을 구합니다.
+            float limitX = (Screen.width / 2f) - border;
+            float limitY = (Screen.height / 2f) - border;
+
+            // 3. X축과 Y축 중, 어느 쪽 테두리에 먼저 부딪히는지 '비율'을 계산합니다.
+            // (0으로 나누는 오류를 방지하기 위해 0일 때는 무한대 값을 줍니다)
+            float ratioX = centerToTarget.x != 0 ? Mathf.Abs(limitX / centerToTarget.x) : float.MaxValue;
+            float ratioY = centerToTarget.y != 0 ? Mathf.Abs(limitY / centerToTarget.y) : float.MaxValue;
+
+            // 4. 둘 중 더 빨리 테두리에 닿는 쪽(더 작은 비율)을 선택합니다.
+            float minRatio = Mathf.Min(ratioX, ratioY);
+
+            // 5. 중심점에서 그 비율(minRatio)만큼만 딱! 곱해서 이동시킵니다.
+            // 이렇게 하면 각도(비율)가 전혀 찌그러지지 않고 테두리에 완벽하게 안착합니다!
+            Vector3 finalPosition = screenCenter + (centerToTarget * minRatio);
+            finalPosition.z = 0f;
+
+            pointerTransform.position = finalPosition;
+            etcTransform.position = finalPosition - offsetEtc;
         }
         else
         {
@@ -97,8 +124,11 @@ public class FlagPointer : MonoBehaviour
             if (Vector3.Distance(targetWorldPos, cameraWorldPos) < hideDistance)
             {
                 imageArrow.enabled = false;
-                imageFlag.enabled = false;
-                textDistance.enabled = false;
+                if (hasFlag == true)
+                {
+                    imageFlag.enabled = false;
+                    textDistance.enabled = false;
+                }
             }
             else
             {
@@ -121,7 +151,7 @@ public class FlagPointer : MonoBehaviour
             imageFlag.enabled = true;
             textDistance.enabled = true;
             hasFlag = true;
-            targetObject = goalObject;
+            //targetObject = goalObject;
             
         }
         else
@@ -130,7 +160,7 @@ public class FlagPointer : MonoBehaviour
             imageFlag.enabled = false;
             textDistance.enabled = false;
             hasFlag = false;
-            targetObject = flagObject;
+            //targetObject = flagObject;
         }
     }
     

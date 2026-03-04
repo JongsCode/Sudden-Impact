@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3cf60fd3788a534e83e79d71f6488e9, type: 3}
   m_Name: PlayerRegistry
   m_EditorClassIdentifier: Assembly-CSharp::PlayerRegistry
-  localPlayer: {fileID: 0}
   teamA: []
   teamB: []
+  localPlayer: {fileID: 0}
+  myTeam: 2147483647
