@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7986106666889023843}
   - component: {fileID: 992785854194870483}
   - component: {fileID: 4432877438853048273}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 7508041055052308915}
   - component: {fileID: 5817062822972647581}
   - component: {fileID: 8303990378688253162}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}

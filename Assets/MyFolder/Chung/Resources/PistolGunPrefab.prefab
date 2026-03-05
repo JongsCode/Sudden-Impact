@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa2e6e5fa94d44942bd9df5081d78cda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PistolGun
+  weaponType: 1
   damage: 20
   attackPoint: {fileID: 4291946686586418355}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
@@ -201,7 +202,7 @@ Transform:
   m_GameObject: {fileID: 8192041232168938075}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.049, y: 0.3688, z: 0.782}
+  m_LocalPosition: {x: -0.0745, y: 0.0133, z: 0.663}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -220,18 +221,6 @@ PrefabInstance:
       value: Model_Pistol_Visual
       objectReference: {fileID: 0}
     - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.15
       objectReference: {fileID: 0}
@@ -241,7 +230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.2
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 8975253376803104599, guid: 2b9af0e75b7c5da4d9ec2e85d7cc40c0, type: 3}
       propertyPath: m_LocalRotation.w

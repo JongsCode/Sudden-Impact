@@ -44,7 +44,7 @@ public class Projectile : MonoBehaviourPun, IPunInstantiateMagicCallback
             };
 
             receiver.OnReceiveImpact(data);
-            Debug.Log($"[Projectile] Projectile Hit");
+            Debug.Log($"[Projectile] Projectile Hit : {other.gameObject.name}");
             PhotonNetwork.Destroy(gameObject);
         }
         else if(other.gameObject.layer == obstacleLayer)

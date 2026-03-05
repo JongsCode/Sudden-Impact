@@ -1358,9 +1358,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25f101b3fb109e4f9bdc06cf2af5b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FogOfWar
+  cameraAlpha: {fileID: 0}
   fogCompute: {fileID: 7200000, guid: 97995130d1621aa43ac3930fb4178e13, type: 3}
   rt_Current: {fileID: 8400000, guid: ed0edfeffe7f1a94daa5aae69556ff61, type: 2}
   rt_Overlap: {fileID: 8400000, guid: 1ac1b52f65671ec4dbd55769736d8ec4, type: 2}
+  rt_Temp: {fileID: 0}
   blurDetail: 1
 --- !u!4 &182263180
 Transform:
@@ -1578,9 +1580,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f25f101b3fb109e4f9bdc06cf2af5b7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FogOfWar
+  cameraAlpha: {fileID: 0}
   fogCompute: {fileID: 7200000, guid: 97995130d1621aa43ac3930fb4178e13, type: 3}
   rt_Current: {fileID: 8400000, guid: ed0edfeffe7f1a94daa5aae69556ff61, type: 2}
   rt_Overlap: {fileID: 8400000, guid: 1ac1b52f65671ec4dbd55769736d8ec4, type: 2}
+  rt_Temp: {fileID: 0}
   blurDetail: 5
 --- !u!64 &278056961
 MeshCollider:
@@ -3660,7 +3664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b0ed938814e89343964eefd73ff1144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerSpawner
-  playerPrefab: {fileID: 2143100945692910762, guid: a93199657776f0e429e5ab77ef838db6, type: 3}
+  playerPrefab: {fileID: 2143100945692910762, guid: ad08b2551822b844db8e36390595ec86, type: 3}
   FOVPrefab: {fileID: 9168041380215925514, guid: 09d27feb8a8a8244798b2ea61d6f8fe5, type: 3}
   playerRegistry: {fileID: 11400000, guid: 59eed9396b7e5a0419003df23a221d5b, type: 2}
   layerNumber: 21
@@ -5676,6 +5680,7 @@ MonoBehaviour:
   mapFlags:
   - {fileID: 1036825734}
   - {fileID: 355093026}
+  flagPointer: {fileID: 0}
   teamAScore: 0
   teamBScore: 0
   startButton: {fileID: 173028130}

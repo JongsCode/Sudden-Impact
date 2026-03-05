@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8532f01fd4a21f74cbd5702f5901aaad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutomaticGun
+  weaponType: 4
   damage: 10
   attackPoint: {fileID: 3681884860597744986}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
@@ -205,7 +206,7 @@ Transform:
   m_GameObject: {fileID: 7528244189640903960}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.049, y: 0.481, z: 2.432}
+  m_LocalPosition: {x: -0.074, y: -0.007, z: 1.218}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -219,18 +220,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5448994542895075614}
     m_Modifications:
-    - target: {fileID: 4809538010158568991, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4809538010158568991, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4809538010158568991, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 4809538010158568991, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.15
@@ -271,22 +260,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4809538010158568991, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5329229480228408485, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
       propertyPath: m_Name
       value: Model_Assault Rifle_Visual
       objectReference: {fileID: 0}
-    - target: {fileID: 6530582460177085955, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 324ecdcf81e21f94a8c27b73e89ce817, type: 2}
-    - target: {fileID: 6530582460177085955, guid: daf6e82ad591aef499edc9b23224e438, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
-      value: 
-      objectReference: {fileID: 2100000, guid: ef853d47b66d00b448ddc2c4289208ed, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

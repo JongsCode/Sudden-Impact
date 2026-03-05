@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,7 +12,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private StunDelegate stunCallback;
 
-    public StunDelegate StunCallback { set  { stunCallback = value; } }
+    public StunDelegate StunCallback { set { stunCallback = value; } }
 
     public enum PlayerState
     {
@@ -38,6 +39,17 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float interactRadius = 2.0f;
     [SerializeField] private LayerMask interactableLayer;
 
+    [Header("Animator Bridge Data")]
+    // 애니메이터가 읽어갈 퍼블릭 게터
+    public Vector3 CurrentVelocity => myRigidbody.linearVelocity;
+    public bool UseGun => useGun;
+
+    // 애니메이터에게 행동을 알리는 이벤트
+    public event Action OnAttackEvent;
+    public event Action OnRollEvent;
+    public event Action OnThrowEvent;
+    public event Action OnInteractEvent;
+    public event Action OnStunnedEvent;
 
     [Header("ForDebug")]
     [SerializeField] private float curHp;
@@ -54,9 +66,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private Vector3 lastMoveDir;
     private bool isSprinting;
 
-    public int MyTeam {  get { return myTeam; } }
+    public int MyTeam { get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
     public PlayerState GetPlayerState { get { return playerState; } }
+    public Weapon MyEquippedGun { get { return myEquippedGun; } }
 
     private void Awake()
     {
@@ -142,7 +155,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         // 2. 깃발 상태 초기화 및 시각적 가짜 깃발 끄기
         hasEnemyFlag = false;
-        dummyFlagMesh.SetActive(false); 
+        dummyFlagMesh.SetActive(false);
 
         // 3. 무기 정리 (선택 사항: 들고 있던 무기를 내려놓거나, 초기 상태로 되돌림)
         DropWeapon();
@@ -177,6 +190,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     public void RotatePlayer(Vector3 _aimPos)
     {
+        if (playerState == PlayerState.Rolling
+            || playerState == PlayerState.Dead
+            || playerState == PlayerState.NotReady) return;
+
         Vector3 lookPos = _aimPos - transform.position;
         lookPos.y = 0;
 
@@ -235,9 +252,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}");
 
-        if (playerState == PlayerState.Rolling 
-            || playerState == PlayerState.Stunned 
-            || playerState == PlayerState.Dead) 
+        if (playerState == PlayerState.Rolling
+            || playerState == PlayerState.Stunned
+            || playerState == PlayerState.Dead)
             yield break;
 
         Vector3 rollDirection;
@@ -250,9 +267,13 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             rollDirection = transform.forward;
         }
 
+        myRigidbody.MoveRotation(Quaternion.LookRotation(rollDirection));
+
         float startSpeed = (rollDistance / rollDuration) * 2f;
 
         float elapsed = 0f;
+
+        OnRollEvent?.Invoke();
 
         while (elapsed < rollDuration)
         {
@@ -302,7 +323,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private void SwapWeapon(bool _useGun)
     {
 
-        if(myEquippedGun != null)
+        if (myEquippedGun != null)
         {
             myEquippedGun.gameObject.SetActive(_useGun);
         }
@@ -332,15 +353,15 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (useGun)
         {
             myEquippedGun.Attack(_isHeld);
-        Debug.Log("[PlayerController] Im Start Fire");
+            Debug.Log("[PlayerController] Im Start Fire");
         }
 
         else
         {
             myKnife.Attack(_isHeld);
-            Debug.Log("[PlayerController] Im Start MeleeAtack"); 
+            Debug.Log("[PlayerController] Im Start MeleeAtack");
         }
-                
+
     }
 
     #region 던지기 , 줍기
@@ -355,7 +376,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             Debug.Log("[PlayerController] Try Throw");
             return;
         }
-        else if(closestGun != null)
+        else if (closestGun != null)
         {
             photonView.RPC(nameof(PickUpItem), RpcTarget.All, closestGun.photonView.ViewID);
         }
@@ -369,7 +390,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (!photonView.IsMine) return;
 
         Weapon weapon;
-        if(other.TryGetComponent<Weapon>(out weapon))
+        if (other.TryGetComponent<Weapon>(out weapon))
         {
             if (weapon == myEquippedGun) return;
             nearbyItems.Add(weapon);
@@ -405,19 +426,19 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         while (nearbyItems.Count > 0)   // 트리거에 들어와 있는 아이템이 있으면
         {
             yield return new WaitForSeconds(5f / 60f); // 5프레임 주기 
-            float minSqrDistance = float.MaxValue; 
+            float minSqrDistance = float.MaxValue;
             Weapon tempClosest = null;
 
             for (int i = nearbyItems.Count - 1; i >= 0; i--) // 역순 순회로 안정성 확보 
             {
                 if (nearbyItems[i] == null) { nearbyItems.RemoveAt(i); continue; }
-            
 
-            float sqrDist = (transform.position - nearbyItems[i].transform.position).sqrMagnitude; 
-            if (sqrDist < minSqrDistance)
+
+                float sqrDist = (transform.position - nearbyItems[i].transform.position).sqrMagnitude;
+                if (sqrDist < minSqrDistance)
                 {
                     minSqrDistance = sqrDist;
-                    tempClosest = nearbyItems[i]; 
+                    tempClosest = nearbyItems[i];
                 }
             }
             closestGun = tempClosest;
@@ -451,7 +472,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (!photonView.IsMine)
         {
             PhotonView targetView = PhotonView.Find(_viewID);
-            
+
             if (targetView == null) return;
             closestGun = targetView.GetComponent<Weapon>();
         }
@@ -484,7 +505,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         useGun = true;
         SwapWeapon(useGun);
-        
+
     }
 
     private void DropWeapon()
@@ -503,13 +524,14 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [PunRPC]
     private void TryThrow(int _viewID)
     {
-        // [방어 코드] 내 손에 총이 없거나, 던지라는 총의 ID가 내 손의 총과 다르면 무시
+        // 내 손에 총이 없거나, 던지라는 총의 ID가 내 손의 총과 다르면 무시
         if (myEquippedGun == null || myEquippedGun.photonView.ViewID != _viewID) return;
 
-        // [핵심 수정] 무기가 Gun일 때만 던지기(ThrowWeapon) 실행! (칼이면 에러 없이 무시됨)
+        // 무기가 Gun일 때만 던지기(ThrowWeapon) 실행
         if (myEquippedGun is Gun myGun)
         {
             myGun.ThrowWeapon();
+            OnThrowEvent?.Invoke();
         }
         else
         {
@@ -543,7 +565,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             {
                 // 3. 된다면 실행
                 target.Interact(this);
-                
+
                 break; // 한 번에 하나만 상호작용
             }
         }
@@ -554,25 +576,25 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region OnImpact
     public void OnReceiveImpact(ImpactData _data)
     {
-        Debug.Log($"[PlayerController] On Impact actor: {_data.attackerActorNumber}, ATKteam : {_data.attackerTeam}, myTeam{myTeam} , Data : {_data.type}" );
+        Debug.Log($"[PlayerController] On Impact actor: {_data.attackerActorNumber}, ATKteam : {_data.attackerTeam}, myTeam{myTeam} , Data : {_data.type}");
         // 상태 검사
         if (
-            curHp <= 0 
-            || playerState == PlayerState.NotReady 
-            || playerState == PlayerState.Dead 
+            curHp <= 0
+            || playerState == PlayerState.NotReady
+            || playerState == PlayerState.Dead
             || playerState == PlayerState.Rolling
-            || _data.attackerTeam == myTeam 
+            || _data.attackerTeam == myTeam
             ) { return; }
 
-            //Debug.Log($"[PlayerController] Receive State is Ok");
+        //Debug.Log($"[PlayerController] Receive State is Ok");
 
-        if(_data.type == DamageType.Throw)
+        if (_data.type == DamageType.Throw)
         {
             StunPlayer();
         }
 
         //내가 쏜 총알이 아니면 데미지 RPC호출
-        if(_data.attackerActorNumber != photonView.Owner.ActorNumber)
+        if (_data.attackerActorNumber != photonView.Owner.ActorNumber)
         {
             photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage);
             Debug.Log($"[PlayerController] Received");
@@ -607,7 +629,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
 
         this.gameObject.SetActive(false);
-        
+
     }
 
     private void StunPlayer()
@@ -626,8 +648,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private IEnumerator StunCoroutine()
     {
         Debug.Log($"[PlayerController] {photonView.Owner.ActorNumber} is Stuned");
-        
-        if(photonView.IsMine)
+
+        if (photonView.IsMine)
         {
             playerState = PlayerState.Stunned;
             stunCallback?.Invoke(false);
