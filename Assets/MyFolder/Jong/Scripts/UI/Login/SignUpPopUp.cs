@@ -3,7 +3,6 @@ using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SignUpPopUp : PopUp
 {
@@ -14,6 +13,8 @@ public class SignUpPopUp : PopUp
     private TMP_InputField inputPassword;
     [SerializeField]
     private TMP_InputField inputNickname;
+    [SerializeField]
+    private TextMeshProUGUI textErrorMessage;
     public override void OnConfirm()
     {
         SignUp();
@@ -56,18 +57,38 @@ public class SignUpPopUp : PopUp
         inputPassword.text = "";
         inputNickname.text = "";
 
-        PopUpManager.Instance.PanelOff();
-        gameObject.SetActive(false);
+      
     }
+ 
 
     public void Success(RegisterPlayFabUserResult _result)
     {
         Debug.Log("회원가입 성공");
+        PopUpManager.Instance.PanelOff();
+        gameObject.SetActive(false);
     }
 
     public void Fail(PlayFabError _error)
     {
-        Debug.Log("회원가입 실패" + _error.GenerateErrorReport());
+        if(_error.Error == PlayFabErrorCode.EmailAddressNotAvailable)
+        {
+            Debug.Log("가입 실패 : 이미 사용 중인 이메일입니다.");
+            textErrorMessage.text = "Register Fail : EmailAddressNotAvailable";
+        }
+        else if(_error.Error == PlayFabErrorCode.UsernameNotAvailable)
+        {
+            Debug.Log("가입 실패 : 이미 사용 중인 닉네임입니다.");
+            textErrorMessage.text = "Register Fail : UsernameNotAvailable";
+        }
+        else if(_error.Error == PlayFabErrorCode.InvalidEmailAddress)
+        {
+            Debug.Log("가입 실패 : 이메일 형식이 잘못되었습니다.");
+            textErrorMessage.text = "Register Fail : InvalidEmailAddress";
+        }
+        else
+        {
+            Debug.Log("회원가입 실패 : " + _error.GenerateErrorReport());
+        }
     }
    
 }
