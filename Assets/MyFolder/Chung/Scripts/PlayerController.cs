@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float rollDuration = 0.2f;
     [SerializeField] private float pickUpDistance = 1f;
     [SerializeField] private float stunDuration = 1.5f;
+    [SerializeField] private float rollCooldown = 4f;
 
     [Header("Interaction Settings")]
     [SerializeField] private float interactRadius = 2.0f;
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private Vector3 curMoveInput;
     private Vector3 lastMoveDir;
     private bool isSprinting;
+    private float lastRollTime;
 
     public int MyTeam { get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
@@ -84,6 +86,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         curHp = maxHp;
         SetPlayerState(PlayerState.Idle);
+        GameEvents.WeaponChanged(myKnife.WeaponType.ToString(), false);
     }
 
     private void OnDisable()
@@ -145,6 +148,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         transform.position = spawnPos;
         gameObject.SetActive(true);
         dummyFlagMesh.SetActive(false);
+        GameEvents.HpChanged(curHp);
     }
 
     // 라운드 종료 시 즉각적인 초기화 및 조작 차단
@@ -180,6 +184,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #endregion
 
     #region 조작 로직
+
+    #region 이동 및 방향 전환
     public void MovePlayer(Vector3 _moveAxis)
     {
         lastMoveDir = _moveAxis.normalized;
@@ -230,7 +236,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             myRigidbody.MoveRotation(targetRotation);
         }
     }
-
+    #endregion
 
     #region 구르기 로직
     public void TryRoll(InputAction.CallbackContext ctx)
@@ -256,6 +262,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             || playerState == PlayerState.Stunned
             || playerState == PlayerState.Dead)
             yield break;
+
+        if (Time.time < lastRollTime + rollCooldown)
+        {
+            Debug.Log("[PlayerController] Rolling is Cooling Down");
+            yield break;
+        }
 
         Vector3 rollDirection;
         if (Vector3.SqrMagnitude(lastMoveDir) > 0.2f)
@@ -292,6 +304,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         // 구르기가 끝난 후 잔여 속도를 소멸시켜 미끄러짐 방지
         myRigidbody.linearVelocity = Vector3.zero;
+
+        lastRollTime = Time.time;
     }
 
     // 상태 설정용
@@ -304,6 +318,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     #endregion
 
+    #region 무기 전환
     public void TrySwapWeapon(InputAction.CallbackContext ctx)
     {
         if (myEquippedGun != null)
@@ -322,15 +337,20 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [PunRPC]
     private void SwapWeapon(bool _useGun)
     {
-
+        
         if (myEquippedGun != null)
         {
             myEquippedGun.gameObject.SetActive(_useGun);
+            
         }
         myKnife.gameObject.SetActive(!_useGun);
+
+        string curWeaponName = useGun ? myEquippedGun.WeaponType.ToString() : myKnife.WeaponType.ToString();
+        GameEvents.WeaponChanged(curWeaponName, _useGun);
     }
+    #endregion
 
-
+    #region 달리기
     public void SprintStart(InputAction.CallbackContext ctx)
     {
         // 기절, 사망 등 조작 불능 상태면 달리기 무시
@@ -346,6 +366,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         isSprinting = false;
         Debug.Log("[PlayerController] Im end Sprinting");
     }
+    #endregion
 
     public void TryAttack(Vector3 _aimPos, bool _isHeld = false)
     {
@@ -606,6 +627,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     public void TakeDamage(float _damage)
     {
         curHp -= _damage;
+        GameEvents.HpChanged(curHp);
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
 
         if (curHp <= 0)

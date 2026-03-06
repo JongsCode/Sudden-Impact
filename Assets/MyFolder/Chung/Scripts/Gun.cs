@@ -26,6 +26,13 @@ public abstract class Gun : Weapon
         lastFireTime = 0f;     // 무기를 꺼내자마자 바로 쏠 수 있도록 타이머 초기화
     }
 
+    public override void SetOwner(int _actorNumber, int _team)
+    {
+        base.SetOwner(_actorNumber, _team);
+
+        GameEvents.AmmoChanged(currentAmmo, maxAmmo);
+    }
+
     public override void Attack(bool isHeld = false)
     {
         // 단발 무기 && 마우스를 꾹 누르고 있는(Hold) 호출이면 무시
@@ -43,6 +50,11 @@ public abstract class Gun : Weapon
         // 검사 통과 시간 갱신 및 탄약 소모
         lastFireTime = Time.time;
         currentAmmo--;
+
+        if(ownerActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+        {
+            GameEvents.AmmoChanged(currentAmmo, maxAmmo);
+        }
 
         // 실제 탄환 생성 로직
         FireProjectile();

@@ -179,6 +179,7 @@ MonoBehaviour:
   rollDuration: 0.4
   pickUpDistance: 1
   stunDuration: 1.5
+  rollCooldown: 4
   interactRadius: 2
   interactableLayer:
     serializedVersion: 2
@@ -677,6 +678,10 @@ PrefabInstance:
     - target: {fileID: 3449201132132840044, guid: 729a4e7d36a71824bba66d0669fa6853, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5813405161757884515, guid: 729a4e7d36a71824bba66d0669fa6853, type: 3}
+      propertyPath: fireRate
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6752161106494281145, guid: 729a4e7d36a71824bba66d0669fa6853, type: 3}
       propertyPath: m_Name

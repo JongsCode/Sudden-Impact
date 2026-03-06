@@ -175,7 +175,7 @@ MonoBehaviour:
   thrownWeaponPrefab: {fileID: 4539979239478777330, guid: 7bb7bef01f2c1b24787acf6f54f8a846, type: 3}
   impulseSource: {fileID: 6094253173441992267}
   maxAmmo: 30
-  fireRate: 0.1
+  fireRate: 1
   isAutomatic: 0
   pelletCount: 5
   startAngle: -10
