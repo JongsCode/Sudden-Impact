@@ -45,6 +45,6 @@ public class UIManager : MonoBehaviour
 
     private void HandlePlayerUIInit(int _actorNumber, string _name, int _team)
     {
-        // 자신의 상태는 자신이 변경해라
+        // 자신의 상태는 자신이 변경해라 
     }
 }
