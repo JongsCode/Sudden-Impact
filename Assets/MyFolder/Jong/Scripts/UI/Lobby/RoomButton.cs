@@ -14,7 +14,7 @@ public class RoomButton : MonoBehaviour
         inputRoomTitle.text = string.Format("{0} ( {1} / {2} )", _roomName, _playerCount, _capacity);
     }
 
-    public void OnEnterRoom()
+    public void OnEnterRoom() // RoomButton 클릭
     {
         PhotonNetwork.JoinRoom(roomName);
     }

@@ -3,9 +3,16 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
+    [Header("Lobby and Room Panel")]
+    [SerializeField]
+    private GameObject panelLobby;
+    [SerializeField]
+    private GameObject panelRoom;
+
     [Header("방 생성 UI")]
     [SerializeField]
     private TMP_InputField inputRoomName;
@@ -17,6 +24,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     private Transform roomListParent;
     [SerializeField]
     private GameObject roomButtonPrefab;
+
 
     private Dictionary<string, GameObject> roomDictionary = new Dictionary<string, GameObject>();
 
@@ -51,6 +59,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         Debug.Log("방 입장 성공!, 방 이름 : " + PhotonNetwork.CurrentRoom.Name);
+        panelLobby.SetActive(false);
+        panelRoom.SetActive(true);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> _roomList)
