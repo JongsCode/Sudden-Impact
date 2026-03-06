@@ -257,6 +257,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void StartRoundRPC()
     {
+        GameEvents.ScoreChanged(teamAScore, teamBScore);
+
         for (int i = 0; i < mapFlags.Length; i++)
         {
             mapFlags[i].RespawnFlag();

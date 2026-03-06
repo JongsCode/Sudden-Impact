@@ -3,6 +3,18 @@ using Photon.Pun;
 
 public abstract class Weapon : MonoBehaviourPun
 {
+    public enum EWeaponType
+    {
+        Knife = 0,
+        Pistol = 1,
+        Uzi = 2,
+        Shotgun = 3,
+        Rifle = 4
+    }
+
+    [Header("Weapon Settings")]
+    [SerializeField] protected EWeaponType weaponType;
+
     [Header("Weapon Status")]
     [SerializeField] protected float damage = 10f;
 
@@ -13,7 +25,11 @@ public abstract class Weapon : MonoBehaviourPun
     protected int ownerActorNumber;
     protected int ownerTeam;
 
-    public Transform AttackPoint {  get { return attackPoint; } }
+    public Transform AttackPoint { get { return attackPoint; } }
+
+    // 외부(PlayerAnimator)에서 읽어갈 수 있도록 프로퍼티 개방
+    public EWeaponType WeaponType => weaponType;
+
 
     // Initialize (PlayerController의 SetOwner와 연결됨)
     public virtual void SetOwner(int _actorNumber, int _team)
