@@ -2,6 +2,7 @@ using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -39,6 +40,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [Header("Interaction Settings")]
     [SerializeField] private float interactRadius = 2.0f;
     [SerializeField] private LayerMask interactableLayer;
+
+    [Header("Camera Shake (Damage)")]
+    [SerializeField] private CinemachineImpulseSource damageImpulseSource;
+    [SerializeField] private float damageShakeForce = 1.5f;
 
     [Header("Animator Bridge Data")]
     // 애니메이터가 읽어갈 퍼블릭 게터
@@ -285,7 +290,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         float elapsed = 0f;
 
-        OnRollEvent?.Invoke();
 
         while (elapsed < rollDuration)
         {
@@ -311,6 +315,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     // 상태 설정용
     private IEnumerator RollingStateCoroutine()
     {
+        OnRollEvent?.Invoke();
+
         playerState = PlayerState.Rolling;
         yield return new WaitForSeconds(rollDuration);
         playerState = PlayerState.Idle;
@@ -607,7 +613,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             || _data.attackerTeam == myTeam
             ) { return; }
 
-        //Debug.Log($"[PlayerController] Receive State is Ok");
+        
 
         if (_data.type == DamageType.Throw)
         {
@@ -617,18 +623,27 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         //내가 쏜 총알이 아니면 데미지 RPC호출
         if (_data.attackerActorNumber != photonView.Owner.ActorNumber)
         {
-            photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage);
+            photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage, _data.hitNormal);
             Debug.Log($"[PlayerController] Received");
         }
 
     }
 
     [PunRPC]
-    public void TakeDamage(float _damage)
+    public void TakeDamage(float _damage, Vector3 _hitNormal)
     {
         curHp -= _damage;
         GameEvents.HpChanged(curHp);
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
+
+        // 피격 카메라 쉐이크
+        if (photonView.IsMine && damageImpulseSource != null)
+        {
+            Vector3 shakeDir = -_hitNormal;
+            shakeDir.y = 0f;
+            if (shakeDir.sqrMagnitude < 0.01f) shakeDir = Vector3.back;
+            damageImpulseSource.GenerateImpulse(shakeDir.normalized * damageShakeForce);
+        }
 
         if (curHp <= 0)
         {
