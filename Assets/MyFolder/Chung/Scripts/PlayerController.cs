@@ -41,6 +41,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float interactRadius = 2.0f;
     [SerializeField] private LayerMask interactableLayer;
 
+    [Header("Pre-Allocated Weapons")]
+    [Tooltip("미리 모든 종류의 총을 등록")]
+    [SerializeField] private Gun[] allGuns;
+
     [Header("Camera Shake (Damage)")]
     [SerializeField] private CinemachineImpulseSource damageImpulseSource;
     [SerializeField] private float damageShakeForce = 1.5f;
@@ -140,9 +144,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         myRigidbody.angularVelocity = Vector3.zero;
     }
 
+    // 스폰 메니저가 스폰시 초기 데이터 주입용
     public void Init(int _myTeam)
     {
         myTeam = _myTeam;
+
     }
 
     // 라운드 시작시 초기화 목적으로 호출
@@ -623,41 +629,44 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         //내가 쏜 총알이 아니면 데미지 RPC호출
         if (_data.attackerActorNumber != photonView.Owner.ActorNumber)
         {
-            photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage, _data.hitNormal);
+            photonView.RPC(nameof(TakeDamage), RpcTarget.All, _data.damage, _data.hitNormal, _data.attackerActorNumber);
             Debug.Log($"[PlayerController] Received");
         }
 
     }
 
     [PunRPC]
-    public void TakeDamage(float _damage, Vector3 _hitNormal)
+    public void TakeDamage(float _damage, Vector3 _hitNormal, int _attackerNum)
     {
         curHp -= _damage;
-        GameEvents.HpChanged(curHp);
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
 
         // 피격 카메라 쉐이크
         if (photonView.IsMine && damageImpulseSource != null)
         {
-            Vector3 shakeDir = -_hitNormal;
-            shakeDir.y = 0f;
-            if (shakeDir.sqrMagnitude < 0.01f) shakeDir = Vector3.back;
-            damageImpulseSource.GenerateImpulse(shakeDir.normalized * damageShakeForce);
+            GameEvents.HpChanged(curHp);
+            if (damageImpulseSource != null)
+            {
+                Vector3 shakeDir = -_hitNormal;
+                shakeDir.y = 0f;
+                if (shakeDir.sqrMagnitude < 0.01f) shakeDir = Vector3.back;
+                damageImpulseSource.GenerateImpulse(shakeDir.normalized * damageShakeForce);
+            }
         }
 
         if (curHp <= 0)
         {
-            DiePlayer();
+            DiePlayer(_attackerNum);
         }
     }
 
-    private void DiePlayer()
+    private void DiePlayer(int _attackerNum)
     {
         DropWeapon();
         playerState = PlayerState.Dead;
         // 게임 메니저의 이벤트 버스 호출 필요
         // 인풋 메니저에게 콜백 필요
-        DebugGameManager.Instance?.OnPlayerDied(this);
+        DebugGameManager.Instance?.OnPlayerDied(this, _attackerNum);
 
         if (hasEnemyFlag)
         {

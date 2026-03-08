@@ -55,6 +55,9 @@ MonoBehaviour:
   - DropFlagRPC
   - ProcessFlagPickupRPC
   - RPC_PlayHitEffect
+  - RPC_CreateDropNode
+  - RPC_RequestEquip
+  - RPC_Setup
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
