@@ -29,7 +29,7 @@ public class KillLogEntry : MonoBehaviour
     public void Show(string killer, string victim)
     {
         if (logText != null)
-            logText.text = $"{killer}  ¢º  {victim}";
+            logText.text = $"{killer}  Kill!  {victim}";
 
         if (canvasGroup != null)
             canvasGroup.alpha = 1f;

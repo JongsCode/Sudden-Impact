@@ -1,65 +1,77 @@
-using Photon.Pun;
+ï»¿using Photon.Pun;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// [New System] ¹«±â ÇÈ¾÷ ³ëµå - µ¥ÀÌÅÍ º¸°üÇÔ.
+/// [New System] ë¬´ê¸° í”½ì—… ë…¸ë“œ - ë°ì´í„° ë³´ê´€í•¨.
 ///
-/// ¿ªÇÒ:
-///   - ½ÇÁ¦ Gun ¿ÀºêÁ§Æ®°¡ ¾Æ´Ñ, (EWeaponType + ammo) µ¥ÀÌÅÍ¸¸ º¸À¯ÇÏ´Â °¡º­¿î Ç¥ÁöÆÇÀÔ´Ï´Ù.
-///   - ¶ó¿îµå ½ÃÀÛ ½Ã WeaponSpawnManager°¡ SetupAndActivate()·Î µ¥ÀÌÅÍ¸¦ ÁÖÀÔÇÕ´Ï´Ù.
-///   - ÇÃ·¹ÀÌ¾î°¡ ¹ö¸° ÃÑµµ ÀÌ ³ëµå ÇüÅÂ·Î ÇÊµå¿¡ ³²°ÜÁı´Ï´Ù (CreateDropNode °æ·Î).
-///   - ÇÃ·¹ÀÌ¾î°¡ »óÈ£ÀÛ¿ëÇÏ¸é ÀÚ½ÅÀÇ EWeaponType + ammo¸¦ MasterClient¿¡ Àü´ŞÇÏ°í ¼û°ÜÁı´Ï´Ù.
+/// ì—­í• :
+///   - ì‹¤ì œ Gun ì˜¤ë¸Œì íŠ¸ê°€ ì•„ë‹Œ, (EWeaponType + ammo) ë°ì´í„°ë§Œ ë³´ìœ í•˜ëŠ” ê°€ë²¼ìš´ í‘œì§€íŒ.
+///   - ë¼ìš´ë“œ ì‹œì‘ ì‹œ WeaponSpawnManagerê°€ SetupAndActivate()ë¡œ ë°ì´í„°ë¥¼ ì£¼ì….
+///   - í”Œë ˆì´ì–´ê°€ ë²„ë¦° ì´ë„ ì´ ë…¸ë“œ í˜•íƒœë¡œ í•„ë“œì— ë‚¨ê²¨ì§ (RPC_CreateDropNode ê²½ë¡œ).
+///   - í”Œë ˆì´ì–´ê°€ Qí‚¤ë¥¼ ëˆ„ë¥´ë©´: PlayerController â†’ RequestPickup() â†’ RPC_RequestPickup(MasterClient) â†’ RPC_ForceEquipWeapon(All).
 ///
-/// ¾À ¼³Á¤:
-///   1. PhotonView ÄÄÆ÷³ÍÆ® ÇÊ¼ö (¾À ¹èÄ¡ ¿ÀºêÁ§Æ®).
-///   2. Collider(isTrigger=false) Ãß°¡ ÈÄ ·¹ÀÌ¾î¸¦ interactableLayer·Î ¼³Á¤.
-///   3. visualRoot: È°¼º/ºñÈ°¼º ½Ã ÄÑ°í ²ø ÀÚ½Ä ¿ÀºêÁ§Æ® (¸Ş½Ã, ÀÌÆåÆ® µî).
-///   4. defaultAmmo: ¶ó¿îµå ½ÃÀÛ ½Ã ÀÌ ³ëµå°¡ Á¦°øÇÒ ±âº» Åº¾à ¼ö (Inspector¿¡¼­ ¼³Á¤).
+/// ì”¬ ì„¤ì •:
+///   1. PhotonView ì»´í¬ë„ŒíŠ¸ í•„ìˆ˜ (ì”¬ ë°°ì¹˜ ì˜¤ë¸Œì íŠ¸).
+///   2. Collider(isTrigger=true) ì¶”ê°€ â€” í”Œë ˆì´ì–´ì˜ OnTriggerEnterë¡œ ê°ì§€.
+///   3. weaponVisuals: EWeaponTypeë³„ ë¹„ì£¼ì–¼ ì˜¤ë¸Œì íŠ¸ ë°°ì—´ (Inspector ì„¤ì •).
+///   4. labelText: ì›”ë“œ ìŠ¤í˜ì´ìŠ¤ TextMeshPro â€” ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ì—ê²Œë§Œ í‘œì‹œ.
+///   5. defaultWeaponType / defaultAmmo: spawnNode ì „ìš© (WeaponSpawnManagerê°€ ë®ì–´ì”€).
 /// </summary>
-public class WeaponPickupNode : MonoBehaviourPun, IInteractable
+public class WeaponPickupNode : MonoBehaviourPun
 {
-    [Header("Spawn Node Configuration (Inspector)")]
-    [Tooltip("ÀÌ ³ëµå°¡ ¶ó¿îµå ½ÃÀÛ ½Ã Á¦°øÇÒ ¹«±â Á¾·ù (Inspector¿¡¼­ ¼³Á¤, µå·Ó ³ëµå´Â ·±Å¸ÀÓ µ¤¾î¾¸)")]
+    [System.Serializable]
+    public struct WeaponVisualEntry
+    {
+        public Weapon.EWeaponType weaponType;
+        public GameObject visualObject;
+    }
+
+    [Header("Spawn Node Defaults (Inspector)")]
+    [Tooltip("ìŠ¤í° ë…¸ë“œ ê¸°ë³¸ ë¬´ê¸° íƒ€ì… (WeaponSpawnManagerê°€ ë¼ìš´ë“œë§ˆë‹¤ ëœë¤ ë®ì–´ì”€)")]
     [SerializeField] private Weapon.EWeaponType defaultWeaponType = Weapon.EWeaponType.Pistol;
 
-    [Tooltip("¶ó¿îµå ½ÃÀÛ ½Ã Á¦°øÇÒ ±âº» Åº¾à ¼ö (µå·Ó ³ëµå´Â ½ÇÁ¦ ÀÜÅº¼ö·Î µ¤¾î¾¸)")]
+    [Tooltip("ìŠ¤í° ë…¸ë“œ ê¸°ë³¸ íƒ„ì•½ ìˆ˜ (WeaponSpawnManagerê°€ ì„¤ì •í•œ ê°’ìœ¼ë¡œ ë®ì–´ì”€)")]
     [SerializeField] private int defaultAmmo = 30;
 
-    [Header("Visual")]
-    [Tooltip("È°¼º ½Ã ÄÑ°í ºñÈ°¼º ½Ã ²ô´Â ºñÁÖ¾ó ·çÆ® ¿ÀºêÁ§Æ®")]
-    [SerializeField] private GameObject visualRoot;
+    [Header("Visuals")]
+    [Tooltip("EWeaponTypeë³„ ë¹„ì£¼ì–¼ ì˜¤ë¸Œì íŠ¸ (íƒ€ì…ì— ë§ëŠ” ê²ƒë§Œ í™œì„±í™”)")]
+    [SerializeField] private WeaponVisualEntry[] weaponVisuals;
 
-    // ¦¡¦¡¦¡ ·±Å¸ÀÓ µ¥ÀÌÅÍ (RPC_SetupÀ¸·Î µ¿±âÈ­) ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
-    private Weapon.EWeaponType _weaponType;
-    private int _currentAmmo;
-    private bool _isAvailable;
+    [Tooltip("ë…¸ë“œ ìœ„ ì›”ë“œ ìŠ¤í˜ì´ìŠ¤ í…ìŠ¤íŠ¸ (ê°€ì¥ ê°€ê¹Œìš´ í”Œë ˆì´ì–´ì—ê²Œë§Œ í‘œì‹œ)")]
+    [SerializeField] private TextMeshPro labelText;
 
-    // WeaponSpawnManager°¡ Ç®¿¡¼­ ÀÚÀ¯ ³ëµå¸¦ ÆÇº°ÇÒ ¶§ »ç¿ë
+    [Header("ëŸ°íƒ€ì„ ë°ì´í„°")]
+    [Tooltip("ë””ë²„ê·¸ìš© ê°’ ë„£ì§€ ë§ ê²ƒ")]
+    [SerializeField] private Weapon.EWeaponType _weaponType;
+    [SerializeField] private int _currentAmmo;
+    [SerializeField] private bool _isAvailable;
+
+    /// <summary>WeaponSpawnManagerê°€ í’€ì—ì„œ ììœ  ë…¸ë“œë¥¼ íŒë³„í•  ë•Œ ì‚¬ìš©.</summary>
     public bool IsAvailable => _isAvailable;
 
-    // ¦¡¦¡¦¡ WeaponSpawnManager¿¡¼­ È£Ãâ ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // WeaponSpawnManagerì—ì„œ í˜¸ì¶œ
 
     /// <summary>
-    /// ½ºÆù ³ëµå È°¼ºÈ­ (¶ó¿îµå ½ÃÀÛ): InspectorÀÇ defaultWeaponType + defaultAmmo »ç¿ë.
+    /// ìŠ¤í° ë…¸ë“œ í™œì„±í™” (ë¼ìš´ë“œ ì‹œì‘).
+    /// spawnNodesëŠ” ìœ„ì¹˜ë¥¼ ì ˆëŒ€ ì´ë™í•˜ì§€ ì•Šìœ¼ë¯€ë¡œ transform.position ê·¸ëŒ€ë¡œ ì‚¬ìš©.
     /// </summary>
-    public void ActivateAsSpawnNode()
+    public void ActivateAsSpawnNode(Weapon.EWeaponType type, int ammo)
     {
-        SetupAndActivate(transform.position, defaultWeaponType, defaultAmmo);
+        SetupAndActivate(transform.position, type, ammo);
     }
 
     /// <summary>
-    /// µå·Ó ³ëµå È°¼ºÈ­ (ÇÃ·¹ÀÌ¾î ¹«±â ¹ö¸®±â): À§Ä¡ + Å¸ÀÔ + ÀÜÅº¼ö¸¦ ¿ÜºÎ¿¡¼­ ÁÖÀÔ.
+    /// ë“œë¡­ ë…¸ë“œ í™œì„±í™” (í”Œë ˆì´ì–´ ë¬´ê¸° ë²„ë¦¬ê¸°): ìœ„ì¹˜ + íƒ€ì… + ì”íƒ„ìˆ˜ë¥¼ ì™¸ë¶€ì—ì„œ ì£¼ì….
+    /// dropNodePool ë…¸ë“œëŠ” positionì´ ë³€ê²½ë  ìˆ˜ ìˆìŒ.
     /// </summary>
     public void SetupAndActivate(Vector3 position, Weapon.EWeaponType type, int ammo)
     {
-        // ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡ À§Ä¡¡¤µ¥ÀÌÅÍ¡¤Ç¥½Ã »óÅÂ¸¦ µ¿½Ã¿¡ µ¿±âÈ­
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
             position, (int)type, ammo, true);
     }
 
-    /// <summary>
-    /// ³ëµå ºñÈ°¼ºÈ­ (ÇÈ¾÷ ¿Ï·á or ¶ó¿îµå Á¾·á).
-    /// </summary>
+    /// <summary>ë…¸ë“œ ë¹„í™œì„±í™” (í”½ì—… ì™„ë£Œ or ë¼ìš´ë“œ ì¢…ë£Œ).</summary>
     public void Deactivate()
     {
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
@@ -69,48 +81,80 @@ public class WeaponPickupNode : MonoBehaviourPun, IInteractable
     [PunRPC]
     private void RPC_Setup(Vector3 position, int typeInt, int ammo, bool visible)
     {
+        Debug.Log($"[Node RPC] {gameObject.name} ê°€ {(Weapon.EWeaponType)typeInt} ë¡œ ì„¸íŒ…ë¨. Visible: {visible}");
         transform.position = position;
         _weaponType = (Weapon.EWeaponType)typeInt;
         _currentAmmo = ammo;
         _isAvailable = visible;
 
-        if (visualRoot != null)
-            visualRoot.SetActive(visible);
+        UpdateVisual(_weaponType, visible);
+
+        if (!visible)
+            HideLabel();
     }
 
-    // ¦¡¦¡¦¡ IInteractable ±¸Çö ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // ë¼ë²¨ í‘œì‹œ (PlayerController.CheckClosestNodeì—ì„œ í˜¸ì¶œ)
+
+    public void ShowLabel()
+    {
+        if (labelText == null) return;
+        labelText.text = _weaponType.ToString() + " \u25bc";
+        labelText.gameObject.SetActive(true);
+    }
+
+    public void HideLabel()
+    {
+        if (labelText == null) return;
+        labelText.gameObject.SetActive(false);
+    }
+
+    // í”½ì—… ìš”ì²­ (PlayerController.PickUpAndDropì—ì„œ ë¡œì»¬ í˜¸ì¶œ)
 
     /// <summary>
-    /// PlayerController.TryInteract()¿¡¼­ ·ÎÄÃ ÇÃ·¹ÀÌ¾î ÀÔ·Â ½Ã È£ÃâµË´Ï´Ù.
+    /// ë¡œì»¬ í”Œë ˆì´ì–´ê°€ Qí‚¤ë¥¼ ëˆŒë €ì„ ë•Œ PlayerControllerì—ì„œ ì§ì ‘ í˜¸ì¶œ.
+    /// MasterClientì—ê²Œ ì¥ì°© ìš”ì²­ì„ ì „ë‹¬í•˜ê³ , ë‚™ê´€ì ìœ¼ë¡œ ë…¸ë“œë¥¼ ì¦‰ì‹œ ìˆ¨ê¹€.
     /// </summary>
-    public void Interact(PlayerController player)
+    public void RequestPickup(int playerViewID)
     {
         if (!_isAvailable) return;
 
-        // 1. ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡¼­ Áï½Ã ºñÈ°¼ºÈ­ (³«°üÀû ¾÷µ¥ÀÌÆ®)
+        int ammoToTransfer = _currentAmmo;
+
+        // ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ì„œ ì¦‰ì‹œ ë¹„í™œì„±í™”
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
             transform.position, (int)_weaponType, 0, false);
 
-        // 2. MasterClient¿¡°Ô ¹«±â ÀåÂø ¿äÃ»
-        //    (type + ammo¸¦ ÆÄ¶ó¹ÌÅÍ·Î Á÷Á¢ Àü´Ş ¡æ MasterClient°¡ ³ëµå »óÅÂ¸¦ Á¶È¸ÇÒ ÇÊ¿ä ¾øÀ½)
-        photonView.RPC(nameof(RPC_RequestEquip), RpcTarget.MasterClient,
-            player.photonView.ViewID, (int)_weaponType, _currentAmmo);
+        // MasterClientì—ê²Œ ë¬´ê¸° ì¥ì°© ìš”ì²­ (type + ammo ì§ì ‘ ì „ë‹¬)
+        photonView.RPC(nameof(RPC_RequestPickup), RpcTarget.MasterClient,
+            playerViewID, (int)_weaponType, ammoToTransfer);
     }
 
     /// <summary>
-    /// MasterClient Àü¿ë: ÇØ´ç ÇÃ·¹ÀÌ¾î¿¡°Ô RPC_ForceEquipWeaponÀ» ¹æ¼ÛÇÕ´Ï´Ù.
+    /// MasterClient ì „ìš©: í•´ë‹¹ í”Œë ˆì´ì–´ì—ê²Œ RPC_ForceEquipWeaponì„ ë°©ì†¡í•˜ê³ , ë“œë¡­ í’€ë¡œ ë°˜í™˜.
     /// </summary>
     [PunRPC]
-    private void RPC_RequestEquip(int playerViewID, int typeInt, int ammo)
+    public void RPC_RequestPickup(int playerViewID, int typeInt, int ammo)
     {
         PhotonView pv = PhotonView.Find(playerViewID);
         if (pv == null) return;
 
-        // All Å¬¶óÀÌ¾ğÆ®ÀÇ PlayerController¿¡¼­ ¹«±â¸¦ È°¼ºÈ­
-        //pv.RPC(nameof(PlayerController.RPC_ForceEquipWeapon),
-        //    RpcTarget.All, typeInt, ammo);
+        // All í´ë¼ì´ì–¸íŠ¸ì˜ PlayerControllerì—ì„œ ë¬´ê¸°ë¥¼ í™œì„±í™”
+        pv.RPC(nameof(PlayerController.RPC_ForceEquipWeapon),
+            RpcTarget.All, typeInt, ammo);
 
-        // ÀÌ ³ëµå¸¦ µå·Ó Ç®·Î ¹İÈ¯
+        // ë“œë¡­ í’€ ë…¸ë“œë¼ë©´ ì¶”ì  ëª©ë¡ì—ì„œ ì œê±° (ìŠ¤í° ë…¸ë“œëŠ” no-op)
         WeaponSpawnManager.Instance?.ReturnNodeToDropPool(this);
+    }
+
+    // ë¹„ì£¼ì–¼ ì—…ë°ì´íŠ¸
+
+    private void UpdateVisual(Weapon.EWeaponType type, bool visible)
+    {
+        if (weaponVisuals == null) return;
+        foreach (var entry in weaponVisuals)
+        {
+            if (entry.visualObject != null)
+                entry.visualObject.SetActive(visible && entry.weaponType == type);
+        }
     }
 }

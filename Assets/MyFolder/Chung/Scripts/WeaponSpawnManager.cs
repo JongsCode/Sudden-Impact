@@ -1,40 +1,53 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
 /// <summary>
-/// [New System] ¶ó¿îµå ±â¹İ ¹«±â ½ºÆù ¸Å´ÏÀú (¾À¿¡ 1°³, MasterClient ÅëÁ¦).
+/// [New System] ë¼ìš´ë“œ ê¸°ë°˜ ë¬´ê¸° ìŠ¤í° ë§¤ë‹ˆì € (ì”¬ì— 1ê°œ, MasterClient í†µì œ).
 ///
-/// ÇÙ½É ÄÁ¼Á:
-///   - ½ÇÁ¦ Gun ¿ÀºêÁ§Æ®¸¦ ÇÊµå¿¡ »ı¼ºÇÏÁö ¾Ê½À´Ï´Ù.
-///   - ¶ó¿îµå ½ÃÀÛ ¡æ spawnNodes Áß N°³ ·£´ı È°¼ºÈ­.
-///   - ÇÃ·¹ÀÌ¾î µå·Ó ¡æ dropNodePool¿¡¼­ ÀÚÀ¯ ³ëµå ²¨³» À§Ä¡¡¤µ¥ÀÌÅÍ ÁÖÀÔ.
-///   - ¶ó¿îµå Á¾·á ¡æ ¸ğµç ½ºÆù ³ëµå + µå·Ó ³ëµå ÀÏ°ı ºñÈ°¼ºÈ­.
+/// í•µì‹¬ ì»¨ì…‰:
+///   - ì‹¤ì œ Gun ì˜¤ë¸Œì íŠ¸ë¥¼ í•„ë“œì— ìƒì„±í•˜ì§€ ì•ŠìŒ.
+///   - ë¼ìš´ë“œ ì‹œì‘ â†’ spawnNodes ì¤‘ Nê°œ ëœë¤ í™œì„±í™” (ëœë¤ EWeaponType ë°°ì •).
+///   - í”Œë ˆì´ì–´ ë“œë¡­ â†’ dropNodePoolì—ì„œ ììœ  ë…¸ë“œ êº¼ë‚´ ìœ„ì¹˜Â·ë°ì´í„° ì£¼ì….
+///   - ë¼ìš´ë“œ ì¢…ë£Œ â†’ ëª¨ë“  ìŠ¤í° ë…¸ë“œ + ë“œë¡­ ë…¸ë“œ ì¼ê´„ ë¹„í™œì„±í™”.
 ///
-/// ¾À ¼³Á¤:
-///   spawnNodes  : ¸Ê¿¡ ¹Ì¸® ¹èÄ¡ÇÑ °íÁ¤ ÇÈ¾÷ Æ÷ÀÎÆ® (°¢ ³ëµå¿¡ EWeaponType + defaultAmmo ¼³Á¤).
-///   dropNodePool: µå·Ó Àü¿ë Ç® (¾À¿¡ ºñÈ°¼º »óÅÂ·Î ¹èÄ¡, ÃÖ¼Ò ÇÃ·¹ÀÌ¾î ¼ö * 2 ±ÇÀå).
+/// ì”¬ ì„¤ì •:
+///   spawnNodes  : ë§µì— ë¯¸ë¦¬ ë°°ì¹˜í•œ ê³ ì • í”½ì—… í¬ì¸íŠ¸ (ìœ„ì¹˜ ì ˆëŒ€ ë³€ê²½ ê¸ˆì§€).
+///   dropNodePool: ë“œë¡­ ì „ìš© í’€ (ì”¬ì— ë¹„í™œì„± ìƒíƒœë¡œ ë°°ì¹˜, ìµœì†Œ í”Œë ˆì´ì–´ ìˆ˜ * 2 ê¶Œì¥).
 /// </summary>
 public class WeaponSpawnManager : MonoBehaviourPunCallbacks
 {
     public static WeaponSpawnManager Instance { get; private set; }
 
     [Header("Spawn Nodes (Fixed Map Positions)")]
-    [Tooltip("¾À¿¡ ¹Ì¸® ¹èÄ¡µÈ °íÁ¤ ÇÈ¾÷ Æ÷ÀÎÆ®µé (°¢ ³ëµå¿¡ EWeaponType + defaultAmmo Inspector ¼³Á¤ ÇÊ¿ä)")]
+    [Tooltip("ì”¬ì— ë¯¸ë¦¬ ë°°ì¹˜ëœ ê³ ì • í”½ì—… í¬ì¸íŠ¸ë“¤ â€” ìœ„ì¹˜ëŠ” ì ˆëŒ€ ë³€ê²½í•˜ì§€ ì•ŠìŒ")]
     [SerializeField] private WeaponPickupNode[] spawnNodes;
 
-    [Tooltip("¶ó¿îµå´ç È°¼ºÈ­ÇÒ ½ºÆù ³ëµå ¼ö")]
+    [Tooltip("ë¼ìš´ë“œë‹¹ í™œì„±í™”í•  ìŠ¤í° ë…¸ë“œ ìˆ˜")]
     [SerializeField] private int activeNodesPerRound = 5;
 
     [Header("Drop Node Pool (Dynamic Drops)")]
-    [Tooltip("ÇÃ·¹ÀÌ¾î°¡ ¹«±â¸¦ ¹ö¸± ¶§ Àç»ç¿ëÇÒ ³ëµå Ç® (¾À¿¡ ºñÈ°¼º »óÅÂ·Î ¹Ì¸® ¹èÄ¡)")]
+    [Tooltip("í”Œë ˆì´ì–´ê°€ ë¬´ê¸°ë¥¼ ë²„ë¦´ ë•Œ ì¬ì‚¬ìš©í•  ë…¸ë“œ í’€ (ì”¬ì— ë¹„í™œì„± ìƒíƒœë¡œ ë¯¸ë¦¬ ë°°ì¹˜, ìœ„ì¹˜ ë³€ê²½ ê°€ëŠ¥)")]
     [SerializeField] private WeaponPickupNode[] dropNodePool;
 
-    // ·±Å¸ÀÓ ÃßÀû
+    // ë¼ìš´ë“œ ì‹œì‘ ì‹œ ëœë¤ ë°°ì •í•  ë¬´ê¸° íƒ€ì… (ì¹¼ ì œì™¸)
+    private static readonly Weapon.EWeaponType[] SpawnableTypes =
+    {
+        Weapon.EWeaponType.Pistol,
+        Weapon.EWeaponType.Uzi,
+        Weapon.EWeaponType.Shotgun,
+        Weapon.EWeaponType.Rifle
+    };
+
+    // â”€â”€â”€ ëŸ°íƒ€ì„ ì¶”ì  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     private readonly List<WeaponPickupNode> _activeSpawnNodes = new List<WeaponPickupNode>();
     private readonly List<WeaponPickupNode> _activeDropNodes = new List<WeaponPickupNode>();
 
-    // ½Ì±ÛÅæ ÃÊ±âÈ­
+    // Gun.MaxAmmo ì¡°íšŒìš© ì¹´íƒˆë¡œê·¸ (PlayerController.Init()ì—ì„œ MasterClientê°€ 1íšŒ ë“±ë¡)
+    private readonly Dictionary<Weapon.EWeaponType, int> _gunMaxAmmos =
+        new Dictionary<Weapon.EWeaponType, int>();
+
+    // â”€â”€â”€ ì‹±ê¸€í†¤ ì´ˆê¸°í™” â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void Awake()
     {
@@ -54,7 +67,7 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         GameEvents.OnRoundEnd -= OnRoundEnd;
     }
 
-    // ¶ó¿îµå ÀÌº¥Æ®
+    // â”€â”€â”€ ë¼ìš´ë“œ ì´ë²¤íŠ¸ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     private void OnRoundStart()
     {
@@ -62,21 +75,26 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
 
         _activeSpawnNodes.Clear();
 
-        // ½ºÆù ³ëµå¸¦ ·£´ı ¼ÅÇÃ ÈÄ ¾Õ¿¡¼­ N°³¸¸ È°¼ºÈ­
-        ShuffleArray(spawnNodes);
+        // ì¸ë±ìŠ¤ ë°°ì—´ë§Œ ì…”í”Œ â€” spawnNodes ë°°ì—´ ìˆœì„œì™€ ë…¸ë“œì˜ ë¬¼ë¦¬ì  ìœ„ì¹˜ëŠ” ê·¸ëŒ€ë¡œ ìœ ì§€
+        int[] indices = CreateShuffledIndices(spawnNodes.Length);
         int count = Mathf.Min(activeNodesPerRound, spawnNodes.Length);
 
         for (int i = 0; i < spawnNodes.Length; i++)
         {
+            WeaponPickupNode node = spawnNodes[indices[i]];
+            if (node == null) continue;
+
             if (i < count)
             {
-                // Inspector¿¡¼­ ¼³Á¤ÇÑ defaultWeaponType + defaultAmmo·Î È°¼ºÈ­
-                spawnNodes[i].ActivateAsSpawnNode();
-                _activeSpawnNodes.Add(spawnNodes[i]);
+                // Inspectorì˜ defaultWeaponType ë¬´ì‹œ, ë§¤ ë¼ìš´ë“œ ëœë¤ íƒ€ì… ë°°ì •
+                Weapon.EWeaponType randomType =
+                    SpawnableTypes[Random.Range(0, SpawnableTypes.Length)];
+                node.ActivateAsSpawnNode(randomType, GetDefaultAmmo(randomType));
+                _activeSpawnNodes.Add(node);
             }
             else
             {
-                spawnNodes[i].Deactivate();
+                node.Deactivate();
             }
         }
     }
@@ -85,22 +103,43 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
-        // ¸ğµç ½ºÆù ³ëµå ºñÈ°¼ºÈ­
         foreach (var node in _activeSpawnNodes)
             if (node != null) node.Deactivate();
         _activeSpawnNodes.Clear();
 
-        // ¸ğµç µå·Ó ³ëµå ºñÈ°¼ºÈ­
         foreach (var node in _activeDropNodes)
             if (node != null) node.Deactivate();
         _activeDropNodes.Clear();
     }
 
-    // µå·Ó ³ëµå »ı¼º
-    // PlayerController.DropWeapon() ¡æ MasterClient RPC ¡æ ÀÌ ¸Ş¼­µå ½ÇÇà
+    // â”€â”€â”€ Gun ì¹´íƒˆë¡œê·¸ ë“±ë¡ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     /// <summary>
-    /// MasterClient Àü¿ë: µå·Ó Ç®¿¡¼­ ÀÚÀ¯ ³ëµå¸¦ ²¨³» ÁöÁ¤ À§Ä¡/Å¸ÀÔ/ÀÜÅº¼ö·Î ¹èÄ¡ÇÕ´Ï´Ù.
+    /// MasterClient ì „ìš©: PlayerController.Init()ì—ì„œ allGunsë¥¼ ê±´ë„¤ì£¼ë©´
+    /// ê° Gunì˜ MaxAmmoë¥¼ ìºì‹œ. OnRoundStartë³´ë‹¤ ë¨¼ì € í˜¸ì¶œë˜ì–´ì•¼ í•¨.
+    /// </summary>
+    public void RegisterGunCatalog(Gun[] guns)
+    {
+        if (guns == null) return;
+        foreach (var gun in guns)
+            if (gun != null) _gunMaxAmmos[gun.WeaponType] = gun.MaxAmmo;
+
+        Debug.Log("[WeaponSpawnManager] Gun catalog registered: " +
+                  string.Join(", ", System.Linq.Enumerable.Select(
+                      _gunMaxAmmos, kv => $"{kv.Key}={kv.Value}")));
+    }
+
+    /// <summary>ìºì‹œëœ MaxAmmo ë°˜í™˜. ë“±ë¡ ì „ì´ë©´ fallback 30.</summary>
+    private int GetDefaultAmmo(Weapon.EWeaponType type)
+    {
+        return _gunMaxAmmos.TryGetValue(type, out int ammo) ? ammo : 30;
+    }
+
+    // â”€â”€â”€ ë“œë¡­ ë…¸ë“œ ìƒì„± â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // PlayerController.DropWeapon() â†’ MasterClient RPC â†’ ì´ ë©”ì„œë“œ ì‹¤í–‰
+
+    /// <summary>
+    /// MasterClient ì „ìš©: ë“œë¡­ í’€ì—ì„œ ììœ  ë…¸ë“œë¥¼ êº¼ë‚´ ì§€ì • ìœ„ì¹˜/íƒ€ì…/ì”íƒ„ìˆ˜ë¡œ ë°°ì¹˜.
     /// </summary>
     [PunRPC]
     public void RPC_CreateDropNode(Vector3 position, int typeInt, int ammo)
@@ -110,7 +149,8 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         WeaponPickupNode node = GetFreeDropNode();
         if (node == null)
         {
-            Debug.LogWarning("[WeaponSpawnManager] Drop node pool exhausted!");
+            Debug.LogWarning("[WeaponSpawnManager] Drop node pool exhausted! " +
+                             "Increase dropNodePool size in Inspector.");
             return;
         }
 
@@ -118,23 +158,21 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         _activeDropNodes.Add(node);
     }
 
-    // ÇÈ¾÷ ¿Ï·á ÈÄ Ç® ¹İÈ¯
-    // WeaponPickupNode.RPC_RequestEquip()¿¡¼­ È£Ãâ
+    // â”€â”€â”€ í”½ì—… ì™„ë£Œ í›„ í’€ ë°˜í™˜ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // WeaponPickupNode.RPC_RequestPickup()ì—ì„œ í˜¸ì¶œ
 
     /// <summary>
-    /// ³ëµå°¡ ÇÈ¾÷µÇ¸é activeDropNodes ÃßÀû ¸ñ·Ï¿¡¼­ Á¦°ÅÇÕ´Ï´Ù.
-    /// ³ëµå ÀÚÃ¼ÀÇ ºñÈ°¼ºÈ­´Â RPC_SetupÀ¸·Î ÀÌ¹Ì Ã³¸®µË´Ï´Ù.
+    /// ë…¸ë“œê°€ í”½ì—…ë˜ë©´ activeDropNodes ì¶”ì  ëª©ë¡ì—ì„œ ì œê±°.
+    /// (ìŠ¤í° ë…¸ë“œëŠ” ì—¬ê¸°ì— ì—†ìœ¼ë¯€ë¡œ no-op)
     /// </summary>
     public void ReturnNodeToDropPool(WeaponPickupNode node)
     {
         _activeDropNodes.Remove(node);
     }
 
-    // ¦¡¦¡¦¡ À¯Æ¿¸®Æ¼ ¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡¦¡
+    // â”€â”€â”€ ìœ í‹¸ë¦¬í‹° â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-    /// <summary>
-    /// µå·Ó Ç®¿¡¼­ ÇöÀç ºñÈ°¼º »óÅÂÀÎ ÀÚÀ¯ ³ëµå¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
-    /// </summary>
+    /// <summary>ë“œë¡­ í’€ì—ì„œ í˜„ì¬ ë¹„í™œì„± ìƒíƒœì¸ ììœ  ë…¸ë“œë¥¼ ë°˜í™˜.</summary>
     private WeaponPickupNode GetFreeDropNode()
     {
         foreach (var node in dropNodePool)
@@ -142,12 +180,17 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         return null;
     }
 
-    private static void ShuffleArray<T>(T[] array)
+    /// <summary>ì…”í”Œëœ ì¸ë±ìŠ¤ ë°°ì—´ ìƒì„± â€” ì›ë³¸ ë°°ì—´ì€ ê±´ë“œë¦¬ì§€ ì•ŠìŒ.</summary>
+    private static int[] CreateShuffledIndices(int length)
     {
-        for (int i = array.Length - 1; i > 0; i--)
+        int[] indices = new int[length];
+        for (int i = 0; i < length; i++) indices[i] = i;
+
+        for (int i = length - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
-            (array[i], array[j]) = (array[j], array[i]);
+            (indices[i], indices[j]) = (indices[j], indices[i]);
         }
+        return indices;
     }
 }

@@ -53,6 +53,7 @@ MonoBehaviour:
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
+  bulletTrail: {fileID: 0}
   visualMesh: {fileID: 7367217051892536572}
   rotateSpeed: 1080
 --- !u!65 &8712602507485948074

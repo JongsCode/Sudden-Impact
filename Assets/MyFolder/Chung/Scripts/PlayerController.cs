@@ -63,16 +63,15 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     [Header("ForDebug")]
     [SerializeField] private float curHp;
-    [SerializeField] private Weapon closestGun;
+    [SerializeField] private WeaponPickupNode closestNode; // 최단거리 노드
     [SerializeField] private Weapon myEquippedGun;
     [SerializeField] private bool useGun;
     [SerializeField] private bool hasEnemyFlag;
     [SerializeField] private int myTeam;
     [SerializeField] private PlayerState playerState;
 
-    private Coroutine curCheakClosestWeaponCoroutine;
-    private List<Weapon> nearbyItems = new List<Weapon>();
-    private Vector3 curMoveInput;
+    private Coroutine curCheckClosestNodeCoroutine; 
+    private List<WeaponPickupNode> nearbyNodes = new List<WeaponPickupNode>(); private Vector3 curMoveInput;
     private Vector3 lastMoveDir;
     private bool isSprinting;
     private float lastRollTime;
@@ -96,6 +95,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         curHp = maxHp;
         SetPlayerState(PlayerState.Idle);
         GameEvents.WeaponChanged(myKnife.WeaponType.ToString(), false);
+
+        if(PhotonNetwork.IsMasterClient)
+        { WeaponSpawnManager.Instance.RegisterGunCatalog(allGuns); }
     }
 
     private void OnDisable()
@@ -136,11 +138,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
         else
         {
-            // 입력이 없을 때는 즉시 속도를 0으로 만들어 빙판길 미끄러짐(하키볼)을 막습니다.
+            // 입력이 없을 때는 즉시 속도를 0으로 만들어 빙판길 미끄러짐을 방지.
             myRigidbody.linearVelocity = Vector3.zero;
         }
 
-        // 회전력은 매 프레임 죽여서 오뚝이처럼 넘어지는 것을 막습니다.
+        // 회전력은 매 프레임 죽여서 넘어지는 것을 방지
         myRigidbody.angularVelocity = Vector3.zero;
     }
 
@@ -149,6 +151,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         myTeam = _myTeam;
 
+        if (allGuns != null)
+        {
+            foreach (var gun in allGuns)
+                if (gun != null) gun.SetOwner(photonView.Owner.ActorNumber, myTeam);
+        }
     }
 
     // 라운드 시작시 초기화 목적으로 호출
@@ -165,17 +172,19 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     // 라운드 종료 시 즉각적인 초기화 및 조작 차단
     public void OnRoundEndReset()
     {
-        // 1. 상태를 NotReady로 바꿔서 모든 조작(이동, 사격)을 막음
+        Debug.Log($"[OnRoundEndReset] called, myEquippedGun = {myEquippedGun?.name ?? "null"}");
+
+        // 상태를 NotReady로 바꿔서 모든 조작(이동, 사격)을 막음
         SetPlayerState(PlayerState.NotReady);
 
-        // 2. 깃발 상태 초기화 및 시각적 가짜 깃발 끄기
+        // 깃발 상태 초기화 및 시각적 가짜 깃발 끄기
         hasEnemyFlag = false;
         dummyFlagMesh.SetActive(false);
 
-        // 3. 무기 정리 (선택 사항: 들고 있던 무기를 내려놓거나, 초기 상태로 되돌림)
-        DropWeapon();
+        
+        CleanupWeapon();
 
-        // 4. 구르기나 기절 코루틴이 돌고 있다면 정지
+        //구르기나 기절 코루틴이 돌고 있다면 정지
         StopAllCoroutines();
     }
 
@@ -357,8 +366,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
         myKnife.gameObject.SetActive(!_useGun);
 
-        string curWeaponName = useGun ? myEquippedGun.WeaponType.ToString() : myKnife.WeaponType.ToString();
-        GameEvents.WeaponChanged(curWeaponName, _useGun);
+        if (photonView.IsMine)
+        {
+            string curWeaponName = useGun ? myEquippedGun.WeaponType.ToString() : myKnife.WeaponType.ToString();
+            GameEvents.WeaponChanged(curWeaponName, _useGun);
+        }
     }
     #endregion
 
@@ -401,20 +413,19 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     public void PickUpAndDrop(InputAction.CallbackContext ctx)
     {
-        Debug.Log("[PlayerController] Im Equiet or Throwing");
+        if (!photonView.IsMine || !ctx.performed) return;
 
-        if (closestGun == null && myEquippedGun != null)
+        // 1. 주변에 주울 수 있는 표지판이 있다면? 줍기!
+        if (closestNode != null && closestNode.IsAvailable)
         {
-            photonView.RPC(nameof(TryThrow), RpcTarget.All, myEquippedGun.photonView.ViewID);
-            Debug.Log("[PlayerController] Try Throw");
-            return;
+            closestNode.RequestPickup(photonView.ViewID);
+            closestNode = null;
         }
-        else if (closestGun != null)
+        // 2. 없다면? 현재 든 총 버리기!
+        else if (myEquippedGun != null && useGun)
         {
-            photonView.RPC(nameof(PickUpItem), RpcTarget.All, closestGun.photonView.ViewID);
+            photonView.RPC(nameof(RPC_TryThrow), RpcTarget.All, (int)((Gun)myEquippedGun).WeaponType);
         }
-
-
     }
 
     #region 줍기
@@ -422,134 +433,210 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         if (!photonView.IsMine) return;
 
-        Weapon weapon;
-        if (other.TryGetComponent<Weapon>(out weapon))
+        WeaponPickupNode node;
+        if (other.TryGetComponent<WeaponPickupNode>(out node))
         {
-            if (weapon == myEquippedGun) return;
-            nearbyItems.Add(weapon);
+            if (!node.IsAvailable) return;
+            nearbyNodes.Add(node);
 
-            if (closestGun == null)
+            if (closestNode == null)
             {
-                closestGun = weapon;
-                curCheakClosestWeaponCoroutine = StartCoroutine(CheckClosestWeapon());
+                closestNode = node;
+                curCheckClosestNodeCoroutine = StartCoroutine(CheckClosestNode());
             }
         }
-
     }
 
     private void OnTriggerExit(Collider other)
     {
         if (!photonView.IsMine) return;
 
-        Weapon weapon;
-        if (other.TryGetComponent<Weapon>(out weapon))
+        WeaponPickupNode node;
+        if (other.TryGetComponent<WeaponPickupNode>(out node))
         {
-            if (!nearbyItems.Remove(weapon)) return;
+            if (!nearbyNodes.Remove(node)) return;
 
-            if (nearbyItems.Count == 0)
+            if (node == closestNode) closestNode.HideLabel();
+
+            if (nearbyNodes.Count == 0)
             {
-                StopCoroutine(curCheakClosestWeaponCoroutine);
-                closestGun = null;
+                StopCoroutine(curCheckClosestNodeCoroutine);
+                closestNode = null;
+                curCheckClosestNodeCoroutine = null;
             }
         }
     }
 
-    private IEnumerator CheckClosestWeapon()
+    private IEnumerator CheckClosestNode()
     {
-        while (nearbyItems.Count > 0)   // 트리거에 들어와 있는 아이템이 있으면
+        WeaponPickupNode prevClosest = null;
+
+        while (nearbyNodes.Count > 0)
         {
-            yield return new WaitForSeconds(5f / 60f); // 5프레임 주기 
-            float minSqrDistance = float.MaxValue;
-            Weapon tempClosest = null;
+            yield return new WaitForSeconds(5f / 60f); // ~5 frames
 
-            for (int i = nearbyItems.Count - 1; i >= 0; i--) // 역순 순회로 안정성 확보 
+            float minSqrDist = float.MaxValue;
+            WeaponPickupNode tempClosest = null;
+
+            for (int i = nearbyNodes.Count - 1; i >= 0; i--)
             {
-                if (nearbyItems[i] == null) { nearbyItems.RemoveAt(i); continue; }
-
-
-                float sqrDist = (transform.position - nearbyItems[i].transform.position).sqrMagnitude;
-                if (sqrDist < minSqrDistance)
+                if (nearbyNodes[i] == null || !nearbyNodes[i].IsAvailable)
                 {
-                    minSqrDistance = sqrDist;
-                    tempClosest = nearbyItems[i];
+                    nearbyNodes.RemoveAt(i);
+                    continue;
+                }
+
+                float sqrDist = (transform.position - nearbyNodes[i].transform.position).sqrMagnitude;
+                if (sqrDist < minSqrDist)
+                {
+                    minSqrDist = sqrDist;
+                    tempClosest = nearbyNodes[i];
                 }
             }
-            closestGun = tempClosest;
-        }
-        closestGun = null;
-        curCheakClosestWeaponCoroutine = null;
-    }
 
-    //private IEnumerator CheckClosestWeapon()
-    //{
-    //    while (nearbyItems.Count > 0)
-    //    {
-    //        yield return new WaitForSeconds(5f / 60f); // 5프레임마다 
+            // Toggle label: 이전 노드의 레이블을 끄고 새 노드의 레이블을 켠다
+            if (tempClosest != prevClosest)
+            {
+                if (prevClosest != null) prevClosest.HideLabel();
+                if (tempClosest != null) tempClosest.ShowLabel();
+                prevClosest = tempClosest;
+            }
 
-    //        foreach (var weapon in nearbyItems)
-    //        {
-    //            float newItemDis = Vector3.Distance(transform.position,weapon.transform.position);
-    //            float curItemDis = Vector3.Distance(transform.position,closestGun.transform.position);
-
-    //            if (newItemDis < curItemDis)
-    //            {
-    //                closestGun = weapon;
-    //            }
-    //        }
-    //    }
-    //}
-
-    [PunRPC]
-    public void PickUpItem(int _viewID)
-    {
-        if (!photonView.IsMine)
-        {
-            PhotonView targetView = PhotonView.Find(_viewID);
-
-            if (targetView == null) return;
-            closestGun = targetView.GetComponent<Weapon>();
+            closestNode = tempClosest;
         }
 
-        DropWeapon();
-
-        if (nearbyItems.Contains(myEquippedGun))
-        {
-            nearbyItems.Remove(myEquippedGun);
-        }
-
-        myEquippedGun = closestGun;
-        nearbyItems.Remove(closestGun);
-        closestGun = null;
-
-        myEquippedGun.gameObject.layer = 11;
-        myEquippedGun.SetOwner(PhotonNetwork.LocalPlayer.ActorNumber, myTeam);
-
-        if (photonView.IsMine)
-        {
-            myEquippedGun.photonView.RequestOwnership();
-        }
-        Item item = myEquippedGun.GetComponent<Item>();
-        item.PickItem();
-        Debug.Log("PickItem");
-
-        myEquippedGun.transform.SetParent(weaponAttachPoint);
-        myEquippedGun.transform.localPosition = Vector3.zero;
-        myEquippedGun.transform.localRotation = Quaternion.identity;
-
-        useGun = true;
-        SwapWeapon(useGun);
-
+        // 주위에 더이상 노드가 없을 떄
+        if (closestNode != null) closestNode.HideLabel();
+        closestNode = null;
+        curCheckClosestNodeCoroutine = null;
     }
 
     private void DropWeapon()
     {
-        if (myEquippedGun != null)
+        if (myEquippedGun == null) return;
+
+        if (photonView.IsMine && myEquippedGun is Gun droppedGun)
         {
+            int type = (int)droppedGun.WeaponType;
+            int ammo = droppedGun.CurrentAmmo;
+            Vector3 dropPos = transform.position;
+
+            WeaponSpawnManager.Instance?.photonView?.RPC(
+                nameof(WeaponSpawnManager.RPC_CreateDropNode),
+                RpcTarget.MasterClient,
+                dropPos, type, ammo);
+        }
+
+        myEquippedGun.gameObject.SetActive(false);
+        myEquippedGun = null;
+        useGun = false;
+    }
+
+    [PunRPC]
+    public void RPC_ForceEquipWeapon(int typeInt, int ammo)
+    {
+        Debug.Log($"[PlayerController] ForceEquipWeapon Called type : {typeInt}, Ammo : {ammo}");
+        Weapon.EWeaponType type = (Weapon.EWeaponType)typeInt;
+
+        if (myEquippedGun != null) DropWeapon(); // 기존 총은 바닥에 표지판으로 생성
+
+        Gun newGun = FindGunByType(type);
+        if (newGun != null)
+        {
+            myEquippedGun = newGun;
             myEquippedGun.gameObject.SetActive(true);
-            myEquippedGun.transform.SetParent(null);
-            myEquippedGun = null;
+            newGun.SetAmmo(ammo);
+            useGun = true;
+            photonView.RPC(nameof(SwapWeapon), RpcTarget.All, true);
         }
     }
+
+    [PunRPC]
+    public void RPC_TryThrow(int weaponTypeInt)
+    {
+        if (myEquippedGun == null) return;
+
+        if (myEquippedGun is Gun myGun)
+        {
+            if(photonView.IsMine)
+            myGun.ThrowWeapon();
+
+            OnThrowEvent?.Invoke();
+        }
+
+        CleanupWeapon();
+        SwapWeapon(false);
+    }
+
+
+    private void CleanupWeapon()
+    {
+        if (myEquippedGun == null) return;
+        myEquippedGun.gameObject.SetActive(false);
+        myEquippedGun = null;
+        useGun = false;
+    }
+
+
+    private Gun FindGunByType(Weapon.EWeaponType type)
+    {
+        if (allGuns == null) return null;
+        foreach (var gun in allGuns)
+            if (gun != null && gun.WeaponType == type) return gun;
+        return null;
+    }
+
+    //[PunRPC]
+    //public void PickUpItem(int _viewID)
+    //{
+    //    if (!photonView.IsMine)
+    //    {
+    //        PhotonView targetView = PhotonView.Find(_viewID);
+
+    //        if (targetView == null) return;
+    //        closestGun = targetView.GetComponent<Weapon>();
+    //    }
+
+    //    DropWeapon();
+
+    //    if (nearbyItems.Contains(myEquippedGun))
+    //    {
+    //        nearbyItems.Remove(myEquippedGun);
+    //    }
+
+    //    myEquippedGun = closestGun;
+    //    nearbyItems.Remove(closestGun);
+    //    closestGun = null;
+
+    //    myEquippedGun.gameObject.layer = 11;
+    //    myEquippedGun.SetOwner(PhotonNetwork.LocalPlayer.ActorNumber, myTeam);
+
+    //    if (photonView.IsMine)
+    //    {
+    //        myEquippedGun.photonView.RequestOwnership();
+    //    }
+    //    Item item = myEquippedGun.GetComponent<Item>();
+    //    item.PickItem();
+    //    Debug.Log("PickItem");
+
+    //    myEquippedGun.transform.SetParent(weaponAttachPoint);
+    //    myEquippedGun.transform.localPosition = Vector3.zero;
+    //    myEquippedGun.transform.localRotation = Quaternion.identity;
+
+    //    useGun = true;
+    //    SwapWeapon(useGun);
+
+    //}
+
+    //private void DropWeapon()
+    //{
+    //    if (myEquippedGun != null)
+    //    {
+    //        myEquippedGun.gameObject.SetActive(true);
+    //        myEquippedGun.transform.SetParent(null);
+    //        myEquippedGun = null;
+    //    }
+    //}
     #endregion
 
     #region 던지기

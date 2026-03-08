@@ -224,6 +224,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             return;
         }
 
+        GameEvents.RoundEnd();
+
         StartCoroutine(NextRoundCoroutine());
     }
 
@@ -264,6 +266,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     private void StartRoundRPC()
     {
         GameEvents.ScoreChanged(teamAScore, teamBScore);
+        GameEvents.RoundStart();
 
         for (int i = 0; i < mapFlags.Length; i++)
         {

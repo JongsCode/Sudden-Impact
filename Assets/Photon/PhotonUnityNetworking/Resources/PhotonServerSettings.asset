@@ -58,6 +58,9 @@ MonoBehaviour:
   - RPC_CreateDropNode
   - RPC_RequestEquip
   - RPC_Setup
+  - RPC_ForceEquipWeapon
+  - RPC_RequestPickup
+  - RPC_TryThrow
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

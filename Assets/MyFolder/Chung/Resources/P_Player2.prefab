@@ -195,7 +195,7 @@ MonoBehaviour:
   damageImpulseSource: {fileID: 787180183226477860}
   damageShakeForce: 1.5
   curHp: 0
-  closestGun: {fileID: 0}
+  closestNode: {fileID: 0}
   myEquippedGun: {fileID: 0}
   useGun: 0
   hasEnemyFlag: 0
