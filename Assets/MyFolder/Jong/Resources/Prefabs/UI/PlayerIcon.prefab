@@ -503,6 +503,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d18ec6263e049b1499f8792434b35dd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerIcon
+  textNickname: {fileID: 8856942741292492059}
+  textTeamNumber: {fileID: 776642013011380761}
+  goReady: {fileID: 3083743340740720690}
 --- !u!1 &8742513937185294735
 GameObject:
   m_ObjectHideFlags: 0

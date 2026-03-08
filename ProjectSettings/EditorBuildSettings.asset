@@ -14,6 +14,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MyFolder/Chung/Scenes/0225FOVTest.unity
     guid: 3f5b621a8893fba43810b521295def0a
+  - enabled: 1
+    path: Assets/MyFolder/Jong/Scenes/FOVTest.unity
+    guid: 8fddf43f5c7f5534f9e47454cca56c4a
   - enabled: 0
     path: Assets/MyFolder/Chung/Scenes/ChungSampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05

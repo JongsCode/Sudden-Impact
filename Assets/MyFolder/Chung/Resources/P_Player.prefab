@@ -178,6 +178,7 @@ MonoBehaviour:
   rollDuration: 0.2
   pickUpDistance: 1
   stunDuration: 1.5
+  rollCooldown: 4
   interactRadius: 2
   interactableLayer:
     serializedVersion: 2
