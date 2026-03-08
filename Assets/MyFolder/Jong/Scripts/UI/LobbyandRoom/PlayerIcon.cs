@@ -27,6 +27,10 @@ public class PlayerIcon : MonoBehaviour
         userActorNumber = _actorNumber;
         userTeamNumber = _teamNumber;
         textTeamNumber.text = _teamNumber.ToString();
+        if (_teamNumber % 2 == 1)
+            textTeamNumber.color = Color.red;
+        else
+            textTeamNumber.color = Color.blue;
     }
 
     public void SetReady(bool _isReady)
