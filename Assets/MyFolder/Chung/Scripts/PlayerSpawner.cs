@@ -10,20 +10,25 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
     [SerializeField] private int layerNumber;
 
 
-    public override void OnJoinedRoom()
+    private void Start()
     {
-        int team = PhotonNetwork.LocalPlayer.ActorNumber % 2; // 0 또는 1
+        //int team = PhotonNetwork.LocalPlayer.ActorNumber % 2; // 0 또는 1
+        int team = 1;
+        team = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
         var go = PhotonNetwork.Instantiate(playerPrefab.name, Vector3.zero, Quaternion.identity);
 
 
 
-        go.SetActive(false); // 경기 시작 전 비활성
+        //go.SetActive(false); // 경기 시작 전 비활성
 
-                             // AllBuffered로 내 viewID랑 팀을 전파
-                             // 나중에 들어오는 플레이어도 기존 플레이어 정보를 받을 수 있음
+        // AllBuffered로 내 viewID랑 팀을 전파
+        // 나중에 들어오는 플레이어도 기존 플레이어 정보를 받을 수 있음
         photonView.RPC(nameof(RegisterToRegistry), RpcTarget.AllBuffered,
                        go.GetComponent<PhotonView>().ViewID, team);
+        
+      
     }
+
 
     [PunRPC]
     private void RegisterToRegistry(int _viewID, int _team)
@@ -33,6 +38,7 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 
         PlayerController player = pv.GetComponent<PlayerController>();
         playerRegistry.RegisterPlayerTeam(player, _team);
+        Debug.Log("playerRegistery 등록된 팀 : " + _team);
 
         if (player.photonView.IsMine)
         {
@@ -42,15 +48,15 @@ public class PlayerSpawner : MonoBehaviourPunCallbacks
 
             ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
 
-            props["team"] = _team;
+            props["Team"] = _team;
             props["viewID"] = _viewID;
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
 
         }
-            SetPlayerInfo(player,_team);
-
-        int actualLocalTeam = PhotonNetwork.LocalPlayer.ActorNumber % 2;
+        SetPlayerInfo(player,_team);
+        int actualLocalTeam = 1;
+        actualLocalTeam = (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
 
         if (_team == actualLocalTeam)
         {

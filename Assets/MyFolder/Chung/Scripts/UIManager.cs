@@ -161,7 +161,7 @@ public class UIManager : MonoBehaviour
     // 팀 번호에 따라 올바른 배열에서 빈자리를 찾아주는 함수
     private PlayerSlotUI FindEmptySlot(int team)
     {
-        PlayerSlotUI[] targetSlots = (team == 0) ? teamASlots : teamBSlots; // 0이면 A팀, 아니면 B팀
+        PlayerSlotUI[] targetSlots = (team == 1) ? teamASlots : teamBSlots; // 0이면 A팀, 아니면 B팀
 
         foreach (var slot in targetSlots)
         {

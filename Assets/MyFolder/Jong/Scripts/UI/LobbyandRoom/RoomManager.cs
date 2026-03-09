@@ -99,7 +99,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             if (textReadyButton.text == "AllReady")
             {
                 Debug.Log("모든 플레이어 준비 완료! 게임 씬으로 이동합니다!");
-                PhotonNetwork.LoadLevel("FOVTest");
+                PhotonNetwork.LoadLevel("MainSceneTest");
             }
         }
         else
@@ -124,10 +124,15 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
     {
-        if (changedProps.ContainsKey("Team") || changedProps.ContainsKey("IsReady"))
+        if (changedProps.ContainsKey("Team"))
         {
             UpdateRoomUI();
+        }
+        if(changedProps.ContainsKey("IsReady"))
+        {
+            UpdateReadyUI(targetPlayer);
             CheckAllReady();
+
         }
     }
 
@@ -156,6 +161,35 @@ public class RoomManager : MonoBehaviourPunCallbacks
             PlayerIcon playerIcon = playerIconGo.GetComponent<PlayerIcon>();
             playerIcon.SetUserInfo(player.NickName, player.ActorNumber, playerTeam);
             playerIcon.SetReady(isReady);
+        }
+    }
+
+    private void UpdateReadyUI(Player _player)
+    {
+        bool isReady = false;
+        if (_player.CustomProperties.ContainsKey("IsReady"))
+        {
+            isReady = (bool)_player.CustomProperties["IsReady"];
+        }
+
+        foreach (Transform child in team1Parent)
+        {
+            PlayerIcon icon = child.GetComponent<PlayerIcon>();
+            if (icon != null && icon.UserActorNumber == _player.ActorNumber)
+            {
+                icon.SetReady(isReady);
+                return; 
+            }
+        }
+
+        foreach (Transform child in team2Parent)
+        {
+            PlayerIcon icon = child.GetComponent<PlayerIcon>();
+            if (icon != null && icon.UserActorNumber == _player.ActorNumber)
+            {
+                icon.SetReady(isReady);
+                return;
+            }
         }
     }
 
