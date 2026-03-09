@@ -65,5 +65,8 @@ public class AutomaticGun : Gun
             0,
             bulletData
         );
+
+        // 현재 총기의 반동/퍼짐 정도를 UI에 전달 (예: 1.0 ~ 5.0 사이의 값)
+        GameEvents.SpreadUpdate(currentSpread, spreadRecoveryRate, baseSpread);
     }
 }

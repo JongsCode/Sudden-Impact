@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 /// <summary>
 /// 전체 HUD 관리 매니저.
@@ -30,34 +31,20 @@ public class UIManager : MonoBehaviour
     [Tooltip("KillLogEntry 컴포넌트가 붙은 UI 텍스트 프리팹")]
     [SerializeField] private KillLogEntry killLogEntryPrefab;
 
+    [Header("Crosshair Settings")]
+    [SerializeField] private float baseSize = 60f;        // 기본 에임 크기 (픽셀)
+    [SerializeField] private float spreadSensitivity = 5f; // 1도당 벌어질 픽셀 거리 (중요!)
+    [SerializeField] private RectTransform crosshairUI;
+    [SerializeField] private Transform targetTransform; // InputManager의 mouseAimTarget
+
+    private Camera mainCam;
+    private Coroutine crosshairCoroutine;
+    private float currentSpread = 1f;   // UI가 현재 보여주는 부드러운 값
+    private float lastRecRate = 15f;    // 가장 최근 총기에서 받은 회복 속도
+    private float lastBaseSpread = 1f;  // 가장 최근 총기에서 받은 기본 크기
+
+
     // 라이프사이클
-
-    private void OnEnable()
-    {
-        // 기존 이벤트
-        GameEvents.OnHpChanged += HandleHpChanged;
-        GameEvents.OnWeaponChanged += HandleWeaponChanged;
-        GameEvents.OnAmmoChanged += HandleAmmoChanged;
-        GameEvents.OnScoreChanged += HandleScoreChanged;
-
-        // [기능 4] 신규 이벤트
-        GameEvents.OnPlayerUIInit += HandlePlayerUIInit;
-        GameEvents.OnPlayerUIDead += HandlePlayerUIDead;
-        GameEvents.OnKillLog += HandleKillLog;
-    }
-
-    private void OnDisable()
-    {
-        GameEvents.OnHpChanged -= HandleHpChanged;
-        GameEvents.OnWeaponChanged -= HandleWeaponChanged;
-        GameEvents.OnAmmoChanged -= HandleAmmoChanged;
-        GameEvents.OnScoreChanged -= HandleScoreChanged;
-
-        GameEvents.OnPlayerUIInit -= HandlePlayerUIInit;
-        GameEvents.OnPlayerUIDead -= HandlePlayerUIDead;
-        GameEvents.OnKillLog -= HandleKillLog;
-    }
-
     private void Awake()
     {
         // 1. A팀 슬롯 전원 비활성화
@@ -77,8 +64,89 @@ public class UIManager : MonoBehaviour
                 if (slot != null) slot.gameObject.SetActive(false);
             }
         }
+
+        mainCam = Camera.main;
+        // 이벤트 버스 구독: 무기가 발사될 때 크로스헤어 키우기
+
+        //마우스의 비주얼을 끔
+        Cursor.visible = false;
+
+        // 마우스가 게임 창 밖으로 나가지 못하게 
+        Cursor.lockState = CursorLockMode.Confined;
+
     }
 
+    private void Update()
+    {
+        // 회복 로직: 총기(AutomaticGun)의 MoveTowards와 동일한 수식 사용
+        if (currentSpread > lastBaseSpread)
+        {
+            currentSpread = Mathf.MoveTowards(currentSpread, lastBaseSpread, lastRecRate * Time.deltaTime);
+        }
+
+        // 9-슬라이스 스케일 적용
+        if (crosshairUI != null)
+        {
+            // 수정: 배율이 아니라 '더하기' 방식으로 거리 조절
+            // 예: 탄퍼짐이 5도 늘어나면 에임 크기는 5 * 5 = 25픽셀만 더 커짐
+            float addedSize = (currentSpread - lastBaseSpread) * spreadSensitivity;
+            float targetUISize = baseSize + addedSize;
+
+            // 9슬라이스가 작동하도록 sizeDelta를 수정
+            crosshairUI.sizeDelta = new Vector2(targetUISize, targetUISize);
+
+            // localScale은 무조건 (1,1,1)이어야 선이 안 굵어집니다!
+            crosshairUI.localScale = Vector3.one;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (targetTransform == null || crosshairUI == null) return;
+
+        // 월드 좌표 -> 스크린 좌표 변환 후 UI 배치
+        crosshairUI.position = mainCam.WorldToScreenPoint(targetTransform.position);
+    }
+
+
+
+    private void OnEnable()
+    {
+    
+        GameEvents.OnHpChanged += HandleHpChanged;
+        GameEvents.OnWeaponChanged += HandleWeaponChanged;
+        GameEvents.OnAmmoChanged += HandleAmmoChanged;
+        GameEvents.OnScoreChanged += HandleScoreChanged;
+        GameEvents.OnSpreadUpdated += HandleSpreadUpdate;
+        GameEvents.OnPlayerUIInit += HandlePlayerUIInit;
+        GameEvents.OnPlayerUIDead += HandlePlayerUIDead;
+        GameEvents.OnKillLog += HandleKillLog;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnHpChanged -= HandleHpChanged;
+        GameEvents.OnWeaponChanged -= HandleWeaponChanged;
+        GameEvents.OnAmmoChanged -= HandleAmmoChanged;
+        GameEvents.OnScoreChanged -= HandleScoreChanged;
+
+        GameEvents.OnPlayerUIInit -= HandlePlayerUIInit;
+        GameEvents.OnPlayerUIDead -= HandlePlayerUIDead;
+        GameEvents.OnKillLog -= HandleKillLog;
+    }
+
+    private void HandleSpreadUpdate(float _cur, float _rec, float _baseVal)
+    {
+        // 총을 쏘는 순간, 현재 UI의 퍼짐 정도를 총기의 실제 탄퍼짐 값으로 점프시킴
+        currentSpread = _cur;
+        lastRecRate = _rec;
+        lastBaseSpread = _baseVal;
+    }
+
+    public void SetAimTarget(Transform _target)
+    {
+        targetTransform = _target;
+    }
     private void HandleHpChanged(float _hp)
         => hpText.text = $"HP: {_hp} / 100";
 
