@@ -61,6 +61,7 @@ MonoBehaviour:
   - RPC_ForceEquipWeapon
   - RPC_RequestPickup
   - RPC_TryThrow
+  - SpawnRipple
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

@@ -41,7 +41,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        startButton.onClick.AddListener(StartRound);
+        startButton?.onClick.AddListener(StartRound);
     }
 
     private void Start()

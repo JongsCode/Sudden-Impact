@@ -174,6 +174,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
   thrownWeaponPrefab: {fileID: 4539979239478777330, guid: 7bb7bef01f2c1b24787acf6f54f8a846, type: 3}
   impulseSource: {fileID: 6094253173441992267}
+  ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 1
   isAutomatic: 0
