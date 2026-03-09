@@ -31,10 +31,12 @@ public class UIManager : MonoBehaviour
     [Tooltip("KillLogEntry 컴포넌트가 붙은 UI 텍스트 프리팹")]
     [SerializeField] private KillLogEntry killLogEntryPrefab;
 
+    [Header("Crosshair Settings")]
+    [SerializeField] private float baseSize = 60f;        // 기본 에임 크기 (픽셀)
+    [SerializeField] private float spreadSensitivity = 5f; // 1도당 벌어질 픽셀 거리 (중요!)
     [SerializeField] private RectTransform crosshairUI;
+    [SerializeField] private Transform targetTransform; // InputManager의 mouseAimTarget
 
-    [SerializeField]
-    private Transform targetTransform; // InputManager의 mouseAimTarget
     private Camera mainCam;
     private Coroutine crosshairCoroutine;
     private float currentSpread = 1f;   // UI가 현재 보여주는 부드러운 값
@@ -65,7 +67,13 @@ public class UIManager : MonoBehaviour
 
         mainCam = Camera.main;
         // 이벤트 버스 구독: 무기가 발사될 때 크로스헤어 키우기
-        
+
+        //마우스의 비주얼을 끔
+        Cursor.visible = false;
+
+        // 마우스가 게임 창 밖으로 나가지 못하게 
+        Cursor.lockState = CursorLockMode.Confined;
+
     }
 
     private void Update()
@@ -79,13 +87,15 @@ public class UIManager : MonoBehaviour
         // 9-슬라이스 스케일 적용
         if (crosshairUI != null)
         {
-            // sizeDelta(Width/Height)를 조절
-            float baseUISize = 60f; // 초기 Width/Height 값
-            float targetUISize = baseUISize * (currentSpread / lastBaseSpread);
+            // 수정: 배율이 아니라 '더하기' 방식으로 거리 조절
+            // 예: 탄퍼짐이 5도 늘어나면 에임 크기는 5 * 5 = 25픽셀만 더 커짐
+            float addedSize = (currentSpread - lastBaseSpread) * spreadSensitivity;
+            float targetUISize = baseSize + addedSize;
 
-            // 이렇게 하면 보더(십자선 두께)는 유지되고 중앙 공간만 넓어집니다.
+            // 9슬라이스가 작동하도록 sizeDelta를 수정
             crosshairUI.sizeDelta = new Vector2(targetUISize, targetUISize);
 
+            // localScale은 무조건 (1,1,1)이어야 선이 안 굵어집니다!
             crosshairUI.localScale = Vector3.one;
         }
     }
