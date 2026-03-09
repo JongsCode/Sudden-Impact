@@ -61,8 +61,13 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     // 외부 호출 - 플레이어 사망 시 PlayerController에서 호출
     // -----------------------------------------------
 
-    public void OnPlayerDied(PlayerController player)
+    public void OnPlayerDied(PlayerController player, int _attackerNum)
     {
+        GameEvents.PlayerUIDead(player.photonView.Owner.ActorNumber);
+
+        playerRegistry.TryGetPlayerByActorNumber(_attackerNum, out var attacker);
+        GameEvents.Kill(attacker.photonView.Owner.NickName, player.photonView.Owner.NickName);
+
         if (!PhotonNetwork.IsMasterClient) return; // 마스터 클라이언트만 승패 판단
 
         // 죽은 플레이어가 적 깃발을 들고 있다면?
@@ -73,6 +78,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             // 모든 클라이언트에게 깃발을 이 위치에 떨어뜨리라고 명령!
             photonView.RPC(nameof(DropFlagRPC), RpcTarget.All, droppedFlagIndex, player.transform.position);
         }
+
 
         CheckRoundEnd();
     }
@@ -218,6 +224,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             return;
         }
 
+        GameEvents.RoundEnd();
+
         StartCoroutine(NextRoundCoroutine());
     }
 
@@ -258,6 +266,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     private void StartRoundRPC()
     {
         GameEvents.ScoreChanged(teamAScore, teamBScore);
+        GameEvents.RoundStart();
 
         for (int i = 0; i < mapFlags.Length; i++)
         {
@@ -290,6 +299,13 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             Vector3 spawnPos = spawnPoints[i % spawnPoints.Length].position;
             team[i].gameObject.SetActive(true);
             team[i].Respawn(spawnPos);
+
+            // 매니저가 플레이어를 스폰시키면서 UI 매니저에게 슬롯 등록/갱신 지시!
+            int actorNum = team[i].photonView.Owner.ActorNumber;
+            string nickName = team[i].photonView.Owner.NickName;
+            int teamNum = team[i].MyTeam;
+
+            GameEvents.PlayerUIInit(actorNum, nickName, teamNum);
         }
     }
 

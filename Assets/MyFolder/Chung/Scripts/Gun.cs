@@ -17,12 +17,15 @@ public abstract class Gun : Weapon
     public bool isAutomatic = true;                           // 단발/연사 구분용 스위치 (PlayerController에서 읽음)
 
     protected int currentAmmo;
+    public int CurrentAmmo => currentAmmo;
+    public int MaxAmmo => maxAmmo;
+
     protected float lastFireTime;                             // 마지막으로 총을 쏜 시간을 기억하는 변수
 
 
     protected virtual void OnEnable()
     {
-        currentAmmo = maxAmmo; // 총을 꺼낼 때 장탄수 채우기
+        //currentAmmo = maxAmmo; 총을 꺼낼 때 장탄수 채우기
         lastFireTime = 0f;     // 무기를 꺼내자마자 바로 쏠 수 있도록 타이머 초기화
     }
 
@@ -31,6 +34,13 @@ public abstract class Gun : Weapon
         base.SetOwner(_actorNumber, _team);
 
         GameEvents.AmmoChanged(currentAmmo, maxAmmo);
+    }
+    public void SetAmmo(int ammo)
+    {
+        Debug.Log($"[Gun]{gameObject.name}'s SetAmmo Called, Ammo Is {ammo}");
+        currentAmmo = Mathf.Clamp(ammo, 0, maxAmmo);
+        if (ownerActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+            GameEvents.AmmoChanged(currentAmmo, maxAmmo);
     }
 
     public override void Attack(bool isHeld = false)

@@ -61,8 +61,13 @@ public class DebugJoiner : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Log($"방 입장 완료 | 플레이어 수: {PhotonNetwork.CurrentRoom.PlayerCount}");
-        //SpawnPlayer();
+        // 내 닉네임을 "Player_액터번호" 형식으로 지정합니다.
+        string myNickName = $"Player_{PhotonNetwork.LocalPlayer.ActorNumber}";
+        PhotonNetwork.LocalPlayer.NickName = myNickName;
+
+        Log($"방 입장 완료 | 닉네임: {myNickName} | 플레이어 수: {PhotonNetwork.CurrentRoom.PlayerCount}");
+
+        // SpawnPlayer(); 
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
