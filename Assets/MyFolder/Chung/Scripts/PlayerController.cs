@@ -740,7 +740,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 Vector3 shakeDir = -_hitNormal;
                 shakeDir.y = 0f;
                 if (shakeDir.sqrMagnitude < 0.01f) shakeDir = Vector3.back;
-                damageImpulseSource.GenerateImpulse(shakeDir.normalized * damageShakeForce);
+                { damageImpulseSource.GenerateImpulseWithVelocity(shakeDir.normalized * damageShakeForce); }
             }
         }
 

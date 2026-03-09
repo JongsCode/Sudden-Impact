@@ -43,12 +43,12 @@ public class WeaponPickupNode : MonoBehaviourPun
 
     [Header("런타임 데이터")]
     [Tooltip("디버그용 값 넣지 말 것")]
-    [SerializeField] private Weapon.EWeaponType _weaponType;
-    [SerializeField] private int _currentAmmo;
-    [SerializeField] private bool _isAvailable;
+    [SerializeField] private Weapon.EWeaponType weaponType;
+    [SerializeField] private int currentAmmo;
+    [SerializeField] private bool isAvailable;
 
     /// <summary>WeaponSpawnManager가 풀에서 자유 노드를 판별할 때 사용.</summary>
-    public bool IsAvailable => _isAvailable;
+    public bool IsAvailable => isAvailable;
 
     // WeaponSpawnManager에서 호출
 
@@ -56,40 +56,40 @@ public class WeaponPickupNode : MonoBehaviourPun
     /// 스폰 노드 활성화 (라운드 시작).
     /// spawnNodes는 위치를 절대 이동하지 않으므로 transform.position 그대로 사용.
     /// </summary>
-    public void ActivateAsSpawnNode(Weapon.EWeaponType type, int ammo)
+    public void ActivateAsSpawnNode(Weapon.EWeaponType _type, int _ammo)
     {
-        SetupAndActivate(transform.position, type, ammo);
+        SetupAndActivate(transform.position, _type, _ammo);
     }
 
     /// <summary>
     /// 드롭 노드 활성화 (플레이어 무기 버리기): 위치 + 타입 + 잔탄수를 외부에서 주입.
     /// dropNodePool 노드는 position이 변경될 수 있음.
     /// </summary>
-    public void SetupAndActivate(Vector3 position, Weapon.EWeaponType type, int ammo)
+    public void SetupAndActivate(Vector3 _position, Weapon.EWeaponType _type, int _ammo)
     {
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
-            position, (int)type, ammo, true);
+            _position, (int)_type, _ammo, true);
     }
 
     /// <summary>노드 비활성화 (픽업 완료 or 라운드 종료).</summary>
     public void Deactivate()
     {
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
-            transform.position, (int)_weaponType, 0, false);
+            transform.position, (int)weaponType, 0, false);
     }
 
     [PunRPC]
-    private void RPC_Setup(Vector3 position, int typeInt, int ammo, bool visible)
+    private void RPC_Setup(Vector3 _position, int _typeInt, int _ammo, bool _visible)
     {
-        Debug.Log($"[Node RPC] {gameObject.name} 가 {(Weapon.EWeaponType)typeInt} 로 세팅됨. Visible: {visible}");
-        transform.position = position;
-        _weaponType = (Weapon.EWeaponType)typeInt;
-        _currentAmmo = ammo;
-        _isAvailable = visible;
+        Debug.Log($"[Node RPC] {gameObject.name} 가 {(Weapon.EWeaponType)_typeInt} 로 세팅됨. Visible: {_visible}");
+        transform.position = _position;
+        weaponType = (Weapon.EWeaponType)_typeInt;
+        currentAmmo = _ammo;
+        isAvailable = _visible;
 
-        UpdateVisual(_weaponType, visible);
+        UpdateVisual(weaponType, _visible);
 
-        if (!visible)
+        if (!_visible)
             HideLabel();
     }
 
@@ -98,7 +98,7 @@ public class WeaponPickupNode : MonoBehaviourPun
     public void ShowLabel()
     {
         if (labelText == null) return;
-        labelText.text = _weaponType.ToString() + " \u25bc";
+        labelText.text = weaponType.ToString() + " \u25bc";
         labelText.gameObject.SetActive(true);
     }
 
@@ -114,33 +114,33 @@ public class WeaponPickupNode : MonoBehaviourPun
     /// 로컬 플레이어가 Q키를 눌렀을 때 PlayerController에서 직접 호출.
     /// MasterClient에게 장착 요청을 전달하고, 낙관적으로 노드를 즉시 숨김.
     /// </summary>
-    public void RequestPickup(int playerViewID)
+    public void RequestPickup(int _playerViewID)
     {
-        if (!_isAvailable) return;
+        if (!isAvailable) return;
 
-        int ammoToTransfer = _currentAmmo;
+        int ammoToTransfer = currentAmmo;
 
         // 모든 클라이언트에서 즉시 비활성화
         photonView.RPC(nameof(RPC_Setup), RpcTarget.All,
-            transform.position, (int)_weaponType, 0, false);
+            transform.position, (int)weaponType, 0, false);
 
         // MasterClient에게 무기 장착 요청 (type + ammo 직접 전달)
         photonView.RPC(nameof(RPC_RequestPickup), RpcTarget.MasterClient,
-            playerViewID, (int)_weaponType, ammoToTransfer);
+            _playerViewID, (int)weaponType, ammoToTransfer);
     }
 
     /// <summary>
     /// MasterClient 전용: 해당 플레이어에게 RPC_ForceEquipWeapon을 방송하고, 드롭 풀로 반환.
     /// </summary>
     [PunRPC]
-    public void RPC_RequestPickup(int playerViewID, int typeInt, int ammo)
+    public void RPC_RequestPickup(int _playerViewID, int _typeInt, int _ammo)
     {
-        PhotonView pv = PhotonView.Find(playerViewID);
+        PhotonView pv = PhotonView.Find(_playerViewID);
         if (pv == null) return;
 
         // All 클라이언트의 PlayerController에서 무기를 활성화
         pv.RPC(nameof(PlayerController.RPC_ForceEquipWeapon),
-            RpcTarget.All, typeInt, ammo);
+            RpcTarget.All, _typeInt, _ammo);
 
         // 드롭 풀 노드라면 추적 목록에서 제거 (스폰 노드는 no-op)
         WeaponSpawnManager.Instance?.ReturnNodeToDropPool(this);
@@ -148,13 +148,13 @@ public class WeaponPickupNode : MonoBehaviourPun
 
     // 비주얼 업데이트
 
-    private void UpdateVisual(Weapon.EWeaponType type, bool visible)
+    private void UpdateVisual(Weapon.EWeaponType _type, bool _visible)
     {
         if (weaponVisuals == null) return;
         foreach (var entry in weaponVisuals)
         {
             if (entry.visualObject != null)
-                entry.visualObject.SetActive(visible && entry.weaponType == type);
+                entry.visualObject.SetActive(_visible && entry.weaponType == _type);
         }
     }
 }

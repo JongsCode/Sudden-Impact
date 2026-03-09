@@ -26,5 +26,7 @@ public class PistolGun : Gun
             0,
             bulletData 
         );
+
+        GameEvents.SpreadUpdate(1f, fireRate, 1f);
     }
 }

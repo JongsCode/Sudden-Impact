@@ -47,6 +47,8 @@ public class Shotgun : Gun
                 0,
                 bulletData
             );
+
+            GameEvents.SpreadUpdate(2f, fireRate, 2f);
         }
     }
 }

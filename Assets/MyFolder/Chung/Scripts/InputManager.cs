@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -6,6 +7,13 @@ public class InputManager : MonoBehaviour
 {
     [SerializeField] private InputActionAsset myInputAction;
     [SerializeField] private PlayerRegistry myPlayerRegistry;
+
+    [Header("Cinemachine Aim Settings")]
+    [Tooltip("씨네머신 타겟용 오브젝트")]
+    [SerializeField] private Transform mouseAimTarget; 
+    [Tooltip("씨네머신 타겟 그룹의 가중치")]
+    [SerializeField] private float aimExpansionWeight = 0.5f;
+    [SerializeField] private CinemachineTargetGroup targetGroup;
 
     [Header("ForDebug")]
     [SerializeField] private PlayerController player;
@@ -20,11 +28,13 @@ public class InputManager : MonoBehaviour
     private InputAction onFireAction;
     private InputAction onSwapAction;
     private InputAction onInteractAction;
+    private InputAction onZoomAction;
 
     private Camera myMainCamera;
     private Plane aimPlane;
     private Vector3 worldAimPosition;
     private bool isFireHeld = false;
+    private bool isAiming = false;
 
 
     private void Awake()
@@ -40,6 +50,7 @@ public class InputManager : MonoBehaviour
         onFireAction = myInputAction.FindAction("Fire");
         onSwapAction = myInputAction.FindAction("Swap");
         onInteractAction = myInputAction.FindAction("Interact");
+        onZoomAction = myInputAction.FindAction("Zoom");
 
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
@@ -73,6 +84,11 @@ public class InputManager : MonoBehaviour
             OnMove(onMoveAction.ReadValue<Vector2>());
             OnRotate(onMousePosAction.ReadValue<Vector2>());
 
+            isAiming = onZoomAction.IsPressed();
+            // 우클릭(조준) 버튼을 누르고 있다면 가중치를 올림
+            UpdateTargetGroupWeight(isAiming);
+
+
             if (isFireHeld)
             {
                 player.TryAttack(worldAimPosition, true);
@@ -92,9 +108,29 @@ public class InputManager : MonoBehaviour
         if (aimPlane.Raycast(ray, out float enter))
         {
             worldAimPosition = ray.GetPoint(enter);
+
+            if (mouseAimTarget != null)
+            {
+                mouseAimTarget.position = worldAimPosition;
+            }
         }
 
         player.RotatePlayer(worldAimPosition);
+    }
+
+    private void UpdateTargetGroupWeight(bool isAiming)
+    {
+        if (targetGroup == null || targetGroup.Targets.Count < 2) return;
+
+        float targetWeight = isAiming ? 0.5f : 0f;
+
+        var target = targetGroup.Targets[1];
+
+        // 부드럽게 보간(Lerp)하며 가중치 변경
+        target.Weight = Mathf.Lerp(target.Weight, targetWeight, Time.fixedDeltaTime * 5f);
+
+        // 수정된 구조체를 다시 리스트에 할당 (덮어쓰기)
+        targetGroup.Targets[1] = target;
     }
 
     private void OnFireStart(InputAction.CallbackContext ctx)
