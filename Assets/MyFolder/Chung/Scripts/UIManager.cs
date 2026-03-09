@@ -33,7 +33,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private RectTransform crosshairUI;
 
-
+    [SerializeField]
     private Transform targetTransform; // InputManager의 mouseAimTarget
     private Camera mainCam;
     private Coroutine crosshairCoroutine;
@@ -79,9 +79,14 @@ public class UIManager : MonoBehaviour
         // 9-슬라이스 스케일 적용
         if (crosshairUI != null)
         {
-            // 기본값 대비 현재 퍼짐 정도의 비율로 크기 조절
-            float visualScale = currentSpread / lastBaseSpread;
-            crosshairUI.localScale = Vector3.one * visualScale;
+            // sizeDelta(Width/Height)를 조절
+            float baseUISize = 60f; // 초기 Width/Height 값
+            float targetUISize = baseUISize * (currentSpread / lastBaseSpread);
+
+            // 이렇게 하면 보더(십자선 두께)는 유지되고 중앙 공간만 넓어집니다.
+            crosshairUI.sizeDelta = new Vector2(targetUISize, targetUISize);
+
+            crosshairUI.localScale = Vector3.one;
         }
     }
 
