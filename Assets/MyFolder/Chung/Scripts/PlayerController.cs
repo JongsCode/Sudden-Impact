@@ -261,11 +261,19 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     #region 구르기 로직
     public void TryRoll(InputAction.CallbackContext ctx)
     {
+        if (Time.time < lastRollTime + rollCooldown)
+        {
+            Debug.Log("[PlayerController] Rolling is Cooling Down");
+            return;
+        }
+
         // 이동 코루틴
         StartCoroutine(RollCoroutine());
 
         // 무적 RPC
         photonView.RPC(nameof(StartRollCRP), RpcTarget.All);
+        lastRollTime = Time.time;
+
     }
 
     [PunRPC]
@@ -283,11 +291,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             || playerState == PlayerState.Dead)
             yield break;
 
-        if (Time.time < lastRollTime + rollCooldown)
-        {
-            Debug.Log("[PlayerController] Rolling is Cooling Down");
-            yield break;
-        }
+
 
         Vector3 rollDirection;
         if (Vector3.SqrMagnitude(lastMoveDir) > 0.2f)
@@ -324,7 +328,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // 구르기가 끝난 후 잔여 속도를 소멸시켜 미끄러짐 방지
         myRigidbody.linearVelocity = Vector3.zero;
 
-        lastRollTime = Time.time;
     }
 
     // 상태 설정용
