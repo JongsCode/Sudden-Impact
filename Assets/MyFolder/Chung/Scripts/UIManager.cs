@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject ammoPanel;
 
     // 팀 생존 슬롯 UI 
-    [Header("Team Status UI (Feature 4-A)")]
+    [Header("Team Status UI")]
     [Tooltip("화면 좌측 최상단에 배치된 A팀 슬롯들 (4개)")]
     [SerializeField] private PlayerSlotUI[] teamASlots;
 
@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PlayerSlotUI[] teamBSlots;
 
     // 킬 로그 UI
-    [Header("Kill Log UI (Feature 4-B)")]
+    [Header("Kill Log UI")]
     [Tooltip("Vertical Layout Group 부모 Transform")]
     [SerializeField] private Transform killLogParent;
 

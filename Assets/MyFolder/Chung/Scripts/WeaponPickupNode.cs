@@ -3,10 +3,10 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// [New System] 무기 픽업 노드 - 데이터 보관함.
+/// 무기 픽업 노드 - 데이터 보관함.
 ///
 /// 역할:
-///   - 실제 Gun 오브젝트가 아닌, (EWeaponType + ammo) 데이터만 보유하는 가벼운 표지판.
+///   - (EWeaponType + ammo) 데이터만 보유
 ///   - 라운드 시작 시 WeaponSpawnManager가 SetupAndActivate()로 데이터를 주입.
 ///   - 플레이어가 버린 총도 이 노드 형태로 필드에 남겨짐 (RPC_CreateDropNode 경로).
 ///   - 플레이어가 Q키를 누르면: PlayerController → RequestPickup() → RPC_RequestPickup(MasterClient) → RPC_ForceEquipWeapon(All).
