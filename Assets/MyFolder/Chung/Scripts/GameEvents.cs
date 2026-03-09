@@ -20,6 +20,7 @@ public static class GameEvents
     // 라운드 시작 / 종료
     public static event Action OnRoundStart;
     public static event Action OnRoundEnd;
+    public static event Action<int> OnMatchEnd; // 승리 팀 번호를 전달
 
 
     //  호출 메서드
@@ -33,4 +34,6 @@ public static class GameEvents
     public static void PlayerUIDead(int _actorNumber)                   => OnPlayerUIDead?.Invoke(_actorNumber);
     public static void RoundStart()                                     => OnRoundStart?.Invoke();
     public static void RoundEnd()                                       => OnRoundEnd?.Invoke();
+
+    public static void MatchEnd(int _winTeam)                           => OnMatchEnd?.Invoke(_winTeam);
 }
