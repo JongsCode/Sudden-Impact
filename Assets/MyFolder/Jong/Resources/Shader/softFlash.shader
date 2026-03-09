@@ -51,7 +51,7 @@ Shader "Custom/SoftFlash"
             {
                
                 
-                float finalAlpha = _LightColor.a * IN.color.a;
+                float finalAlpha = _LightColor.a * IN.color.a + 0.5f;
                 float3 finalColor = _LightColor.rgb * _Intensity * finalAlpha;
 
                 return half4(finalColor, finalAlpha);
