@@ -28,6 +28,6 @@ Material:
     - _Progress: 1
     - _Thickness: 10
     m_Colors:
-    - _Color: {r: 0.6037736, g: 0.5952296, b: 0.5952296, a: 1}
+    - _Color: {r: 0.23632349, g: 0.23113209, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

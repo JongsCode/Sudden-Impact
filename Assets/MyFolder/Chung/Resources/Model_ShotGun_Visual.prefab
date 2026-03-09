@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5938540222097518741}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Model_ShotGun_Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -108,10 +108,22 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[2]'
       value: 
       objectReference: {fileID: 2100000, guid: ef853d47b66d00b448ddc2c4289208ed, type: 2}
+    - target: {fileID: -3875815587298801856, guid: e7675fc8b8f5c404283e9703babf8a85, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: e7675fc8b8f5c404283e9703babf8a85, type: 3}
       propertyPath: m_Name
       value: Pump Shotgun
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e7675fc8b8f5c404283e9703babf8a85, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3147377777093336764, guid: e7675fc8b8f5c404283e9703babf8a85, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ef853d47b66d00b448ddc2c4289208ed, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

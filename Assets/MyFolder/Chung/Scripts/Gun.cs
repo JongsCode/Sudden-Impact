@@ -8,6 +8,7 @@ public abstract class Gun : Weapon
     [SerializeField] protected GameObject projectilePrefab;     // ½î´Â ÃÑ¾Ë ÇÁ¸®ÆÕ
     [SerializeField] protected GameObject thrownWeaponPrefab; // ´øÁö´Â ÃÑ(¹«±â) ÇÁ¸®ÆÕ
     [SerializeField] private CinemachineImpulseSource impulseSource;
+    [SerializeField] private GameObject ripple;
 
     [Header("Parameter")]
     [SerializeField] protected int maxAmmo = 30;
@@ -69,12 +70,17 @@ public abstract class Gun : Weapon
         // ½ÇÁ¦ ÅºÈ¯ »ý¼º ·ÎÁ÷
         FireProjectile();
 
+        
+
         if (photonView.IsMine && impulseSource != null)
         {
-
-            Vector3 baseVelocity = impulseSource.DefaultVelocity;
-            Vector3 rotatedVelocity = transform.rotation * baseVelocity;
-            impulseSource.GenerateImpulse(rotatedVelocity);
+            photonView.RPC(nameof(SpawnRipple), RpcTarget.All, transform.position, ownerTeam);
+            if (impulseSource != null)
+            {
+                Vector3 baseVelocity = impulseSource.DefaultVelocity;
+                Vector3 rotatedVelocity = transform.rotation * baseVelocity;
+                impulseSource.GenerateImpulse(rotatedVelocity);
+            }
         }
     }
 
@@ -100,5 +106,14 @@ public abstract class Gun : Weapon
             0,
             info
         );
+    }
+
+    [PunRPC]
+    public void SpawnRipple(Vector3 _pos, int _spawnTeam)
+    {
+        if(_spawnTeam != (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"])
+        {
+            Instantiate(ripple, _pos, Quaternion.identity);
+        }
     }
 }
