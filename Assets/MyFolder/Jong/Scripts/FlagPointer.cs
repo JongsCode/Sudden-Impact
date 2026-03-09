@@ -90,11 +90,7 @@ public class FlagPointer : MonoBehaviour
         if (isOutScreen)
         {
             imageArrow.enabled = true;
-            if (hasFlag)
-            {
-                imageFlag.enabled = true;
-                
-            }
+            imageFlag.enabled = hasFlag;
 
             Vector3 centerToTarget = targetScreenPosition - screenCenter;
 
@@ -123,20 +119,14 @@ public class FlagPointer : MonoBehaviour
             if (distance < hideDistance)
             {
                 imageArrow.enabled = false;
-                if (hasFlag == true)
-                {
-                    imageFlag.enabled = false;
-                }
-                    textDistance.enabled = false;
+                imageFlag.enabled = false;
+                textDistance.enabled = false;
             }
             else
             {
                 imageArrow.enabled = true;
-                if (hasFlag == true)
-                {
-                    imageFlag.enabled = true;
-                    textDistance.enabled = true;
-                }
+                imageFlag.enabled = hasFlag;
+                textDistance.enabled = true;
             }
         }
     }
@@ -144,23 +134,7 @@ public class FlagPointer : MonoBehaviour
     public void FlagState(bool _hasFlag)
     {
         if (imageFlag == null || imageArrow == null) return;
-        if (_hasFlag)
-        {
-            imageArrow.enabled = true;
-            imageFlag.enabled = true;
-            textDistance.enabled = true;
-            hasFlag = true;
-            //targetObject = goalObject;
-            
-        }
-        else
-        {
-            imageArrow.enabled = true;
-            imageFlag.enabled = false;
-            textDistance.enabled = false;
-            hasFlag = false;
-            //targetObject = flagObject;
-        }
+        hasFlag = _hasFlag;
     }
     
 

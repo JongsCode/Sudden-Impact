@@ -46,7 +46,10 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     private void Start()
     {
-        
+        if(PhotonNetwork.IsMasterClient)
+        {
+            StartCoroutine(CountDownCoroutine());
+        }
     }
 
     public override void OnDisable()
@@ -73,7 +76,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         // Á×Àº ÇÃ·¹ÀÌ¾î°¡ Àû ±ê¹ßÀ» µé°í ÀÖ´Ù¸é?
         if (player.HasEnemyFlag)
         {
-            int droppedFlagIndex = (player.MyTeam == 0) ? 1 : 0; // AÆÀÀÌ Á×¾úÀ¸¸é BÆÀ(1) ±ê¹ßÀ» ¶³¾î¶ß¸²
+            int droppedFlagIndex = (player.MyTeam == 1) ? 1 : 0; // AÆÀÀÌ Á×¾úÀ¸¸é BÆÀ(1) ±ê¹ßÀ» ¶³¾î¶ß¸²
 
             // ¸ðµç Å¬¶óÀÌ¾ðÆ®¿¡°Ô ±ê¹ßÀ» ÀÌ À§Ä¡¿¡ ¶³¾î¶ß¸®¶ó°í ¸í·É!
             photonView.RPC(nameof(DropFlagRPC), RpcTarget.All, droppedFlagIndex, player.transform.position);
@@ -147,17 +150,17 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         if (!playerRegistry.TryGetPlayerByActorNumber(_myActorNumber, out PlayerController myPlayer)) return;
 
         myPlayer.GetFlag();
-        if (_flagIndex == playerRegistry.MyTeam)
+        if (_flagTeam == playerRegistry.MyTeam)
         {
             flagPointer.UpdateFlagObject(myPlayer.gameObject);
             flagPointer.HasFlag = true;
             flagPointer.FlagState(true);
             Debug.Log("HasFlag : " + flagPointer.HasFlag);
         }
-
-        if (_flagIndex >= 0 && _flagIndex < mapFlags.Length)
+        int flagIndex = (_flagIndex % 2 == 0) ? 0 : 1;
+        if (flagIndex >= 0 && flagIndex < mapFlags.Length)
         {
-            mapFlags[_flagIndex].HideFlag();
+            mapFlags[flagIndex].HideFlag();
         }
     }
 
@@ -171,12 +174,12 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         if (!teamAAlive)
         {
             // BÆÀ ½Â¸®
-            photonView.RPC(nameof(OnRoundEndRPC), RpcTarget.All, 1);
+            photonView.RPC(nameof(OnRoundEndRPC), RpcTarget.All, 2);
         }
         else if (!teamBAlive)
         {
             // AÆÀ ½Â¸®
-            photonView.RPC(nameof(OnRoundEndRPC), RpcTarget.All, 0);
+            photonView.RPC(nameof(OnRoundEndRPC), RpcTarget.All, 1);
         }
     }
 
@@ -213,7 +216,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     private void OnRoundEndRPC(int winTeam)
     {
-        if (winTeam == 0) teamAScore++;
+        if (winTeam == 1) teamAScore++;
         else teamBScore++;
 
         Debug.Log($"[GameManager] ¶ó¿îµå Á¾·á | AÆÀ: {teamAScore} / BÆÀ: {teamBScore}");
@@ -278,6 +281,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             if (mapFlags[i].myTeam != playerRegistry.MyTeam)
             {
                 flagPointer.UpdateFlagObject(mapFlags[i].gameObject);
+                flagPointer.HasFlag = false;
+                
             }
             else
             {
@@ -319,11 +324,18 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     private void OnMatchEnd(int winTeam)
     {
-        Debug.Log($"[GameManager] ¸ÅÄ¡ Á¾·á | ½Â¸®ÆÀ: {(winTeam == 0 ? "AÆÀ" : "BÆÀ")}");
+        Debug.Log($"[GameManager] ¸ÅÄ¡ Á¾·á | ½Â¸®ÆÀ: {(winTeam == 1 ? "AÆÀ" : "BÆÀ")}");
         playerRegistry.Clear();
 
         // TODO: °á°ú È­¸é UI È£Ãâ
     }
 
     #endregion
+
+    private IEnumerator CountDownCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+        
+        StartRound();
+    }
 }

@@ -135,11 +135,11 @@ public class FieldofView : MonoBehaviour
         foreach (Transform visibleTarget in visibleTargets)
         {
             //TODO : 시야 내에 없을 시 처리할 데이터 처리
-            //MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
-            //if (meshRender != null)
-            //{
-            //    meshRender.enabled = false;
-            //}
+            MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
+            if (meshRender != null)
+            {
+                meshRender.enabled = false;
+            }
         }
         visibleTargets.Clear();
         Collider[] targetsInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, targetMask);
@@ -149,16 +149,16 @@ public class FieldofView : MonoBehaviour
             if(CheckVisible(target))
             { 
                     visibleTargets.Add(target);
-                    // TODO : 시야내에 들어왔을 처리할 데이터 처리
-                    //foreach(Transform visibleTarget in visibleTargets)
-                    //{
-                    //    MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
-                    //    if(meshRender != null)
-                    //    {
-                    //        meshRender.enabled = true;
-                    //    }
-                    //}
-              
+                // TODO : 시야내에 들어왔을 처리할 데이터 처리
+                foreach (Transform visibleTarget in visibleTargets)
+                {
+                    MeshRenderer meshRender = visibleTarget.GetComponent<MeshRenderer>();
+                    if (meshRender != null)
+                    {
+                        meshRender.enabled = true;
+                    }
+                }
+
             }
         }
     }

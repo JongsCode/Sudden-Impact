@@ -34,8 +34,8 @@ public class PlayerRegistry : ScriptableObject
 
     public void RegisterPlayerTeam(PlayerController player, int team)
     {
-        if (team == 0) teamA.Add(player);
-        else teamB.Add(player);
+        if (team == 1) teamA.Add(player);
+        if (team == 2) teamB.Add(player);
     }
 
     public bool TryGetPlayerByActorNumber(int _actorNumber, out PlayerController _player)
