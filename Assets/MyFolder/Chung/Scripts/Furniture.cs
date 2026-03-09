@@ -1,6 +1,5 @@
 using UnityEngine;
 using Photon.Pun;
-using UnityEditor.UIElements;
 
 public class Furniture : MonoBehaviourPun, IAttackReceiver
 {
