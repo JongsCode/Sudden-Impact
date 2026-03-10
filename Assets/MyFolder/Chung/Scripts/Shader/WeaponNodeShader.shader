@@ -1,72 +1,106 @@
 Shader "Custom/WeaponNodeShader"
 {
     Properties {
-        _MainTex ("Weapon Texture", 2D) = "white" {} 
-        _Color ("Base Color", Color) = (1,1,1,1)
-        [HDR] _NeonColor ("Neon Outline Color", Color) = (0, 1, 1, 1) // Neon Cyan
-        _FresnelPower ("Outline Width", Range(0.1, 10.0)) = 3.0
+        [HDR] _NeonColor ("Neon Outline Color", Color) = (0, 1, 1, 1)
+        _OutlineWidth ("Outline Width", Range(0, 0.1)) = 0.02
     }
     SubShader {
-        Tags { "RenderType" = "Opaque" } 
+        Tags { "RenderType"="Transparent" "RenderPipeline"="UniversalPipeline" "Queue"="Transparent+1" }
+
+        // Pass 1: 무기 실루엣을 스텐실에 기록 (화면 출력 없음)
         Pass {
-            CGPROGRAM
+            Name "StencilWrite"
+            Cull Back
+            ZWrite Off
+            ZTest LEqual
+            ColorMask 0
+
+            Stencil {
+                Ref 2
+                Pass Replace
+            }
+
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #include "UnityCG.cginc" 
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            struct appdata {
-                float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
-                float3 normal : NORMAL; // 프레넬 연산을 위해 추가
+            struct Attributes { float4 positionOS : POSITION; };
+            struct Varyings {
+                float4 positionHCS : SV_POSITION;
+                float3 worldPos : TEXCOORD0;
             };
 
-            struct v2f {
-                float4 pos : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 worldPos : TEXCOORD1;
-                float3 worldNormal : NORMAL; // 월드 노멀 전달
-                float3 viewDir : TEXCOORD3;  // 시선 방향 전달
+            sampler2D _GlobalCurrentMap;
+            float4 _MapParams;
+
+            Varyings vert(Attributes IN) {
+                Varyings OUT;
+                OUT.positionHCS = TransformObjectToHClip(IN.positionOS.xyz);
+                OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
+                return OUT;
+            }
+
+            half4 frag(Varyings IN) : SV_Target {
+                float2 fogUV = (IN.worldPos.xz - _MapParams.xy) / _MapParams.z + 0.5;
+                if (tex2D(_GlobalCurrentMap, fogUV).r < 0.01) discard;
+                return half4(0, 0, 0, 0);
+            }
+            ENDHLSL
+        }
+
+        // Pass 2: 스텐실 2 바깥에만 네온 아웃라인 출력
+        Pass {
+            Name "OutlineRender"
+            Cull Back
+            ZWrite Off
+            ZTest Always
+            Blend SrcAlpha OneMinusSrcAlpha
+
+            Stencil {
+                Ref 2
+                Comp NotEqual
+            }
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            struct Attributes { float4 positionOS : POSITION; };
+            struct Varyings {
+                float4 positionHCS : SV_POSITION;
+                float3 worldPos : TEXCOORD0;
             };
 
-            sampler2D _MainTex;
-            fixed4 _Color;
-            fixed4 _NeonColor;
-            float _FresnelPower;
-            
-            sampler2D _GlobalCurrentMap; 
-            float4 _MapParams; 
+            half4 _NeonColor;
+            float _OutlineWidth;
+            sampler2D _GlobalCurrentMap;
+            float4 _MapParams;
 
-            v2f vert (appdata v) {
-                v2f o;
-                o.pos = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
-                o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.worldNormal = UnityObjectToWorldNormal(v.normal);
-                o.viewDir = normalize(_WorldSpaceCameraPos.xyz - o.worldPos);
-                return o;
+            Varyings vert(Attributes IN) {
+                Varyings OUT;
+                OUT.worldPos = TransformObjectToWorld(IN.positionOS.xyz);
+
+                float4 clipPos = TransformObjectToHClip(IN.positionOS.xyz);
+                float4 clipCenter = TransformObjectToHClip(float3(0, 0, 0));
+
+                // NDC 공간에서 중심 기준 방향 계산 후 클립 공간으로 적용
+                float2 ndcPos = clipPos.xy / clipPos.w;
+                float2 ndcCenter = clipCenter.xy / clipCenter.w;
+                float2 dir = normalize(ndcPos - ndcCenter + float2(0.0001, 0.0001));
+                clipPos.xy += dir * _OutlineWidth * clipPos.w;
+
+                OUT.positionHCS = clipPos;
+                return OUT;
             }
 
-            fixed4 frag (v2f i) : SV_Target {
-                // 1. 기존 안개 로직 (팀원분 코드 유지)
-                float2 mapCenter = _MapParams.xy;
-                float mapSize = _MapParams.z;
-                float2 fogUV = (i.worldPos.xz - mapCenter) / mapSize + 0.5;
-                float visibility = tex2D(_GlobalCurrentMap, fogUV).r;
-
-                // 2. 기본 텍스처 컬러
-                fixed4 baseColor = tex2D(_MainTex, i.uv) * _Color;
-
-                // 3. 네온 프레넬 로직 추가 (테두리 계산)
-                float fresnel = pow(1.0 - saturate(dot(normalize(i.worldNormal), i.viewDir)), _FresnelPower);
-                fixed3 neonEmission = fresnel * _NeonColor.rgb;
-
-                // 4. 안개 적용 (안개 밖이면 투명하게 날림)
-                if (visibility < 0.1) discard; 
-
-                // 5. 최종 출력: 기본 컬러 + 네온 테두리
-                return fixed4(baseColor.rgb + neonEmission, baseColor.a);
+            half4 frag(Varyings IN) : SV_Target {
+                float2 fogUV = (IN.worldPos.xz - _MapParams.xy) / _MapParams.z + 0.5;
+                if (tex2D(_GlobalCurrentMap, fogUV).r < 0.01) discard;
+                return half4(_NeonColor.rgb, _NeonColor.a);
             }
-            ENDCG
+            ENDHLSL
         }
     }
 }
