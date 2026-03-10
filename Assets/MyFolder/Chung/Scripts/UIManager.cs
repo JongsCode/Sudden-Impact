@@ -41,6 +41,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject resultPanel; // 승리/패배 패널
     [SerializeField] private TextMeshProUGUI resultText;
 
+    [Header("Pickup UI")]
+    [SerializeField] private RectTransform pickupUIRect; // 픽업 텍스트의 부모 RectTransform
+    [SerializeField] private TextMeshProUGUI pickupUIText;
+
+
+
 
 
     private Camera mainCam;
@@ -49,6 +55,8 @@ public class UIManager : MonoBehaviour
     private float lastRecRate = 15f;    // 가장 최근 총기에서 받은 회복 속도
     private float lastBaseSpread = 1f;  // 가장 최근 총기에서 받은 기본 크기
 
+    private Vector3 targetPickupPos;
+    private bool isPickupUIActive = false;
 
     // 라이프사이클
     private void Awake()
@@ -80,7 +88,45 @@ public class UIManager : MonoBehaviour
         // 마우스가 게임 창 밖으로 나가지 못하게 
         Cursor.lockState = CursorLockMode.Confined;
 
+        pickupUIRect.gameObject.SetActive(false);
     }
+
+    #region 이벤트 관리
+    /// <summary>
+    /// 이벤트 구독
+    /// </summary>
+    private void OnEnable()
+    {
+
+        GameEvents.OnHpChanged += HandleHpChanged;
+        GameEvents.OnWeaponChanged += HandleWeaponChanged;
+        GameEvents.OnAmmoChanged += HandleAmmoChanged;
+        GameEvents.OnScoreChanged += HandleScoreChanged;
+        GameEvents.OnSpreadUpdated += HandleSpreadUpdate;
+        GameEvents.OnPlayerUIInit += HandlePlayerUIInit;
+        GameEvents.OnPlayerUIDead += HandlePlayerUIDead;
+        GameEvents.OnKillLog += HandleKillLog;
+        GameEvents.OnMatchEnd += HandleMatchEnd;
+        GameEvents.OnPickupUIUpdate += HandlePickupUIUpdate;
+    }
+
+    /// <summary>
+    /// 이벤트 구독 해제
+    /// </summary>
+    private void OnDisable()
+    {
+        GameEvents.OnHpChanged -= HandleHpChanged;
+        GameEvents.OnWeaponChanged -= HandleWeaponChanged;
+        GameEvents.OnAmmoChanged -= HandleAmmoChanged;
+        GameEvents.OnScoreChanged -= HandleScoreChanged;
+
+        GameEvents.OnPlayerUIInit -= HandlePlayerUIInit;
+        GameEvents.OnPlayerUIDead -= HandlePlayerUIDead;
+        GameEvents.OnKillLog -= HandleKillLog;
+        GameEvents.OnMatchEnd -= HandleMatchEnd;
+        GameEvents.OnPickupUIUpdate -= HandlePickupUIUpdate;
+    }
+    #endregion
 
     private void Update()
     {
@@ -108,40 +154,22 @@ public class UIManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (isPickupUIActive && pickupUIRect != null && mainCam != null)
+        {
+            // 총기 바로 위쪽에 띄우기 위해 Y축으로 살짝 올림 (+1.5f 등 조정)
+            Vector3 offsetPos = targetPickupPos + new Vector3(0, 1.0f, 0);
+            pickupUIRect.position = mainCam.WorldToScreenPoint(offsetPos);
+        }
+
         if (targetTransform == null || crosshairUI == null) return;
 
         // 월드 좌표 -> 스크린 좌표 변환 후 UI 배치
         crosshairUI.position = mainCam.WorldToScreenPoint(targetTransform.position);
+
+
     }
 
 
-
-    private void OnEnable()
-    {
-    
-        GameEvents.OnHpChanged += HandleHpChanged;
-        GameEvents.OnWeaponChanged += HandleWeaponChanged;
-        GameEvents.OnAmmoChanged += HandleAmmoChanged;
-        GameEvents.OnScoreChanged += HandleScoreChanged;
-        GameEvents.OnSpreadUpdated += HandleSpreadUpdate;
-        GameEvents.OnPlayerUIInit += HandlePlayerUIInit;
-        GameEvents.OnPlayerUIDead += HandlePlayerUIDead;
-        GameEvents.OnKillLog += HandleKillLog;
-        GameEvents.OnMatchEnd += HandleMatchEnd;
-    }
-
-    private void OnDisable()
-    {
-        GameEvents.OnHpChanged -= HandleHpChanged;
-        GameEvents.OnWeaponChanged -= HandleWeaponChanged;
-        GameEvents.OnAmmoChanged -= HandleAmmoChanged;
-        GameEvents.OnScoreChanged -= HandleScoreChanged;
-
-        GameEvents.OnPlayerUIInit -= HandlePlayerUIInit;
-        GameEvents.OnPlayerUIDead -= HandlePlayerUIDead;
-        GameEvents.OnKillLog -= HandleKillLog;
-        GameEvents.OnMatchEnd -= HandleMatchEnd;
-    }
 
     private void HandleSpreadUpdate(float _cur, float _rec, float _baseVal)
     {
@@ -223,6 +251,21 @@ public class UIManager : MonoBehaviour
             resultPanel.SetActive(true);
             // 내 팀 정보를 레지스트리나 로컬 속성에서 가져와 승패 판단
             resultText.text = (winTeam == 1) ? "TEAM A WIN" : "TEAM B WIN";
+        }
+    }
+
+    private void HandlePickupUIUpdate(bool isShow, Vector3 pos, string text)
+    {
+        isPickupUIActive = isShow;
+
+        if (pickupUIRect != null)
+        {
+            pickupUIRect.gameObject.SetActive(isShow);
+            if (isShow)
+            {
+                targetPickupPos = pos;
+                pickupUIText.text = text;
+            }
         }
     }
 

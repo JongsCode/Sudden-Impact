@@ -441,12 +441,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
             if (node == closestNode) closestNode.HideLabel();
 
-            if (nearbyNodes.Count == 0)
-            {
-                StopCoroutine(curCheckClosestNodeCoroutine);
-                closestNode = null;
-                curCheckClosestNodeCoroutine = null;
-            }
+            //if (nearbyNodes.Count == 0)
+            //{
+            //    StopCoroutine(curCheckClosestNodeCoroutine);
+            //    closestNode = null;
+            //    curCheckClosestNodeCoroutine = null;
+            //}
         }
     }
 
@@ -480,8 +480,17 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             // Toggle label: 이전 노드의 레이블을 끄고 새 노드의 레이블을 켠다
             if (tempClosest != prevClosest)
             {
-                if (prevClosest != null) prevClosest.HideLabel();
-                if (tempClosest != null) tempClosest.ShowLabel();
+                if (prevClosest != null)
+                {
+                    prevClosest.HideLabel();
+                    GameEvents.PickupUIUpdate(false, Vector3.zero);
+                    Debug.Log("[Player] PickUpUIOff");
+                }
+                if (tempClosest != null)
+                {
+                    tempClosest.ShowLabel();
+                    GameEvents.PickupUIUpdate(true, tempClosest.transform.position, $"{tempClosest.WeaponType} [E]");
+                }
                 prevClosest = tempClosest;
             }
 
@@ -489,7 +498,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
 
         // 주위에 더이상 노드가 없을 떄
-        if (closestNode != null) closestNode.HideLabel();
+        if (closestNode != null) 
+        {
+            closestNode.HideLabel();
+            GameEvents.PickupUIUpdate(false, Vector3.zero);
+            Debug.Log("[Player] PickUpUIOff");
+        }
         closestNode = null;
         curCheckClosestNodeCoroutine = null;
     }

@@ -49,6 +49,9 @@ public class WeaponPickupNode : MonoBehaviourPun
 
     /// <summary>WeaponSpawnManager가 풀에서 자유 노드를 판별할 때 사용.</summary>
     public bool IsAvailable => isAvailable;
+    /// <summary>노드가 담고있는 무기의 타입.</summary>
+    public Weapon.EWeaponType WeaponType => weaponType;
+
 
     // WeaponSpawnManager에서 호출
 
