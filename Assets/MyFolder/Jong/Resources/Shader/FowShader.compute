@@ -32,3 +32,25 @@ void Blur(uint3 id : SV_DispatchThreadID)
 
     RT_BlurOverlap[id.xy] = sum / 9.0;
 }
+
+#pragma kernel BlurCurrent
+
+RWTexture2D<float4> RT_Current_RW;
+RWTexture2D<float4> RT_BlurCurrent;
+
+[numthreads(8, 8, 1)]
+void BlurCurrent(uint3 id : SV_DispatchThreadID)
+{
+    float4 sum = float4(0, 0, 0, 0);
+    for (int x = -BlurDetail; x <= BlurDetail; x++)
+    {
+        for (int y = -BlurDetail; y <= BlurDetail; y++)
+        {
+            sum += RT_Current_RW[id.xy + int2(x, y)];
+        }
+    }
+    float4 blurred = sum / 9.0;
+    float4 original = RT_Current_RW[id.xy];
+
+    RT_BlurCurrent[id.xy] = blurred * original;
+}

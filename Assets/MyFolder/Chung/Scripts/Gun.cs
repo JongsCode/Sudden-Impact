@@ -14,15 +14,21 @@ public abstract class Gun : Weapon
     [SerializeField] protected int maxAmmo = 30;
     [SerializeField] protected float fireRate = 0.1f;         // 연사 속도 
 
+    [Header("Ripple Setting")]
+    [Tooltip("리플 생성 시간 최소 간격")]
+    [SerializeField] private float rippleCooldown = 0.3f;
+    [Tooltip("해당 거리 이상일 때 리플 생성")]
+    [SerializeField] private float rippleMinDistance = 8f;
+
     [Tooltip("체크 시 꾹 누르면 연사, 해제 시 클릭마다 단발")]
     public bool isAutomatic = true;                           // 단발/연사 구분용 스위치 (PlayerController에서 읽음)
 
     protected int currentAmmo;
+    protected float lastFireTime;                             // 마지막으로 총을 쏜 시간을 기억하는 변수
+    private float lastRippleTime;
+
     public int CurrentAmmo => currentAmmo;
     public int MaxAmmo => maxAmmo;
-
-    protected float lastFireTime;                             // 마지막으로 총을 쏜 시간을 기억하는 변수
-
 
     protected virtual void OnEnable()
     {
@@ -111,9 +117,19 @@ public abstract class Gun : Weapon
     [PunRPC]
     public void SpawnRipple(Vector3 _pos, int _spawnTeam)
     {
-        if(_spawnTeam != (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"])
-        {
-            Instantiate(ripple, _pos, Quaternion.identity);
-        }
+        // 같은 팀이면 스킵
+        if (_spawnTeam == (int)PhotonNetwork.LocalPlayer.CustomProperties["Team"]) return;
+
+        // 쿨다운: 같은 총에서 너무 자주 생성 방지
+        if (Time.time - lastRippleTime < rippleCooldown) return;
+
+        // 거리 체크: 너무 가까우면 직접 보이는 상황이므로 스킵 (XZ 평면 기준)
+        Vector3 camPos = Camera.main.transform.position;
+        float distSqr = (_pos.x - camPos.x) * (_pos.x - camPos.x)
+                      + (_pos.z - camPos.z) * (_pos.z - camPos.z);
+        if (distSqr < rippleMinDistance * rippleMinDistance) return;
+
+        lastRippleTime = Time.time;
+        Instantiate(ripple, _pos, Quaternion.identity);
     }
 }

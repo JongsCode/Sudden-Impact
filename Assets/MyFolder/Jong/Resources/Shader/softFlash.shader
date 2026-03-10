@@ -10,9 +10,12 @@ Shader "Custom/SoftFlash"
     {
         Tags { "RenderType" = "Transparent" "RenderPipeline" = "UniversalPipeline" "Queue" = "Transparent" }
         
-        BlendOp Max
-        Blend One One 
-        
+        // 수정 전
+        // BlendOp Max
+        // Blend One One 
+
+        // 수정 후
+        Blend SrcAlpha OneMinusSrcAlpha        
         ZWrite Off
 
         Pass
@@ -51,8 +54,8 @@ Shader "Custom/SoftFlash"
             {
                
                 
-                float finalAlpha = _LightColor.a * IN.color.a + 0.5f;
-                float3 finalColor = _LightColor.rgb * _Intensity * finalAlpha;
+                float finalAlpha = _LightColor.a * IN.color.a;
+                float3 finalColor = _LightColor.rgb * _Intensity; // * finalAlpha;
 
                 return half4(finalColor, finalAlpha);
             }

@@ -305,9 +305,11 @@ public class FieldofView : MonoBehaviour
         for (int i = 0; i < vertexCount - 1; ++i)
         {
             vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i] + transform.forward * maskCutawayDistance);
-            float currentDistance = Vector3.Distance(vertices[0], vertices[i + 1]);
-            float alpha = Mathf.Clamp01(1f - currentDistance / viewRadius);
-            colors[i + 1] = new Color(1f, 1f, 1f, alpha);
+
+            // 소프트 엣지 주석 처리
+            // float currentDistance = Vector3.Distance(vertices[0], vertices[i + 1]);
+            // float alpha = Mathf.Clamp01(1f - currentDistance / viewRadius);
+            colors[i + 1] = new Color(1f, 1f, 1f, 1f);
             if (i < vertexCount - 2)
             {
                 triangles[i * 3] = 0;
