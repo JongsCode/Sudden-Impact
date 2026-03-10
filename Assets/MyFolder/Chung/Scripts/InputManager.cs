@@ -33,6 +33,7 @@ public class InputManager : MonoBehaviour
     private Camera myMainCamera;
     private Plane aimPlane;
     private Vector3 worldAimPosition;
+    
     private bool isFireHeld = false;
     private bool isAiming = false;
 
@@ -60,9 +61,17 @@ public class InputManager : MonoBehaviour
 
     }
 
-    private void Update()
+    private void LateUpdate()
     {
+        if (player == null) return;
 
+        Ray ray = myMainCamera.ScreenPointToRay(onMousePosAction.ReadValue<Vector2>());
+        if (aimPlane.Raycast(ray, out float enter))
+        {
+            worldAimPosition = ray.GetPoint(enter);
+            if (mouseAimTarget != null)
+                mouseAimTarget.position = worldAimPosition;
+        }
     }
 
     private void SetConnectActionMap(bool _isConnect)
@@ -82,7 +91,8 @@ public class InputManager : MonoBehaviour
             if (!playerMap.enabled) continue;
 
             OnMove(onMoveAction.ReadValue<Vector2>());
-            OnRotate(onMousePosAction.ReadValue<Vector2>());
+            //OnRotate(onMousePosAction.ReadValue<Vector2>());
+            player.RotatePlayer(worldAimPosition);
 
             isAiming = onZoomAction.IsPressed();
             // 우클릭(조준) 버튼을 누르고 있다면 가중치를 올림
@@ -101,22 +111,24 @@ public class InputManager : MonoBehaviour
         player.MovePlayer(new Vector3(_moveAxis.x, 0f, _moveAxis.y));
     }
 
-    private void OnRotate(Vector2 _mouseScreenPos)
-    {
-        Ray ray = myMainCamera.ScreenPointToRay(_mouseScreenPos);
+    //private void OnRotate(Vector2 _mouseScreenPos)
+    //{
+    //    Ray ray = myMainCamera.ScreenPointToRay(_mouseScreenPos);
 
-        if (aimPlane.Raycast(ray, out float enter))
-        {
-            worldAimPosition = ray.GetPoint(enter);
+    //    if (aimPlane.Raycast(ray, out float enter))
+    //    {
+    //        worldAimPosition = ray.GetPoint(enter);
 
-            if (mouseAimTarget != null)
-            {
-                mouseAimTarget.position = worldAimPosition;
-            }
-        }
+    //        smoothedAimPosition = Vector3.Lerp(smoothedAimPosition, worldAimPosition, Time.deltaTime * 20f);
 
-        player.RotatePlayer(worldAimPosition);
-    }
+    //        if (mouseAimTarget != null)
+    //        {
+    //            mouseAimTarget.position = smoothedAimPosition;
+    //        }
+    //    }
+
+    //    player.RotatePlayer(worldAimPosition);
+    //}
 
     private void UpdateTargetGroupWeight(bool isAiming)
     {
