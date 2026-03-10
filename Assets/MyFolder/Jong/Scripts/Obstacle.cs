@@ -30,7 +30,7 @@ public class Obstacle : MonoBehaviour
         if (ghostPrefab != null)
 
         {
-            GameObject go = Instantiate(ghostPrefab, transform.position, transform.localRotation);
+            GameObject go = Instantiate(ghostPrefab, transform.position, transform.rotation);
             Debug.Log("GhostObject");
             GhostItem ghostItem = go.GetComponent<GhostItem>();
             if (ghostItem != null)
