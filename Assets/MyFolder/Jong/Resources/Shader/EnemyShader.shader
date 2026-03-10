@@ -46,7 +46,7 @@ Shader "Custom/EnemyShader"
 
                 fixed currentValue = tex2D(_GlobalCurrentMap, fogUV).r;
 
-                clip(currentValue - 0.1); 
+                clip(currentValue - 0.01); 
 
                 return baseColor;
             }

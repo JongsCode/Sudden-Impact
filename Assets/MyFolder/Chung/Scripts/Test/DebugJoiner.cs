@@ -61,10 +61,19 @@ public class DebugJoiner : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        // 내 닉네임을 "Player_액터번호" 형식으로 지정합니다.
+
         string myNickName = $"Player_{PhotonNetwork.LocalPlayer.ActorNumber}";
         PhotonNetwork.LocalPlayer.NickName = myNickName;
 
+        // 디버그용 팀 설정 (홀수 번호는 1팀, 짝수 번호는 0팀 등 임의 배정)
+        int debugTeam = (PhotonNetwork.LocalPlayer.ActorNumber % 2 == 0) ? 0 : 1;
+
+        //프로퍼티 설정
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
+        props["Team"] = debugTeam; 
+        PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+
+        Log($"방 입장 완료 | 닉네임: {myNickName} | 디버그 팀: {debugTeam}");
         Log($"방 입장 완료 | 닉네임: {myNickName} | 플레이어 수: {PhotonNetwork.CurrentRoom.PlayerCount}");
 
         // SpawnPlayer(); 

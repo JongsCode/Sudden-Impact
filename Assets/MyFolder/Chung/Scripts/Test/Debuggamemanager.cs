@@ -36,6 +36,9 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     [Header("StartButton")]
     [SerializeField] private Button startButton;
 
+    [Header("SceneLoad")]
+    [SerializeField] private string lobbySceneName;
+
     // -----------------------------------------------
 
     private void Awake()
@@ -321,13 +324,24 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     // -----------------------------------------------
     // 매치 종료
     // -----------------------------------------------
-
     private void OnMatchEnd(int winTeam)
     {
         Debug.Log($"[GameManager] 매치 종료 | 승리팀: {(winTeam == 1 ? "A팀" : "B팀")}");
-        playerRegistry.Clear();
 
-        // TODO: 결과 화면 UI 호출
+        // 이벤트 버스를 통해 UI 매니저 등에게 알림
+        GameEvents.MatchEnd(winTeam);
+
+        // 기존의 로비 복귀 코루틴은 그대로 유지
+        StartCoroutine(ReturnToLobbyCoroutine());
+    }
+
+    private IEnumerator ReturnToLobbyCoroutine()
+    {
+        yield return new WaitForSeconds(5f);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel(lobbySceneName); // 실제 로비 씬 이름으로 변경
+        }
     }
 
     #endregion

@@ -12,6 +12,8 @@ public class FogOfWar : MonoBehaviour
     public RenderTexture rt_Temp;
 
     private RenderTexture rt_BlurOverlap;
+    private RenderTexture rt_BlurCurrent; // 이것도 추가
+
     [Range(1,10)]
     public int blurDetail = 1;
     private void Awake()
@@ -25,6 +27,12 @@ public class FogOfWar : MonoBehaviour
         rt_BlurOverlap = new RenderTexture(rt_Overlap.descriptor);
         rt_BlurOverlap.Create();
         rt_BlurOverlap.enableRandomWrite = true;
+
+        // 블러처리를 위해 추가
+        rt_BlurCurrent = new RenderTexture(rt_Current.descriptor);
+        rt_BlurCurrent.enableRandomWrite = true;
+        rt_BlurCurrent.Create();
+        rt_Current.enableRandomWrite = true;
     }
 
     private void OnEnable()
@@ -59,10 +67,17 @@ public class FogOfWar : MonoBehaviour
             fogCompute.SetInt("BlurDetail", blurDetail);
             fogCompute.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
 
+            kernel = fogCompute.FindKernel("BlurCurrent");
+            fogCompute.SetTexture(kernel, "RT_Current_RW", rt_Current);
+            fogCompute.SetTexture(kernel, "RT_BlurCurrent", rt_BlurCurrent);
+            fogCompute.SetInt("BlurDetail", blurDetail); 
+            fogCompute.Dispatch(kernel, threadGroupsX, threadGroupsY, 1);
+
             Shader.SetGlobalVector("_MapParams", new Vector4(0, 0, 100, 0));
             Shader.SetGlobalTexture("_GlobalMap", rt_BlurOverlap);
-            Shader.SetGlobalTexture("_GlobalCurrentMap", rt_Current);
-            if(rt_Temp != null)
+            //Shader.SetGlobalTexture("_GlobalCurrentMap", rt_Current);
+            Shader.SetGlobalTexture("_GlobalCurrentMap", rt_BlurCurrent);
+            if (rt_Temp != null)
             {
                 Shader.SetGlobalTexture("_GlobalTempMap", rt_Temp);
             }

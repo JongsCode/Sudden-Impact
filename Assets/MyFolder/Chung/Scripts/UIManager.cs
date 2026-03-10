@@ -16,7 +16,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject ammoPanel;
 
     // 팀 생존 슬롯 UI 
-    [Header("Team Status UI (Feature 4-A)")]
+    [Header("Team Status UI")]
     [Tooltip("화면 좌측 최상단에 배치된 A팀 슬롯들 (4개)")]
     [SerializeField] private PlayerSlotUI[] teamASlots;
 
@@ -24,7 +24,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PlayerSlotUI[] teamBSlots;
 
     // 킬 로그 UI
-    [Header("Kill Log UI (Feature 4-B)")]
+    [Header("Kill Log UI")]
     [Tooltip("Vertical Layout Group 부모 Transform")]
     [SerializeField] private Transform killLogParent;
 
@@ -36,6 +36,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float spreadSensitivity = 5f; // 1도당 벌어질 픽셀 거리 (중요!)
     [SerializeField] private RectTransform crosshairUI;
     [SerializeField] private Transform targetTransform; // InputManager의 mouseAimTarget
+
+    [Header("Result UI")]
+    [SerializeField] private GameObject resultPanel; // 승리/패배 패널
+    [SerializeField] private TextMeshProUGUI resultText;
+
+
 
     private Camera mainCam;
     private Coroutine crosshairCoroutine;
@@ -121,6 +127,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerUIInit += HandlePlayerUIInit;
         GameEvents.OnPlayerUIDead += HandlePlayerUIDead;
         GameEvents.OnKillLog += HandleKillLog;
+        GameEvents.OnMatchEnd += HandleMatchEnd;
     }
 
     private void OnDisable()
@@ -133,6 +140,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnPlayerUIInit -= HandlePlayerUIInit;
         GameEvents.OnPlayerUIDead -= HandlePlayerUIDead;
         GameEvents.OnKillLog -= HandleKillLog;
+        GameEvents.OnMatchEnd -= HandleMatchEnd;
     }
 
     private void HandleSpreadUpdate(float _cur, float _rec, float _baseVal)
@@ -206,6 +214,16 @@ public class UIManager : MonoBehaviour
 
         KillLogEntry entry = Instantiate(killLogEntryPrefab, killLogParent);
         entry.Show(killer, victim);
+    }
+
+    private void HandleMatchEnd(int winTeam)
+    {
+        if (resultPanel != null)
+        {
+            resultPanel.SetActive(true);
+            // 내 팀 정보를 레지스트리나 로컬 속성에서 가져와 승패 판단
+            resultText.text = (winTeam == 1) ? "TEAM A WIN" : "TEAM B WIN";
+        }
     }
 
     // 유틸리티

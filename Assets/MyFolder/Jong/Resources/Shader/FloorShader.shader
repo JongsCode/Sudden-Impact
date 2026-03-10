@@ -3,6 +3,8 @@ Shader "Custom/FloorShader"
     Properties
     {
         _MainTex ("Floor Texture", 2D) = "white" {} // 바닥에 입힐 원래 이미지/텍스처
+        _VisitedBrightness ("방문한 곳 밝기", Range(0, 1)) = 0.01
+        _FogMinBrightness ("미방문 최소 밝기", Range(0, 1)) = 0.05
     }
     SubShader
     {
@@ -29,7 +31,12 @@ Shader "Custom/FloorShader"
             };
 
             sampler2D _MainTex;
+
+            float4 _MainTex_ST;
             
+            fixed _VisitedBrightness;
+            fixed _FogMinBrightness;
+
             sampler2D _GlobalMap;
             sampler2D _GlobalCurrentMap;
             sampler2D _GlobalTempMap;
@@ -40,7 +47,7 @@ Shader "Custom/FloorShader"
             {
                 v2f o;
                 o.pos = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 
                 o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
                 return o;
@@ -50,7 +57,6 @@ Shader "Custom/FloorShader"
             {
                 // 바닥의 원래 색상
                 fixed4 baseColor = tex2D(_MainTex, i.uv);
-
 								// Params을 이용하여 지도상의 UV 좌표로 변환
                 float2 mapCenter = _MapParams.xy;
                 float mapSize = _MapParams.z;
@@ -62,8 +68,14 @@ Shader "Custom/FloorShader"
                 fixed tempValue = tex2D(_GlobalTempMap, fogUV).r;
 
                 fixed finalCurrent = max(currentValue,tempValue);
-                fixed finalValue = max(overlapValue * 0.3, finalCurrent);
-                return baseColor * finalValue;
+                fixed finalValue = max(overlapValue * _VisitedBrightness, finalCurrent);
+                // 이전 (주석 처리)
+                // return baseColor * finalValue;
+
+                // 변경
+                fixed visibleValue = max(finalValue, _FogMinBrightness);
+                return baseColor * visibleValue;
+
                 //return fixed4(overlapValue, overlapValue, overlapValue, 1.0);
                 //return baseColor * fogValue;
             }
