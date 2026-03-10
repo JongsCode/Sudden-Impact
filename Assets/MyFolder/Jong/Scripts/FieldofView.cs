@@ -80,6 +80,7 @@ public class FieldofView : MonoBehaviour
         FindVisibleTargets();
         FindGhostItems();
         FindItem();
+        FindObstacle();
     }
 
     public bool CheckVisible(Transform _target)
@@ -202,7 +203,9 @@ public class FieldofView : MonoBehaviour
         for(int i = 0; i< itemsCol.Length; ++i)
         {
             Item item = itemsCol[i].GetComponentInParent<Item>();
+            
             if (item == null) continue;
+            item.SetFOW(this.gameObject);
             
                 if(CheckVisible(item.transform))
                 {
@@ -223,6 +226,17 @@ public class FieldofView : MonoBehaviour
                 item.SetVisible(false);
                 items.RemoveAt(i);
             }
+        }
+    }
+    private void FindObstacle()
+    {
+        Collider[] obstalceCol = Physics.OverlapSphere(transform.position, viewRadius + itemViewBuffer, furnitureMask);
+        for (int i = 0; i < obstalceCol.Length; ++i)
+        {
+            Obstacle obstacle = obstalceCol[i].GetComponent<Obstacle>();
+
+            if (obstacle == null) continue;
+            obstacle.SetFOW(this.gameObject);
         }
     }
     private void FindDropItems() // FOV에서 계속 호출해줘야 하는 거고.

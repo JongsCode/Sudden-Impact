@@ -3,17 +3,17 @@ using UnityEngine;
 public class GhostItem : MonoBehaviour
 {
     public FieldofView fow;
-
+    public void SetFOW(GameObject _gameObject)
+    {
+        fow = _gameObject.GetComponent<FieldofView>();
+    }
     public void CheckGhostItem()
     {
-        if (fow == null)
-        {
-            fow = FindFirstObjectByType<FieldofView>();
-        }
+        
        
         if(fow.CheckVisible(transform))
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         else
         {
@@ -24,7 +24,7 @@ public class GhostItem : MonoBehaviour
 
     public void DeleteItem()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }
 
