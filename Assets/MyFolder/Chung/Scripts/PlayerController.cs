@@ -489,7 +489,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 if (tempClosest != null)
                 {
                     tempClosest.ShowLabel();
-                    GameEvents.PickupUIUpdate(true, tempClosest.transform.position, $"{tempClosest.WeaponType} [E]");
+                    GameEvents.PickupUIUpdate(true, tempClosest.transform.position, $"{tempClosest.WeaponType} [Q]");
                 }
                 prevClosest = tempClosest;
             }
