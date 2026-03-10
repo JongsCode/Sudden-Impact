@@ -5,7 +5,7 @@ public class Item : MonoBehaviour
     public GameObject ghostPrefab;
     public Shader equipShader;
     public Shader itemShader;
-    public Shader originShader;
+    private Shader originShader;
     public FieldofView fow;
     public GameObject ghostObject;
     public GameObject itemObject;
@@ -30,39 +30,56 @@ public class Item : MonoBehaviour
     {
         SetVisible(false);
     }
-
-
-    public void PickItem()
+    public void SetFOW(GameObject _gameObject)
     {
-        if (ghostPrefab == null) return;
-
-        GameObject go = Instantiate(ghostPrefab, transform.position, transform.localRotation);
-        Debug.Log("GhostObject");
-        GhostItem ghostItem = go.GetComponent<GhostItem>();
-        if (ghostItem != null)
+        fow = _gameObject.GetComponent<FieldofView>();
+        if (ghostObject != null)
         {
-            ghostItem.CheckGhostItem();
-        }
-        SetShader(equipShader);
-
-
-    }
-
-    public void MakeGhostItem(Vector3 _position)
-    {
-        if (ghostPrefab == null) return;
-
-        GameObject go = Instantiate(ghostPrefab, _position, transform.localRotation);
-        GhostItem ghostItem = go.GetComponent<GhostItem>();
-        if (ghostItem != null)
-        {
-            ghostItem.CheckGhostItem();
+            GhostItem ghostItem = ghostObject.GetComponent<GhostItem>();
+            if (ghostItem != null)
+            {
+                ghostItem.SetFOW(fow.gameObject);
+            }
         }
     }
+
+    //public void PickItem()
+    //{
+    //    if (ghostPrefab == null) return;
+
+    //    GameObject go = Instantiate(ghostPrefab, transform.position, transform.localRotation);
+    //    Debug.Log("GhostObject");
+    //    GhostItem ghostItem = go.GetComponent<GhostItem>();
+    //    if (ghostItem != null)
+    //    {
+    //        ghostItem.CheckGhostItem();
+    //    }
+    //    SetShader(equipShader);
+
+
+    //}
+
+    //public void MakeGhostItem(Vector3 _position)
+    //{
+    //    if (ghostPrefab == null) return;
+
+    //    GameObject go = Instantiate(ghostPrefab, _position, transform.localRotation);
+    //    GhostItem ghostItem = go.GetComponent<GhostItem>();
+
+    //    if (ghostItem != null)
+    //    {
+    //        if (fow != null)
+    //        {
+    //            ghostItem.SetFOW(fow.gameObject);
+    //            ghostItem.CheckGhostItem();
+    //        }
+    //    }
+    //}
 
 
     public void SetVisible(bool _isVisible)
     {
+        if (currentVisible == _isVisible) return;
         currentVisible = _isVisible;
 
         if (_isVisible)
@@ -71,6 +88,7 @@ public class Item : MonoBehaviour
             {
                 seenBroken = true;
             }
+
             SetRender(true);
             SetGhostItem(false);
         }
@@ -99,10 +117,12 @@ public class Item : MonoBehaviour
             return;
         }
 
-        if(isBroken)
+        if (isBroken)
         {
-            itemObject.SetActive(false);
-            brokenObject.SetActive(false);
+            itemObject.GetComponent<MeshRenderer>().enabled = false;
+            brokenObject.GetComponent<MeshRenderer>().enabled = true;
+            //itemObject.SetActive(false);
+            //brokenObject.SetActive(false);
         }
         else
         {
@@ -113,10 +133,13 @@ public class Item : MonoBehaviour
     private void SetGhostItem(bool _isActive)
     {
         if (ghostObject == null) return;
-        if (_isActive == true)
+        if (_isActive)
         {
-            ghostPivot.gameObject.transform.position = originPivot.transform.position;
-            ghostPivot.gameObject.transform.rotation = originPivot.transform.rotation;
+            if (ghostPivot != null && originPivot != null)
+            {
+                ghostPivot.gameObject.transform.position = originPivot.transform.position;
+                ghostPivot.gameObject.transform.rotation = originPivot.transform.rotation;
+            }
         }
         if (ghostObject.gameObject.activeSelf == _isActive) return;
         ghostObject.gameObject.SetActive(_isActive);
@@ -141,10 +164,25 @@ public class Item : MonoBehaviour
     public void SetBrokenState(bool _isBroken)
     {
         isBroken = _isBroken;
-        if(currentVisible)
+        if (currentVisible)
         {
             seenBroken = true;
             SetRender(true);
+            SetGhostItem(false);
         }
+        else
+        { 
+                SetRender(false);
+                if (!isBroken || (isBroken && !seenBroken))
+                {
+                    SetGhostItem(true);
+                }
+                else
+                {
+                    SetGhostItem(false);
+                }
+            
+        }
+
     }
 }
