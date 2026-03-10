@@ -101,7 +101,7 @@ GameObject:
   - component: {fileID: 8837700711445752775}
   - component: {fileID: 1244619904093370577}
   - component: {fileID: 838655563320196266}
-  m_Layer: 13
+  m_Layer: 0
   m_Name: BrokenMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,110 +180,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &6923535872097219559
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1642735260146971883}
-  - component: {fileID: 3708670482302766565}
-  - component: {fileID: 666995645646896686}
-  - component: {fileID: 5320118082803048472}
-  m_Layer: 13
-  m_Name: GhostMesh
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1642735260146971883
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6923535872097219559}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 3, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4628170736095193975}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3708670482302766565
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6923535872097219559}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &666995645646896686
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6923535872097219559}
-  m_Enabled: 0
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 1ca0f4ef2c0975b4498e5f580a5ef00e, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5320118082803048472
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6923535872097219559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97e36920ba81b3c4db19c3d5a5fcac80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GhostItem
-  fow: {fileID: 0}
 --- !u!1 &7569693861799631049
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,10 +192,10 @@ GameObject:
   - component: {fileID: 7092621703135236744}
   - component: {fileID: 4733895021394522978}
   - component: {fileID: 4622668031928844491}
-  - component: {fileID: 1525934820410948230}
   - component: {fileID: 2394876504035237171}
-  m_Layer: 14
-  m_Name: TestFurniture
+  - component: {fileID: 8204023237635179241}
+  m_Layer: 13
+  m_Name: Furniture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -319,7 +215,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5436072921728661031}
-  - {fileID: 1642735260146971883}
   - {fileID: 8837700711445752775}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -84.031, z: 0}
@@ -379,27 +274,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1525934820410948230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7569693861799631049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c331ee70911735446b5b791f9f559e42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Item
-  ghostPrefab: {fileID: 487150503578724115, guid: c4ef8af6874dcf944a424abc0f040d84, type: 3}
-  equipShader: {fileID: 4800000, guid: 48cd43ea7bded754c853720fb892de73, type: 3}
-  itemShader: {fileID: 4800000, guid: 6235747a74ba3b14db2200bb3697ff1f, type: 3}
-  fow: {fileID: 0}
-  ghostObject: {fileID: 6923535872097219559}
-  itemObject: {fileID: 1153445012660059379}
-  brokenObject: {fileID: 4100292672614142823}
-  originPivot: {fileID: 7569693861799631049}
-  ghostPivot: {fileID: 7569693861799631049}
 --- !u!65 &2394876504035237171
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -421,3 +295,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 3, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8204023237635179241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7569693861799631049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 302e8ad8fe55fe04fbdfcc7e16b132f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Obstacle
+  ghostPrefab: {fileID: 487150503578724115, guid: c4ef8af6874dcf944a424abc0f040d84, type: 3}
+  brokenObject: {fileID: 4100292672614142823}
+  originObject: {fileID: 1153445012660059379}
+  fow: {fileID: 0}
