@@ -105,6 +105,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // 죽거나 꺼질 때, 만약 내가 기절 상태였다면 입력을 강제로 복구하고 나감
         if (photonView.IsMine)
         {
+            myRigidbody.Sleep();
             stunCallback?.Invoke(true);
         }
     }
