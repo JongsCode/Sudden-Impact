@@ -37,6 +37,7 @@ public class WeaponPickupNode : MonoBehaviourPun
     [Header("Visuals")]
     [Tooltip("EWeaponType별 비주얼 오브젝트 (타입에 맞는 것만 활성화)")]
     [SerializeField] private WeaponVisualEntry[] weaponVisuals;
+    [SerializeField] private GameObject nodeIndicator;
 
     [Tooltip("노드 위 월드 스페이스 텍스트 (가장 가까운 플레이어에게만 표시)")]
     [SerializeField] private TextMeshPro labelText;
@@ -159,5 +160,6 @@ public class WeaponPickupNode : MonoBehaviourPun
             if (entry.visualObject != null)
                 entry.visualObject.SetActive(_visible && entry.weaponType == _type);
         }
+        nodeIndicator?.SetActive(_visible);
     }
 }
