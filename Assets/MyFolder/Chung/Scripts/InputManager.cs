@@ -65,7 +65,8 @@ public class InputManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (player == null) return;
+        if (player == null || !player.gameObject.activeInHierarchy || player.GetPlayerState == PlayerController.PlayerState.Dead) 
+            return;
 
         Ray ray = myMainCamera.ScreenPointToRay(onMousePosAction.ReadValue<Vector2>());
         if (aimPlane.Raycast(ray, out float enter))

@@ -26,6 +26,8 @@ public class CameraController : MonoBehaviour
     {
         if (virtualCam == null || Mouse.current == null) return;
 
+        if(!player.gameObject.activeInHierarchy) return;
+
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
         float mouseXRatio = mousePos.x / Screen.width;
