@@ -74,7 +74,7 @@ public class CameraController : MonoBehaviour
         {
             isObserverMode = false; 
 
-            virtualCam.Follow = player.transform;
+            virtualCam.Follow = targetGroup.transform;
 
             Debug.Log("[Camera] 옵저버 모드 해제");
         }

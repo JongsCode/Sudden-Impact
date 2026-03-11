@@ -178,7 +178,7 @@ public class InputManager : MonoBehaviour
     {
         if (targetGroup == null || targetGroup.Targets.Count < 2) return;
 
-        float targetWeight = isAiming ? 0.5f : 0f;
+        float targetWeight = isAiming ? 0.8f : 0f;
 
         var target = targetGroup.Targets[1];
 
