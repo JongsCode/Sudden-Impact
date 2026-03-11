@@ -1,6 +1,7 @@
-using UnityEngine;
-using TMPro;
+using Photon.Pun;
 using System.Collections;
+using TMPro;
+using UnityEngine;
 
 /// <summary>
 /// 전체 HUD 관리 매니저.
@@ -45,7 +46,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform pickupUIRect; // 픽업 텍스트의 부모 RectTransform
     [SerializeField] private TextMeshProUGUI pickupUIText;
 
-
+    [Header("Pause UI")]
+    [SerializeField] private GameObject menuPanel; // ESC 메뉴 패널 연결
 
 
 
@@ -108,6 +110,7 @@ public class UIManager : MonoBehaviour
         GameEvents.OnKillLog += HandleKillLog;
         GameEvents.OnMatchEnd += HandleMatchEnd;
         GameEvents.OnPickupUIUpdate += HandlePickupUIUpdate;
+        GameEvents.OnMenuUIUpdate += HandleMenuUI;
     }
 
     /// <summary>
@@ -125,6 +128,8 @@ public class UIManager : MonoBehaviour
         GameEvents.OnKillLog -= HandleKillLog;
         GameEvents.OnMatchEnd -= HandleMatchEnd;
         GameEvents.OnPickupUIUpdate -= HandlePickupUIUpdate;
+        GameEvents.OnMenuUIUpdate -= HandleMenuUI;
+
     }
     #endregion
 
@@ -252,6 +257,18 @@ public class UIManager : MonoBehaviour
             // 내 팀 정보를 레지스트리나 로컬 속성에서 가져와 승패 판단
             resultText.text = (winTeam == 1) ? "TEAM A WIN" : "TEAM B WIN";
         }
+    }
+
+    private void HandleMenuUI(bool isShow)
+    {
+        if (menuPanel != null)
+            menuPanel.SetActive(isShow);
+    }
+
+    // 나가기 버튼의 OnClick 이벤트에 연결할 함수
+    public void OnClickLeaveGame()
+    {
+        //DebugGameManager.Instance.
     }
 
     private void HandlePickupUIUpdate(bool isShow, Vector3 pos, string text)

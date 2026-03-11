@@ -55,14 +55,16 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         Instance = this;
     }
 
-    private void OnEnable()
+    public override void OnEnable()
     {
+        base.OnEnable();
         GameEvents.OnRoundStart += OnRoundStart;
         GameEvents.OnRoundEnd += OnRoundEnd;
     }
 
-    private void OnDisable()
+    public override void OnDisable()
     {
+        base.OnDisable();
         GameEvents.OnRoundStart -= OnRoundStart;
         GameEvents.OnRoundEnd -= OnRoundEnd;
     }
@@ -163,7 +165,6 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
 
     /// <summary>
     /// 노드가 픽업되면 activeDropNodes 추적 목록에서 제거.
-    /// (스폰 노드는 여기에 없으므로 no-op)
     /// </summary>
     public void ReturnNodeToDropPool(WeaponPickupNode node)
     {

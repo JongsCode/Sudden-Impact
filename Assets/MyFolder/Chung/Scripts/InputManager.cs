@@ -29,6 +29,7 @@ public class InputManager : MonoBehaviour
     private InputAction onSwapAction;
     private InputAction onInteractAction;
     private InputAction onZoomAction;
+    private InputAction onMenuAction;
 
     private Camera myMainCamera;
     private Plane aimPlane;
@@ -36,6 +37,7 @@ public class InputManager : MonoBehaviour
     
     private bool isFireHeld = false;
     private bool isAiming = false;
+    private bool isOnMenu = false;
 
 
     private void Awake()
@@ -52,7 +54,7 @@ public class InputManager : MonoBehaviour
         onSwapAction = myInputAction.FindAction("Swap");
         onInteractAction = myInputAction.FindAction("Interact");
         onZoomAction = myInputAction.FindAction("Zoom");
-
+        onMenuAction = myInputAction.FindAction("Menu");
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
         myMainCamera = Camera.main;
@@ -156,6 +158,29 @@ public class InputManager : MonoBehaviour
         isFireHeld = false;
     }
 
+    private void OnPauseToggle(InputAction.CallbackContext ctx)
+    {
+        isOnMenu = !isOnMenu;
+
+        // 캐릭터 조작 끄기/켜기
+        SetConnectActionMap(!isOnMenu);
+
+        // 마우스 커서 상태 변경
+        if (isOnMenu)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+
+        // UI 매니저로 이벤트 발송
+        GameEvents.MenuUIUpdate(isOnMenu);
+    }
+
     private void SetPlayerAction()
     {
         onSprintAction.performed += player.SprintStart;
@@ -164,6 +189,8 @@ public class InputManager : MonoBehaviour
         onDropAction.performed += player.PickUpAndDrop;
         onSwapAction.performed += player.TrySwapWeapon;
         onInteractAction.performed += player.TryInteract;
+
+        onMenuAction.performed += OnPauseToggle;
 
         onFireAction.performed += OnFireStart;
         onFireAction.canceled += OnFireEnd;

@@ -1,5 +1,6 @@
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -7,9 +8,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private PlayerRegistry playerRegistry;
     [SerializeField] private CinemachineCamera virtualCam;
     [SerializeField] private CinemachineTargetGroup targetGroup; 
-    [SerializeField] private Transform mouseAimTarget;       
+    [SerializeField] private Transform mouseAimTarget;
 
-
+    [Header("Camera Tilt")]
+    [SerializeField] private float maxTiltAngle = 2.0f;
+    [SerializeField] private float tiltSpeed = 5.0f;
 
     [Header("ForDebug")]
     [SerializeField] private GameObject player;
@@ -19,12 +22,17 @@ public class CameraController : MonoBehaviour
         playerRegistry.OnPlayerRegistered += SetCameraTarget;
     }
 
-    // 기존 업데이트에서 플레이어를 따라 가던 로직
-    //private void Update()
-    //{
-    //    if (player == null) return;
-    //    transform.position = player.transform.position + (Vector3.up * camHight);
-    //}
+    private void LateUpdate()
+    {
+        if (virtualCam == null || Mouse.current == null) return;
+
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+
+        float mouseXRatio = mousePos.x / Screen.width;
+        float target = (mouseXRatio - 0.5f) * 2f * -maxTiltAngle;
+
+        virtualCam.Lens.Dutch = Mathf.LerpAngle(virtualCam.Lens.Dutch, target, Time.deltaTime * tiltSpeed);
+    }
 
     private void SetCameraTarget(PlayerController _player)
     {
