@@ -6471,6 +6471,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -33162,6 +33163,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -58401,6 +58403,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -69318,6 +69321,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -99567,6 +99571,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -107692,7 +107697,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1298647449}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9955a38f8c536146ba6b419459851a2, type: 3}
   m_Name: 
@@ -110106,6 +110111,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 300
   fireRate: 0.15
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 1
@@ -114468,6 +114474,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0
@@ -142169,6 +142176,7 @@ MonoBehaviour:
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
   maxAmmo: 30
   fireRate: 0.1
+  flashLight: {fileID: 0}
   rippleCooldown: 0.3
   rippleMinDistance: 8
   isAutomatic: 0

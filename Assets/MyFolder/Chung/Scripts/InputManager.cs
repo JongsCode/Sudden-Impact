@@ -56,6 +56,8 @@ public class InputManager : MonoBehaviour
         onZoomAction = myInputAction.FindAction("Zoom");
         onMenuAction = myInputAction.FindAction("Menu");
 
+        SetConnectActionMap(false);
+
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
         myMainCamera = Camera.main;
     }
@@ -114,9 +116,14 @@ public class InputManager : MonoBehaviour
     private void SetConnectActionMap(bool _isConnect)
     {
         if (_isConnect)
+        {
             playerMap.Enable();
+        }
         else
-            playerMap.Disable();
+        {
+            playerMap.Disable(); 
+            onMenuAction.Enable(); // 메뉴 끄기 버튼(ESC)만 다시 살리기
+        }
     }
 
     private IEnumerator GetInputValue()
@@ -193,7 +200,7 @@ public class InputManager : MonoBehaviour
         isFireHeld = false;
     }
 
-    private void OnPauseToggle(InputAction.CallbackContext ctx)
+    private void OnMenuToggle(InputAction.CallbackContext ctx)
     {
         isOnMenu = !isOnMenu;
 
@@ -225,7 +232,7 @@ public class InputManager : MonoBehaviour
         onSwapAction.performed += player.TrySwapWeapon;
         onInteractAction.performed += player.TryInteract;
 
-        onMenuAction.performed += OnPauseToggle;
+        onMenuAction.performed += OnMenuToggle;
 
         onFireAction.performed += OnFireStart;
         onFireAction.canceled += OnFireEnd;

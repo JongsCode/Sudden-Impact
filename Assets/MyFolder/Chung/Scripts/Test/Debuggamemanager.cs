@@ -1,10 +1,9 @@
 using Photon.Pun;
-using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 디버그용 경기 흐름 관리
@@ -125,7 +124,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
 
     // 상황 A: 빈손으로 적 깃발을 만짐 -> 획득!
-    // 여기서 마스터 클라이언트에게 "나 이거 먹었어!" 라고 RPC를 쏴서 전 세계 동기화
+    // 여기서 마스터 클라이언트에게 "나 이거 먹었어!" 라고 RPC를 쏴서 동기화
     public void OnLocalPlayerTouchedFlag(int enemyflagTeam)
     {
         Debug.Log("[DebugGameManager] OnLocalPlayerTouchedFlag Calld");
@@ -340,7 +339,8 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             if (team[i] == null) continue;
 
             Vector3 spawnPos = spawnPoints[i % spawnPoints.Length].position;
-            team[i].gameObject.SetActive(true);
+            Debug.Log($"[GameManager] {team[i].photonView.Owner.NickName}'s SpawnPoint Is : {spawnPos}"); 
+            //team[i].gameObject.SetActive(true);
             team[i].Respawn(spawnPos);
 
             // 매니저가 플레이어를 스폰시키면서 UI 매니저에게 슬롯 등록/갱신 지시!
@@ -387,4 +387,28 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         
         StartRound();
     }
+
+    #region 게임 나가기 (Leave Game)
+
+    // UIManager에서 버튼을 누르면 호출됨
+    public void LeaveGame()
+    {
+        Debug.Log("[GameManager] 플레이어가 방 나가기를 요청했습니다.");
+
+        // 포톤 룸에서 퇴장 요청
+        PhotonNetwork.LeaveRoom();
+    }
+
+    // 포톤 서버가 "방 퇴장 완료"를 확정 지어주면 자동으로 실행되는 콜백
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        Debug.Log("[GameManager] 방 퇴장 완료. 로비 씬으로 이동합니다.");
+
+        // 방을 완전히 나갔으므로 씬을 로드함
+        SceneManager.LoadScene(lobbySceneName);
+    }
+
+    #endregion
 }
+

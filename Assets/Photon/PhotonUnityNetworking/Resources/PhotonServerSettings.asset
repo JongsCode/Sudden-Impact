@@ -62,6 +62,7 @@ MonoBehaviour:
   - RPC_RequestPickup
   - RPC_TryThrow
   - SpawnRipple
+  - RPC_MuzzleFlash
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

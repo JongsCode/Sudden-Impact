@@ -159,12 +159,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     }
 
     // 라운드 시작시 초기화 목적으로 호출
-    public void Respawn(Vector3 spawnPos)
+    public void Respawn(Vector3 _spawnPos)
     {
         curHp = maxHp;
         SetPlayerState(PlayerState.Idle);
-        transform.position = spawnPos;
         gameObject.SetActive(true);
+        myRigidbody.position = _spawnPos;
         dummyFlagMesh.SetActive(false);
         GameEvents.HpChanged(curHp);
     }
