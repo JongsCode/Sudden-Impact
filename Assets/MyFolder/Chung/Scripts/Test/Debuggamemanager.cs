@@ -73,6 +73,9 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         playerRegistry.TryGetPlayerByActorNumber(_attackerNum, out var attacker);
         GameEvents.Kill(attacker.photonView.Owner.NickName, player.photonView.Owner.NickName);
 
+        if (_attackerNum == PhotonNetwork.LocalPlayer.ActorNumber)
+            GameEvents.KillFloat(player.transform.position);
+
         if (!PhotonNetwork.IsMasterClient) return; // 마스터 클라이언트만 승패 판단
 
         // 죽은 플레이어가 적 깃발을 들고 있다면?
@@ -388,7 +391,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         StartRound();
     }
 
-    #region 게임 나가기 (Leave Game)
+    #region 게임 나가기
 
     // UIManager에서 버튼을 누르면 호출됨
     public void LeaveGame()
@@ -408,6 +411,17 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         // 방을 완전히 나갔으므로 씬을 로드함
         SceneManager.LoadScene(lobbySceneName);
     }
+
+    // 상대방이 중간에 나갔을 떄 - 레지스트리 정리, 라운드 종료 체크
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+        playerRegistry.RemoveFromTeam(otherPlayer.ActorNumber);
+
+        if (PhotonNetwork.IsMasterClient)
+            CheckRoundEnd();
+    }
+
 
     #endregion
 }

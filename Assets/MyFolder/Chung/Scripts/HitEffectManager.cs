@@ -1,6 +1,8 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon;
 
 /// <summary>
 /// 레이캐스트 피격 지점에 파티클 이펙트를 재생하는 싱글톤 매니저.
@@ -11,7 +13,7 @@ using UnityEngine;
 ///       HitEffectManager.Instance.PlayHitEffect(hit.point, hit.normal);
 ///   }
 /// </summary>
-public class HitEffectManager : MonoBehaviour
+public class HitEffectManager : MonoBehaviourPun
 {
     public static HitEffectManager Instance { get; private set; }
 
@@ -42,9 +44,23 @@ public class HitEffectManager : MonoBehaviour
         }
     }
 
+    // 외부 호출 진입점
+    public void SpawnEffect(Vector3 _position, Vector3 _normal)
+    {
+        PlayHitEffect(_position, _normal);
+        photonView.RPC(nameof(RPC_PlayHitEffect), RpcTarget.Others, _position, _normal);
+    }
+
     /// <summary>
     /// hit.point + hit.normal을 받아 이펙트를 재생하고 1초 후 풀에 반납합니다.
     /// </summary>
+    [PunRPC]
+
+    public void RPC_PlayHitEffect(Vector3 _position, Vector3 _normal)
+    {
+        PlayHitEffect(_position, Quaternion.LookRotation(_normal));
+    }
+
     public void PlayHitEffect(Vector3 _position, Vector3 _normal)
     {
         PlayHitEffect(_position, Quaternion.LookRotation(_normal));

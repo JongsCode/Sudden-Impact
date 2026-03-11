@@ -15,6 +15,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float maxTiltAngle = 2.0f;
     [SerializeField] private float tiltSpeed = 5.0f;
 
+    [Header("Observer Mode")]
+    [SerializeField] private float observerMoveSpeed = 15f;
+
     [Header("ForDebug")]
     [SerializeField] private PlayerController player;
 
@@ -50,6 +53,13 @@ public class CameraController : MonoBehaviour
         float target = (mouseXRatio - 0.5f) * 2f * -maxTiltAngle;
 
         virtualCam.Lens.Dutch = Mathf.LerpAngle(virtualCam.Lens.Dutch, target, Time.deltaTime * tiltSpeed);
+
+        if (isObserverMode && observerTarget != null && Keyboard.current != null)
+        {
+            float h = (Keyboard.current.dKey.isPressed ? 1f : 0f) - (Keyboard.current.aKey.isPressed ? 1f : 0f);
+            float v = (Keyboard.current.wKey.isPressed ? 1f : 0f) - (Keyboard.current.sKey.isPressed ? 1f : 0f);
+            observerTarget.transform.position += new Vector3(h, 0f, v).normalized * observerMoveSpeed * Time.deltaTime;
+        }
     }
 
     private void HandlePlayerDeath(int deadActorNumber)
@@ -63,8 +73,6 @@ public class CameraController : MonoBehaviour
 
             // 카메라에게 타겟을 가짜로 변경
             virtualCam.Follow = observerTarget.transform;
-
-            Debug.Log("[Camera] 옵저버 모드 활성화: 마우스로 화면 가장자리를 밀어 이동");
         }
     }
 
