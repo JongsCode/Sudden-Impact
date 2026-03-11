@@ -105,7 +105,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // 죽거나 꺼질 때, 만약 내가 기절 상태였다면 입력을 강제로 복구하고 나감
         if (photonView.IsMine)
         {
-            myRigidbody.Sleep();
             stunCallback?.Invoke(true);
         }
     }
@@ -749,7 +748,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         DropWeapon();
         playerState = PlayerState.Dead;
-        // 게임 메니저의 이벤트 버스 호출 필요
         // 인풋 메니저에게 콜백 필요
         DebugGameManager.Instance?.OnPlayerDied(this, _attackerNum);
 
@@ -758,10 +756,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             hasEnemyFlag = false;
             dummyFlagMesh.SetActive(false);
         }
+        myRigidbody.Sleep();
 
         this.gameObject.SetActive(false);
 
     }
+
 
     private void StunPlayer()
     {

@@ -22,8 +22,14 @@ public static class GameEvents
     public static event Action OnRoundStart;
     public static event Action OnRoundEnd;
     public static event Action<int> OnMatchEnd; // 승리 팀 번호를 전달
+
+    // 무기노드에 닿았을 떄
     public static event Action<bool, Vector3, string> OnPickupUIUpdate; // (켜기/끄기, 월드좌표, 무기이름)
 
+    // 메뉴열기
+    public static event Action<bool> OnMenuUIUpdate;
+
+    #region 호출 메서드
     //  호출 메서드
     public static void HpChanged(float _hp)                             
         => OnHpChanged?.Invoke(_hp);
@@ -61,4 +67,9 @@ public static class GameEvents
 
     public static void PickupUIUpdate(bool _isShow, Vector3 _pos, string _text = "")
     => OnPickupUIUpdate?.Invoke(_isShow, _pos, _text);
+
+    public static void MenuUIUpdate(bool _isShow)
+        => OnMenuUIUpdate?.Invoke(_isShow);
+    #endregion
+
 }
