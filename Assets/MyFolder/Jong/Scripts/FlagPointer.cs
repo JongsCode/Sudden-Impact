@@ -6,27 +6,46 @@ public class FlagPointer : MonoBehaviour
 {
     //public static FlagPointer Instance;
     
-    public GameObject flagObject;
-    public GameObject goalObject;
-    private GameObject targetObject;
+    private GameObject allyTarget;
+    private GameObject enemyTarget;
+    public GameObject Team1BaseCamp;
+    public GameObject Team2BaseCamp;
+
     private Camera mainCam;
 
-    public RectTransform pointerTransform;
-    public RectTransform etcTransform;
+    public RectTransform pointerAllyTr;
+    public RectTransform pointerEnemyTr;
+    
+    public RectTransform etcAllyTr;
+    public RectTransform etcEnemyTr;
     public Vector3 offsetEtc = new Vector3(0f, -10f, 0f);
-    public Image imageArrow;
-    public Image imageFlag;
-    public TextMeshProUGUI textDistance;
+    
+    public Image imageAllyArrow;
+    public Image imageAllyFlag;
+    public Image imageEnemyArrow;
+    public Image imageEnemyFlag;
+
+    public TextMeshProUGUI textAllyDis;
+    public TextMeshProUGUI textEnemyDis;
     public float etcOffsetDistance = 60f;
 
     public float border = 50f;
     public float hideDistance = 5f;
-    private bool hasFlag = false;
-    public bool HasFlag
+    
+    private bool hasAllyFlag = false;
+    public bool HasAllyFlag
     {
-        set { hasFlag = value; }
-        get { return hasFlag; }
+        set { hasAllyFlag = value; }
+        get { return hasAllyFlag; }
     }
+
+    private bool hasEnemyFlag = false;
+    public bool HasEnemyFlag
+    {
+        set { hasEnemyFlag = value; }
+        get { return hasEnemyFlag; }
+    }
+
 
     private void Awake()
     {
@@ -36,44 +55,60 @@ public class FlagPointer : MonoBehaviour
         //}
         
         mainCam = Camera.main;
-        
-        if (imageArrow != null)
+        if (imageAllyFlag != null)
+            imageAllyFlag.enabled = false;
+        if (imageAllyArrow != null)
+            imageAllyArrow.enabled = false;
+        if (imageEnemyFlag != null)
+            imageEnemyFlag.enabled = false;
+        if (textAllyDis != null)
+            textAllyDis.enabled = false;
+        if (textEnemyDis != null)
+            textEnemyDis.enabled = false;
+    }
+
+    private void Start()
+    {
+        if(imageEnemyArrow != null)
         {
-            imageArrow.enabled = true;
-            targetObject = flagObject;
-        }
-        if (imageFlag != null)
-        {
-            imageFlag.enabled = false;
-        }
-        
-        if (textDistance != null)
-        {
-            textDistance.enabled = false;
+            imageEnemyArrow.enabled = true;
+            // 목표 설정
         }
     }
 
     private void Update()
     {
-        DisplayPointerToTarget(targetObject);
-       // FlagToGoal(hasFlag);
+        DisplayPointerToAllyTarget(allyTarget);
+        DisplayPointerToEnemyTarget(enemyTarget);
+
+        // FlagToGoal(hasFlag);
     }
 
-    public void UpdateFlagObject(GameObject _target)
+    public void UpdateAllyObject(GameObject _target)
     {
-        targetObject = _target;
+        allyTarget = _target;
+    }
+    public void UpdateEnemyObject(GameObject _target)
+    {
+        enemyTarget = _target;
     }
 
-    private void DisplayPointerToTarget(GameObject _target)
+    private void DisplayPointerToAllyTarget(GameObject _target)
     {
-        if (_target == null) return;
+        if (_target == null)
+        {
+            if (imageAllyArrow != null) imageAllyArrow.enabled = false;
+            if (imageAllyFlag != null) imageAllyFlag.enabled = false;
+            if (textAllyDis != null) textAllyDis.enabled = false;
+            return;
+        }
 
         Vector3 targetScreenPosition = mainCam.WorldToScreenPoint(_target.transform.position);
         Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
 
         Vector3 dir = (targetScreenPosition - screenCenter).normalized;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        pointerTransform.localEulerAngles = new Vector3(0f, 0f, angle + 90f);
+        pointerAllyTr.localEulerAngles = new Vector3(0f, 0f, angle + 90f);
 
         bool isOutScreen = targetScreenPosition.x <= border || targetScreenPosition.x >= Screen.width - border ||
                            targetScreenPosition.y <= border || targetScreenPosition.y >= Screen.height - border ||
@@ -85,12 +120,12 @@ public class FlagPointer : MonoBehaviour
         cameraWorldPos.y = 0f;
 
         float distance = Vector3.Distance(targetWorldPos, cameraWorldPos);
-        textDistance.text = Mathf.RoundToInt(distance).ToString() + "M";
+        textAllyDis.text = Mathf.RoundToInt(distance).ToString() + "M";
 
         if (isOutScreen)
         {
-            imageArrow.enabled = true;
-            imageFlag.enabled = hasFlag;
+            imageAllyArrow.enabled = true;
+            imageAllyFlag.enabled = hasAllyFlag;
 
             Vector3 centerToTarget = targetScreenPosition - screenCenter;
 
@@ -105,47 +140,117 @@ public class FlagPointer : MonoBehaviour
             Vector3 finalPosition = screenCenter + (centerToTarget * minRatio);
             finalPosition.z = 0f;
 
-            pointerTransform.position = finalPosition;
-            etcTransform.position = finalPosition - (dir * etcOffsetDistance);
-            textDistance.enabled = true;
+            pointerAllyTr.position = finalPosition;
+            etcAllyTr.position = finalPosition - (dir * etcOffsetDistance);
+            textAllyDis.enabled = true;
         }
         else
         {
-            pointerTransform.position = targetScreenPosition;
-            etcTransform.position = targetScreenPosition - (dir * etcOffsetDistance);
+            pointerAllyTr.position = targetScreenPosition;
+            etcAllyTr.position = targetScreenPosition - (dir * etcOffsetDistance);
 
            
 
             if (distance < hideDistance)
             {
-                imageArrow.enabled = false;
-                imageFlag.enabled = false;
-                textDistance.enabled = false;
+                imageAllyArrow.enabled = false;
+                imageAllyFlag.enabled = false;
+                textAllyDis.enabled = false;
             }
             else
             {
-                imageArrow.enabled = true;
-                imageFlag.enabled = hasFlag;
-                textDistance.enabled = true;
+                imageAllyArrow.enabled = true;
+                imageAllyFlag.enabled = hasAllyFlag;
+                textAllyDis.enabled = true;
+            }
+        }
+    }
+    private void DisplayPointerToEnemyTarget(GameObject _target)
+    {
+        if (_target == null)
+        {
+            if (imageEnemyArrow != null) imageEnemyArrow.enabled = false;
+            if (imageEnemyFlag != null) imageEnemyFlag.enabled = false;
+            if (textEnemyDis != null) textEnemyDis.enabled = false;
+            return;
+        }
+
+        Vector3 targetScreenPosition = mainCam.WorldToScreenPoint(_target.transform.position);
+        Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0f);
+
+        Vector3 dir = (targetScreenPosition - screenCenter).normalized;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        pointerEnemyTr.localEulerAngles = new Vector3(0f, 0f, angle + 90f);
+
+        bool isOutScreen = targetScreenPosition.x <= border || targetScreenPosition.x >= Screen.width - border ||
+                           targetScreenPosition.y <= border || targetScreenPosition.y >= Screen.height - border ||
+                           targetScreenPosition.z < 0;
+        Vector3 targetWorldPos = _target.transform.position;
+        Vector3 cameraWorldPos = mainCam.transform.position;
+
+        targetWorldPos.y = 0f;
+        cameraWorldPos.y = 0f;
+
+        float distance = Vector3.Distance(targetWorldPos, cameraWorldPos);
+        textEnemyDis.text = Mathf.RoundToInt(distance).ToString() + "M";
+
+        if (isOutScreen)
+        {
+            imageEnemyArrow.enabled = true;
+            imageEnemyFlag.enabled = hasEnemyFlag;
+
+            Vector3 centerToTarget = targetScreenPosition - screenCenter;
+
+            float limitX = (Screen.width / 2f) - border;
+            float limitY = (Screen.height / 2f) - border;
+
+            float ratioX = centerToTarget.x != 0 ? Mathf.Abs(limitX / centerToTarget.x) : float.MaxValue;
+            float ratioY = centerToTarget.y != 0 ? Mathf.Abs(limitY / centerToTarget.y) : float.MaxValue;
+
+            float minRatio = Mathf.Min(ratioX, ratioY);
+
+            Vector3 finalPosition = screenCenter + (centerToTarget * minRatio);
+            finalPosition.z = 0f;
+
+            pointerEnemyTr.position = finalPosition;
+            etcEnemyTr.position = finalPosition - (dir * etcOffsetDistance);
+            textEnemyDis.enabled = true;
+        }
+        else
+        {
+            pointerEnemyTr.position = targetScreenPosition;
+            etcEnemyTr.position = targetScreenPosition - (dir * etcOffsetDistance);
+
+
+
+            if (distance < hideDistance)
+            {
+                imageEnemyArrow.enabled = false;
+                imageEnemyFlag.enabled = false;
+                textEnemyDis.enabled = false;
+            }
+            else
+            {
+                imageEnemyArrow.enabled = true;
+                imageEnemyFlag.enabled = hasEnemyFlag;
+                textEnemyDis.enabled = true;
             }
         }
     }
 
-    public void FlagState(bool _hasFlag)
+    public void SetBaseCamp(int _teamNumber)
     {
-        if (imageFlag == null || imageArrow == null) return;
-        hasFlag = _hasFlag;
+        if (_teamNumber == 1)
+        {
+            enemyTarget = Team1BaseCamp;
+        }
+        if(_teamNumber == 2)
+        {
+            enemyTarget = Team2BaseCamp;
+        }
     }
-    
 
-    private void FlagToGoal(bool _hasFlag)
-    {
-        if (_hasFlag == false) return;
-        Vector3 flagPosition = flagObject.transform.position;
-        Vector3 goalPosition = goalObject.transform.position;
-        flagPosition.y = 0f;
-        goalPosition.y = 0f;
-        int distance = Mathf.RoundToInt(Vector3.Distance(flagPosition, goalPosition));
-        textDistance.text = distance.ToString() + "M";
-    }
+   
+
+
 }

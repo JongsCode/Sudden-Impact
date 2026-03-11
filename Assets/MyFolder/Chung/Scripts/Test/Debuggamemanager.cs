@@ -79,10 +79,20 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         // 죽은 플레이어가 적 깃발을 들고 있다면?
         if (player.HasEnemyFlag)
         {
-            int droppedFlagIndex = (player.MyTeam == 1) ? 1 : 0; // A팀이 죽었으면 B팀(1) 깃발을 떨어뜨림
+            int droppedFlagIndex = -1;
+            for(int i = 0; i< mapFlags.Length; ++i)
+            {
+                if(player.MyTeam != mapFlags[i].myTeam)
+                {
+                    droppedFlagIndex = i;
+                    break;
+                }
+            }
 
             // 모든 클라이언트에게 깃발을 이 위치에 떨어뜨리라고 명령!
-            photonView.RPC(nameof(DropFlagRPC), RpcTarget.All, droppedFlagIndex, player.transform.position);
+            if (droppedFlagIndex != -1)
+                photonView.RPC(nameof(DropFlagRPC), RpcTarget.All, droppedFlagIndex, player.transform.position);
+
         }
 
 
@@ -90,14 +100,18 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void DropFlagRPC(int _flagIndex, Vector3 _dropPos)
+    private void DropFlagRPC(int _flagEnemyIndex, Vector3 _dropPos)
     {
-        mapFlags[_flagIndex].DropFlag(_dropPos);
-        if(mapFlags[_flagIndex].myTeam == playerRegistry.MyTeam)
+        mapFlags[_flagEnemyIndex].DropFlag(_dropPos);
+        if(mapFlags[_flagEnemyIndex].myTeam != playerRegistry.MyTeam)
         {
-            flagPointer.UpdateFlagObject(mapFlags[_flagIndex].gameObject);
-            flagPointer.HasFlag = false;
-            flagPointer.FlagState(false);
+            flagPointer.UpdateEnemyObject(mapFlags[_flagEnemyIndex].gameObject);
+            flagPointer.HasEnemyFlag = false;
+        }
+        if (mapFlags[_flagEnemyIndex].myTeam == playerRegistry.MyTeam)
+        {
+            flagPointer.UpdateAllyObject(mapFlags[_flagEnemyIndex].gameObject);
+            flagPointer.HasAllyFlag = false;
         }
     }
 
@@ -112,7 +126,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
     // 상황 A: 빈손으로 적 깃발을 만짐 -> 획득!
     // 여기서 마스터 클라이언트에게 "나 이거 먹었어!" 라고 RPC를 쏴서 전 세계 동기화
-    public void OnLocalPlayerTouchedFlag(int flagTeam, int flagIndex)
+    public void OnLocalPlayerTouchedFlag(int enemyflagTeam)
     {
         Debug.Log("[DebugGameManager] OnLocalPlayerTouchedFlag Calld");
 
@@ -123,9 +137,9 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
         if (myPlayer == null || myPlayer.GetPlayerState == PlayerController.PlayerState.Dead) return;
 
-        if (!myPlayer.HasEnemyFlag && myPlayer.MyTeam != flagTeam)
+        if (!myPlayer.HasEnemyFlag && myPlayer.MyTeam != enemyflagTeam)
         {
-            photonView.RPC(nameof(ProcessFlagPickupRPC), RpcTarget.All, myActorNumber, flagTeam, flagIndex);
+            photonView.RPC(nameof(ProcessFlagPickupRPC), RpcTarget.All, myActorNumber, enemyflagTeam);
         }
     }
 
@@ -148,23 +162,42 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    private void ProcessFlagPickupRPC(int _myActorNumber, int _flagTeam, int _flagIndex)
+    private void ProcessFlagPickupRPC(int _myActorNumber, int _flagEnemyTeam)
     {
         if (!playerRegistry.TryGetPlayerByActorNumber(_myActorNumber, out PlayerController myPlayer)) return;
 
         myPlayer.GetFlag();
-        if (_flagTeam == playerRegistry.MyTeam)
+        Flag stolenFlag = null;
+        for (int i = 0; i < mapFlags.Length; ++i)
         {
-            flagPointer.UpdateFlagObject(myPlayer.gameObject);
-            flagPointer.HasFlag = true;
-            flagPointer.FlagState(true);
-            Debug.Log("HasFlag : " + flagPointer.HasFlag);
+            if (mapFlags[i].myTeam == _flagEnemyTeam)
+            {
+                stolenFlag = mapFlags[i];
+                break;
+            }
         }
-        int flagIndex = (_flagIndex % 2 == 0) ? 0 : 1;
-        if (flagIndex >= 0 && flagIndex < mapFlags.Length)
+        if (stolenFlag == null) return;
+        Debug.Log($"[디버그] 도난당한 깃발 팀: {stolenFlag.myTeam} / 이 컴퓨터의 내 팀: {playerRegistry.MyTeam}");
+        if (stolenFlag.myTeam == playerRegistry.MyTeam) // 아군 깃발을 집으면 깃발과 깃발 쥔 사람이 표시되어야 함
         {
-            mapFlags[flagIndex].HideFlag();
+            flagPointer.UpdateAllyObject(myPlayer.gameObject);
+            flagPointer.HasAllyFlag = true;
+            Debug.Log("HasAllyFlag :" + flagPointer.HasAllyFlag);
         }
+        else  // 적 깃발을 집으면 깃발과 깃발 쥔 사람이 표시되어야 함
+        {
+            flagPointer.UpdateEnemyObject(myPlayer.gameObject);
+            flagPointer.HasEnemyFlag = true;
+            Debug.Log("HasEnemyFlag :" + flagPointer.HasEnemyFlag);
+            if(PhotonNetwork.LocalPlayer.ActorNumber == _myActorNumber)
+            {
+                flagPointer.SetBaseCamp((int)PhotonNetwork.LocalPlayer.CustomProperties["Team"]);
+                flagPointer.HasEnemyFlag = false;
+            }
+        }
+        stolenFlag.HideFlag();
+
+        
     }
 
     private void CheckRoundEnd()
@@ -283,13 +316,15 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
         {
             if (mapFlags[i].myTeam != playerRegistry.MyTeam)
             {
-                flagPointer.UpdateFlagObject(mapFlags[i].gameObject);
-                flagPointer.HasFlag = false;
+                flagPointer.UpdateEnemyObject(mapFlags[i].gameObject);
+                flagPointer.HasEnemyFlag = false;
                 
             }
             else
             {
                 // 같은 팀 플래그 넣는 메소드 호출
+                flagPointer.UpdateAllyObject(null);
+                flagPointer.HasAllyFlag = false;
             }
         }
 
