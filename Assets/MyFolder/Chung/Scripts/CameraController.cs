@@ -1,3 +1,4 @@
+using Photon.Pun;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -25,6 +26,7 @@ public class CameraController : MonoBehaviour
     private void LateUpdate()
     {
         if (virtualCam == null || Mouse.current == null) return;
+
 
         Vector2 mousePos = Mouse.current.position.ReadValue();
 
