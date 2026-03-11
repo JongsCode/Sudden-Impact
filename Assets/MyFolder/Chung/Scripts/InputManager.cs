@@ -58,15 +58,27 @@ public class InputManager : MonoBehaviour
 
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
         myMainCamera = Camera.main;
-
-
-
     }
 
+    private void OnDestroy()
+    {
+        myPlayerRegistry.OnPlayerRegistered -= GetmyPlayer;
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnPlayerUIDead += HandlePlayerDeath;
+        GameEvents.OnRoundStart += HandlePlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerUIDead -= HandlePlayerDeath;
+        GameEvents.OnRoundStart -= HandlePlayerRespawn;
+    }
     private void LateUpdate()
     {
-        if (player == null || !player.gameObject.activeInHierarchy || player.GetPlayerState == PlayerController.PlayerState.Dead) 
-            return;
+        if (player == null ) return;
 
         Ray ray = myMainCamera.ScreenPointToRay(onMousePosAction.ReadValue<Vector2>());
         if (aimPlane.Raycast(ray, out float enter))
@@ -74,6 +86,28 @@ public class InputManager : MonoBehaviour
             worldAimPosition = ray.GetPoint(enter);
             if (mouseAimTarget != null)
                 mouseAimTarget.position = worldAimPosition;
+        }
+    }
+
+    private void HandlePlayerDeath(int deadActorNumber)
+    {
+        if (player != null && player.photonView.Owner.ActorNumber == deadActorNumber)
+        {
+            // 1. 캐릭터 조작 끄기
+            SetConnectActionMap(false);
+
+            Debug.Log("[InputManager] 로컬 플레이어 사망: 조작 차단");
+        }
+    }
+
+    private void HandlePlayerRespawn()
+    {
+        if (player != null)
+        {
+            // 1. 캐릭터 조작 켜기
+            SetConnectActionMap(true);
+
+            Debug.Log("[InputManager] 로컬 플레이어 리스폰: 조작 차단 해제");
         }
     }
 

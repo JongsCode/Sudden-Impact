@@ -16,11 +16,27 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float tiltSpeed = 5.0f;
 
     [Header("ForDebug")]
-    [SerializeField] private GameObject player;
+    [SerializeField] private PlayerController player;
+
+    private GameObject observerTarget; // 가짜 타겟
+    private bool isObserverMode = false;
 
     private void Awake()
     {
         playerRegistry.OnPlayerRegistered += SetCameraTarget;
+        observerTarget = new GameObject("ObserverTarget");
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnPlayerUIDead += HandlePlayerDeath;
+        GameEvents.OnRoundStart += HandlePlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerUIDead -= HandlePlayerDeath;
+        GameEvents.OnRoundStart -= HandlePlayerRespawn;
     }
 
     private void LateUpdate()
@@ -36,9 +52,41 @@ public class CameraController : MonoBehaviour
         virtualCam.Lens.Dutch = Mathf.LerpAngle(virtualCam.Lens.Dutch, target, Time.deltaTime * tiltSpeed);
     }
 
+    private void HandlePlayerDeath(int deadActorNumber)
+    {
+        if (player != null && player.photonView.Owner.ActorNumber == deadActorNumber)
+        {
+            isObserverMode = true; // 옵저버 모드 ON
+
+            // 가짜 타겟을 내 시체 위치로 가져옴
+            observerTarget.transform.position = player.transform.position;
+
+            // 카메라에게 타겟을 가짜로 변경
+            virtualCam.Follow = observerTarget.transform;
+
+            Debug.Log("[Camera] 옵저버 모드 활성화: 마우스로 화면 가장자리를 밀어 이동");
+        }
+    }
+
+    private void HandlePlayerRespawn()
+    {
+        if (player != null)
+        {
+            isObserverMode = false; 
+
+            virtualCam.Follow = player.transform;
+
+            Debug.Log("[Camera] 옵저버 모드 해제");
+        }
+    }
+
+
+
     private void SetCameraTarget(PlayerController _player)
     {
         if (_player == null || targetGroup == null) return;
+
+        player = _player;
 
         //  플레이어를 그룹 멤버 0번으로 추가 (가중치 1.0)
         targetGroup.AddMember(_player.transform, 1f, 0f);
