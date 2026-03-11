@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private Weapon myKnife;
     [SerializeField] private PlayerRegistry registry;
     [SerializeField] private GameObject dummyFlagMesh;
+    [Tooltip("Ç÷Èç ÇÁ¸®ÆÕ")]
+    [SerializeField] private GameObject neonBloodPrefab; 
 
     [Header("Parameters")]
     [SerializeField] private float maxHp = 100f;
@@ -670,6 +672,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 { damageImpulseSource.GenerateImpulseWithVelocity(shakeDir.normalized * damageShakeForce); }
             }
         }
+
+        Vector3 bloodPos = new Vector3(transform.position.x, 0.01f, transform.position.z);
+        Instantiate(neonBloodPrefab, bloodPos, Quaternion.identity);
 
         if (curHp <= 0)
         {
