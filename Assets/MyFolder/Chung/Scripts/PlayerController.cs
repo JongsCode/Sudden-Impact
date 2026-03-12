@@ -680,12 +680,13 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             }
         }
 
-        Vector3 bloodPos = new Vector3(transform.position.x, 0.01f, transform.position.z);
+        Vector3 bloodPos = new Vector3(transform.position.x, -1.4f, transform.position.z);
         Instantiate(neonBloodPrefab, bloodPos, Quaternion.identity);
 
         if (curHp <= 0)
         {
             DiePlayer(_attackerNum);
+            GameEvents.LocalPlayerDeath();
         }
     }
 

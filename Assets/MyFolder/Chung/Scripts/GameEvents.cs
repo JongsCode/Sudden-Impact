@@ -32,6 +32,9 @@ public static class GameEvents
     // 플로팅 텍스트 용
     public static event Action<Vector3> OnKillFloat;
 
+    public static event Action OnLocalPlayerDeath;
+
+
 
     #region 호출 메서드
     //  호출 메서드
@@ -77,6 +80,9 @@ public static class GameEvents
 
     public static void KillFloat(Vector3 position)
     => OnKillFloat?.Invoke(position);
+
+    public static void LocalPlayerDeath()
+    => OnLocalPlayerDeath?.Invoke();
 
     #endregion
 
