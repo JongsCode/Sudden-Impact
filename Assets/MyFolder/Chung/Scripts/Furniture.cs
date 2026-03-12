@@ -8,11 +8,11 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     protected float curHp;
     protected bool isDestroyed = false;
 
-
-
+    protected AudioSource audioSource;
     protected virtual void Awake()
     {
         curHp = maxHp;
+        audioSource = GetComponent<AudioSource>();
     }
 
     // IAttackReceiver ±¸Çö
@@ -47,7 +47,9 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
     protected virtual void OnBroken()
     {
         isDestroyed = true;
-        
+        if (audioSource != null)
+            audioSource.Play();
+
         Item item = GetComponent<Item>();
         if (item != null)
         {

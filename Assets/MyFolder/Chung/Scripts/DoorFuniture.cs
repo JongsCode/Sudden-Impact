@@ -11,6 +11,8 @@ public class Door : Furniture, IInteractable
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
     [SerializeField] private Collider collider;
 
+    
+    public AudioClip doorSound;
     private bool isOpen = false;
     private Coroutine doorCoroutine; // 중복 실행 방지용
 
@@ -43,7 +45,10 @@ public class Door : Furniture, IInteractable
     private IEnumerator AnimateDoor(float targetAngle)
     {
         Quaternion targetRot = Quaternion.Euler(0, targetAngle, 0);
-
+        if(audioSource != null)
+        {
+            audioSource.PlayOneShot(doorSound);
+        }
         while (Quaternion.Angle(doorPivot.localRotation, targetRot) > 0.1f)
         {
             doorPivot.localRotation = Quaternion.Slerp(
