@@ -4,8 +4,9 @@ using UnityEngine.EventSystems;
 
 public class UIButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
-    [Header("터질 파티클 프리팹")]
-    public GameObject clickParticlePrefab;
+    [Header("총알 구멍")]
+    public GameObject bulletHolePrefab;
+    private RectTransform rectTr;
 
     [Header("테두리 색상 설정")]
     public Color normalColor = Color.white;   
@@ -17,6 +18,7 @@ public class UIButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private void Awake()
     {
+        rectTr = GetComponent<RectTransform>();
         buttonOutline = GetComponent<Outline>();
 
         if (buttonOutline != null)
@@ -41,11 +43,21 @@ public class UIButtonEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     {
         if (buttonOutline != null) buttonOutline.effectColor = clickColor;
 
-        if (clickParticlePrefab != null)
-        {
-            GameObject particle = Instantiate(clickParticlePrefab, transform.position, Quaternion.identity);
-            Destroy(particle, 1f);
-        }
+        if (bulletHolePrefab == null) return;
+
+        Vector2 localCursorPosition;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTr, eventData.position, eventData.pressEventCamera, out localCursorPosition);
+
+        GameObject bulletHoleGo = Instantiate(bulletHolePrefab, transform);
+        RectTransform holeRect = bulletHoleGo.GetComponent<RectTransform>();
+
+        holeRect.anchoredPosition = localCursorPosition;
+
+        float randomAngle = Random.Range(0f, 360f);
+        holeRect.localRotation = Quaternion.Euler(0, 0, randomAngle);
+
+        Destroy(bulletHoleGo, 1f);
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
