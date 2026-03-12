@@ -61253,7 +61253,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 1119683828}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 1119683829}
+  doorSound: {fileID: 0}
 --- !u!4 &808567846
 Transform:
   m_ObjectHideFlags: 0
@@ -108419,7 +108419,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 1191394814}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 1191394815}
+  doorSound: {fileID: 0}
 --- !u!4 &1305190666
 Transform:
   m_ObjectHideFlags: 0
@@ -109393,7 +109393,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 1737433150}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 1737433151}
+  doorSound: {fileID: 0}
 --- !u!4 &1317978132
 Transform:
   m_ObjectHideFlags: 0
@@ -109593,7 +109593,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 2037149089}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 2037149090}
+  doorSound: {fileID: 0}
 --- !u!4 &1319950160
 Transform:
   m_ObjectHideFlags: 0
@@ -137727,7 +137727,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 128710214}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 128710215}
+  doorSound: {fileID: 0}
 --- !u!4 &1593061668
 Transform:
   m_ObjectHideFlags: 0
@@ -148111,7 +148111,7 @@ MonoBehaviour:
   spawnPivot: {fileID: 796310887}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 796310888}
+  doorSound: {fileID: 0}
 --- !u!4 &1660034267
 Transform:
   m_ObjectHideFlags: 0

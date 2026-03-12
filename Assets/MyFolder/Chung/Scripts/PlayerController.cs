@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [Header("Animator Bridge Data")]
     // 애니메이터가 읽어갈 퍼블릭 게터
     public Vector3 CurrentVelocity => myRigidbody.linearVelocity;
+    public float MoveSpeed => moveSpeed;
+    public float NormalizedSpeed => CurrentVelocity.magnitude / moveSpeed;
     public bool UseGun => useGun;
 
     // 애니메이터에게 행동을 알리는 이벤트
@@ -362,6 +364,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (playerState == PlayerState.NotReady || playerState == PlayerState.Stunned || playerState == PlayerState.Dead) return;
 
         isSprinting = true;
+        playerState = PlayerState.Sprint;
         // 필요하다면 여기서 playerState = PlayerState.Sprint; 로 변경해도 좋습니다.
         Debug.Log("[PlayerController] Im Start Sprinting");
     }
@@ -369,12 +372,16 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     public void SprintEnd(InputAction.CallbackContext ctx)
     {
         isSprinting = false;
+        playerState = PlayerState.Idle;
+
         Debug.Log("[PlayerController] Im end Sprinting");
     }
     #endregion
 
     public void TryAttack(Vector3 _aimPos, bool _isHeld = false)
     {
+        if (playerState != PlayerState.Idle) return;
+        
 
         if (useGun)
         {
