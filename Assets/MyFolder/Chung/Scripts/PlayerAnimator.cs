@@ -8,6 +8,15 @@ public class PlayerAnimator : MonoBehaviourPun
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerController playerController;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField] private AudioClip rollClip;
+    [SerializeField] private AudioClip stunClip;
+    [SerializeField] private AudioClip deathClip;
+    [SerializeField] private AudioClip weaponSwapClip;
+    [SerializeField][Range(0f, 1f)] private float footstepVolume = 0.6f;
+
     [Header("Animator Hashes")]
     private readonly int hashVelocityX = Animator.StringToHash("VelocityX");
     private readonly int hashVelocityZ = Animator.StringToHash("VelocityZ");
@@ -19,6 +28,9 @@ public class PlayerAnimator : MonoBehaviourPun
     private readonly int hashRoll = Animator.StringToHash("Roll");
     private readonly int hashStun = Animator.StringToHash("Stun");
     private readonly int hashDead = Animator.StringToHash("Dead");
+
+    private float lastFootstepTime = 0f;
+    private bool _wasDead; // death sound once-flag
 
     private void Awake()
     {
@@ -37,6 +49,7 @@ public class PlayerAnimator : MonoBehaviourPun
 
         // 초기화
         animator.SetLayerWeight(1, 1f);
+        GameEvents.OnWeaponChanged += HandleWeaponChanged;
     }
 
     private void OnDisable()
@@ -47,6 +60,7 @@ public class PlayerAnimator : MonoBehaviourPun
         playerController.OnThrowEvent -= TriggerThrow;
         playerController.OnInteractEvent -= TriggerInteract;
         playerController.OnStunnedEvent -= TriggerStun;
+        GameEvents.OnWeaponChanged -= HandleWeaponChanged;
     }
 
     private void LateUpdate()
@@ -54,6 +68,9 @@ public class PlayerAnimator : MonoBehaviourPun
         // 사망 상태 체크 (Trigger 대신 Bool로 확실하게 눕혀놓기 위함)
         bool isDead = playerController.GetPlayerState == PlayerController.PlayerState.Dead;
         animator.SetBool(hashDead, isDead);
+
+        if (isDead && !_wasDead) PlayClip(deathClip);
+        _wasDead = isDead;
 
         if (isDead)
         {
@@ -101,8 +118,42 @@ public class PlayerAnimator : MonoBehaviourPun
 
     // --- 애니메이션 트리거 전송 ---
     private void TriggerAction() => animator.SetTrigger(hashAction);
-    private void TriggerRoll() => StartCoroutine(RollCoroutine());
+    private void TriggerRoll()
+    {
+        StartCoroutine(RollCoroutine());
+        PlayClip(rollClip);
+    }
     private void TriggerThrow() => animator.SetTrigger(hashThrow);
     private void TriggerInteract() => animator.SetTrigger(hashInteract);
-    private void TriggerStun() => animator.SetTrigger(hashStun);
+
+    // 에니메이션 이벤트 -- 에니메이션 클립에서 호출
+    public void PlayFootstep()
+    {
+        // 방금 소리가 났다면(0.2초 이내) 무시 (탭댄스 방어)
+        if (Time.time - lastFootstepTime < 0.2f) return;
+
+        if (footstepClips == null || footstepClips.Length == 0) return;
+        PlayClip(footstepClips[Random.Range(0, footstepClips.Length)], footstepVolume);
+
+        lastFootstepTime = Time.time;
+
+        Debug.Log($"[PlayerAnimator] Play Foot Step Sound");
+    }
+
+    private void HandleWeaponChanged(string _name, bool _isGun)
+    {
+        if (!photonView.IsMine) return;
+        PlayClip(weaponSwapClip);
+    }
+
+    private void PlayClip(AudioClip clip, float volume = 1f)
+    {
+        if (clip == null || audioSource == null) return;
+        audioSource.PlayOneShot(clip, volume);
+    }
+    private void TriggerStun()
+    {
+        animator.SetTrigger(hashStun);
+        PlayClip(stunClip);
+    }
 }
