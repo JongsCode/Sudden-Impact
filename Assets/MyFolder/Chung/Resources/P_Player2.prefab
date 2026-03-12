@@ -649,11 +649,15 @@ MonoBehaviour:
   footstepClips:
   - {fileID: 8300000, guid: aabe7b910fe8eb84688fff148c1749af, type: 3}
   - {fileID: 8300000, guid: fff4f32e192873d498af08da87acc6ec, type: 3}
-  rollClip: {fileID: 0}
+  rollClip: {fileID: 8300000, guid: 990215866ec9c3f44be52250d1f0fe7d, type: 3}
   stunClip: {fileID: 0}
   deathClip: {fileID: 0}
   weaponSwapClip: {fileID: 0}
-  footstepVolume: 0.6
+  footstepVolume: 0.353
+  rollVolume: 0.404
+  stunVolume: 1
+  deathVolume: 1
+  weaponSwapVolume: 0.7
 --- !u!114 &8958745846788931746
 MonoBehaviour:
   m_ObjectHideFlags: 0

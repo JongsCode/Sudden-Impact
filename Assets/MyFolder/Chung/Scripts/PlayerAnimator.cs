@@ -15,7 +15,13 @@ public class PlayerAnimator : MonoBehaviourPun
     [SerializeField] private AudioClip stunClip;
     [SerializeField] private AudioClip deathClip;
     [SerializeField] private AudioClip weaponSwapClip;
+
+    [Header("Audio Volumes")]
     [SerializeField][Range(0f, 1f)] private float footstepVolume = 0.6f;
+    [SerializeField][Range(0f, 1f)] private float rollVolume = 0.8f;      // ±¸¸£±â º¼·ý
+    [SerializeField][Range(0f, 1f)] private float stunVolume = 1.0f;      // ½ºÅÏ º¼·ý
+    [SerializeField][Range(0f, 1f)] private float deathVolume = 1.0f;     // »ç¸Á º¼·ý
+    [SerializeField][Range(0f, 1f)] private float weaponSwapVolume = 0.7f;// ¹«±â ±³Ã¼ º¼·ý
 
     [Header("Animator Hashes")]
     private readonly int hashVelocityX = Animator.StringToHash("VelocityX");
@@ -121,7 +127,7 @@ public class PlayerAnimator : MonoBehaviourPun
     private void TriggerRoll()
     {
         StartCoroutine(RollCoroutine());
-        PlayClip(rollClip);
+        PlayClip(rollClip,rollVolume);
     }
     private void TriggerThrow() => animator.SetTrigger(hashThrow);
     private void TriggerInteract() => animator.SetTrigger(hashInteract);
@@ -143,7 +149,7 @@ public class PlayerAnimator : MonoBehaviourPun
     private void HandleWeaponChanged(string _name, bool _isGun)
     {
         if (!photonView.IsMine) return;
-        PlayClip(weaponSwapClip);
+        PlayClip(weaponSwapClip, weaponSwapVolume);
     }
 
     private void PlayClip(AudioClip clip, float volume = 1f)
@@ -154,6 +160,6 @@ public class PlayerAnimator : MonoBehaviourPun
     private void TriggerStun()
     {
         animator.SetTrigger(hashStun);
-        PlayClip(stunClip);
+        PlayClip(stunClip, stunVolume);
     }
 }
