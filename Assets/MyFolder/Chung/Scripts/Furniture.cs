@@ -64,10 +64,11 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
         Collider[] colliders = GetComponentsInChildren<Collider>();
         foreach (Collider col in colliders)
         {
-            if (!col.isTrigger)
-            {
-                col.enabled = false;
-            }
+            //if (!col.isTrigger)
+            //{
+            //    col.enabled = false;
+            //}
+            col.enabled = false;
         }
     }
 }

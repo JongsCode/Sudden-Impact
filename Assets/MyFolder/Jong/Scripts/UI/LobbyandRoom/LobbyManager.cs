@@ -25,6 +25,16 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     [SerializeField]
     private GameObject roomButtonPrefab;
 
+    [Header("Flash Effect")]
+    [SerializeField]
+    private GameObject flashPivot;
+    private RectTransform flashTr;
+    [SerializeField]
+    private RectTransform imageTarget;
+    private bool isTargetFront = false;
+   
+    [SerializeField]
+    private float rotateSpeed;
 
     private Dictionary<string, GameObject> roomDictionary = new Dictionary<string, GameObject>();
 
@@ -38,8 +48,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.JoinLobby();
         }
+        flashTr = flashPivot.GetComponent<RectTransform>();
     }
 
+    private void Update()
+    {
+        FlashAnimation();
+    }
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby(new TypedLobby("ASIA", LobbyType.Default));
@@ -87,6 +102,29 @@ public class LobbyManager : MonoBehaviourPunCallbacks
                 {
                     roomDictionary[room.Name].GetComponent<RoomButton>().SetData(room.Name, room.PlayerCount, room.MaxPlayers);
                 }
+            }
+        }
+    }
+
+    private void FlashAnimation()
+    {
+        float wave = Mathf.Sin(Time.time * rotateSpeed);
+
+        float angle = 10f + (10f * wave);
+
+        flashTr.localRotation = Quaternion.Euler(0f, angle, 0f);
+        
+        if(imageTarget != null)
+        {
+            if(angle >= 5 &&isTargetFront)
+            {
+                imageTarget.SetAsFirstSibling();
+                isTargetFront = false;
+            }
+            else if (angle < 5 && !isTargetFront)
+            {
+                imageTarget.SetAsLastSibling();
+                isTargetFront = true;
             }
         }
     }

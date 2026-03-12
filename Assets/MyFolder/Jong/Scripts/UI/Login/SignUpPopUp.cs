@@ -3,6 +3,7 @@ using PlayFab;
 using PlayFab.ClientModels;
 using TMPro;
 using UnityEngine;
+using System.Collections;
 
 public class SignUpPopUp : PopUp
 {
@@ -15,6 +16,20 @@ public class SignUpPopUp : PopUp
     private TMP_InputField inputNickname;
     [SerializeField]
     private TextMeshProUGUI textErrorMessage;
+
+    private float closeTime = 0.4f;
+    private Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
+
+    private void OnEnable()
+    {
+        if (animator != null)
+            animator.Play("Open");
+    }
     public override void OnConfirm()
     {
         SignUp();
@@ -26,8 +41,7 @@ public class SignUpPopUp : PopUp
         inputPassword.text = "";
         inputNickname.text = "";
 
-        PopUpManager.Instance.PanelOff();
-        gameObject.SetActive(false);
+        CloseAnimPanelOff(true);
     }
 
     private void SignUp()
@@ -35,12 +49,11 @@ public class SignUpPopUp : PopUp
         if(string.IsNullOrEmpty(inputEmail.text) || string.IsNullOrEmpty(inputPassword.text) || string.IsNullOrEmpty(inputNickname.text))
         {
             Debug.Log("빈 칸을 채워주세요");
+            PopUpManager.Instance.Show(PopUpType.ResultPopUp, "빈 칸을 채워주세요.");
+
             return;
         }
-        // Photon Nickname을 설정하고 컴퓨터에 저장
-        PhotonNetwork.NickName = inputNickname.text;
-        PlayerPrefs.SetString("Nickname", PhotonNetwork.NickName);
-        PlayerPrefs.Save();
+        
 
         // PlayFab 서버로 보낼 정보
         var request = new RegisterPlayFabUserRequest
@@ -52,43 +65,96 @@ public class SignUpPopUp : PopUp
         };
 
         PlayFabClientAPI.RegisterPlayFabUser(request, Success, Fail);
-
-        inputEmail.text = "";
-        inputPassword.text = "";
-        inputNickname.text = "";
-
-      
     }
  
 
     public void Success(RegisterPlayFabUserResult _result)
     {
         Debug.Log("회원가입 성공");
-        PopUpManager.Instance.PanelOff();
-        gameObject.SetActive(false);
+        // Photon Nickname을 설정하고 컴퓨터에 저장
+        PhotonNetwork.NickName = inputNickname.text;
+        PlayerPrefs.SetString("Nickname", PhotonNetwork.NickName);
+        PlayerPrefs.Save();
+
+        inputEmail.text = "";
+        inputPassword.text = "";
+        inputNickname.text = "";
+
+        PopUpManager.Instance.Show(PopUpType.ResultPopUp, "회원가입 성공.");
+        CloseAnimPanelOff(false);
     }
 
     public void Fail(PlayFabError _error)
     {
-        if(_error.Error == PlayFabErrorCode.EmailAddressNotAvailable)
+     
+        string textError = "";
+        switch (_error.Error)
         {
-            Debug.Log("가입 실패 : 이미 사용 중인 이메일입니다.");
-            textErrorMessage.text = "Register Fail : EmailAddressNotAvailable";
+            case PlayFabErrorCode.InvalidParams:
+                if (_error.ErrorDetails != null)
+                {
+                    if (_error.ErrorDetails.ContainsKey("Email"))
+                    {
+                        textError = "이메일 형식이<br>올바르지 않습니다.";
+                        inputEmail.text = "";
+                    }
+                    else if (_error.ErrorDetails.ContainsKey("Password"))
+                    {
+                        textError = "비밀번호는 6자리 이상<br>입력해야 합니다.";
+                        inputPassword.text = "";
+                    }
+                    else if (_error.ErrorDetails.ContainsKey("name"))
+                    {
+                        textError = "닉네임은 3~20자리 사이로<br>입력해야 합니다.";
+                        inputNickname.text = "";
+                    }
+                    else
+                        textError = "입력한 정보의 형식을<br>다시 확인해 주세요.";
+                }
+                else
+                {
+                    textError = "입력값을 다시<br>확인해 주세요.";
+                }
+                break;
+
+            case PlayFabErrorCode.EmailAddressNotAvailable:
+                textError = "이미 사용 중인<br>이메일입니다.";
+                inputEmail.text = "";
+                break;
+
+            case PlayFabErrorCode.UsernameNotAvailable:
+            case PlayFabErrorCode.NameNotAvailable:
+                textError = "이미 사용 중인<br>닉네임입니다.";
+                inputNickname.text = "";
+                break;
+
+            default:
+                textError = "오류가 발생했습니다: " + _error.ErrorMessage;
+                break;
         }
-        else if(_error.Error == PlayFabErrorCode.UsernameNotAvailable)
+        textError = textError.Replace(". ", ".<br>");
+        PopUpManager.Instance.Show(PopUpType.ResultPopUp, textError);
+    }
+
+    private void CloseAnimPanelOff(bool close)
+    {
+        if (animator != null)
         {
-            Debug.Log("가입 실패 : 이미 사용 중인 닉네임입니다.");
-            textErrorMessage.text = "Register Fail : UsernameNotAvailable";
-        }
-        else if(_error.Error == PlayFabErrorCode.InvalidEmailAddress)
-        {
-            Debug.Log("가입 실패 : 이메일 형식이 잘못되었습니다.");
-            textErrorMessage.text = "Register Fail : InvalidEmailAddress";
+            animator.Play("Close");
+            StartCoroutine(CloseRoutine(close));
         }
         else
         {
-            Debug.Log("회원가입 실패 : " + _error.GenerateErrorReport());
+            if (close) PopUpManager.Instance.PanelOff();
+            gameObject.SetActive(false);
         }
     }
-   
+
+    private IEnumerator CloseRoutine(bool _close)
+    {
+        yield return new WaitForSeconds(closeTime);
+
+        if (_close) PopUpManager.Instance.PanelOff();
+        gameObject.SetActive(false);
+    }
 }

@@ -9,6 +9,10 @@ public class PlayerIcon : MonoBehaviour
     private TextMeshProUGUI textTeamNumber;
     [SerializeField]
     private GameObject goReady;
+    [SerializeField]
+    private GameObject T1Image;
+    [SerializeField]
+    private GameObject T2Image;
 
     private int userActorNumber;
     public int UserActorNumber
@@ -38,4 +42,18 @@ public class PlayerIcon : MonoBehaviour
         goReady.SetActive(_isReady);
     }
 
+    public void SetImage(int _teamNumber)
+    {
+        if(_teamNumber == 1)
+        {
+            T1Image.SetActive(true);
+            T2Image.SetActive(false);
+
+        }
+        else
+        {
+            T1Image.SetActive(false);
+            T2Image.SetActive(true);
+        }
+    }
 }
