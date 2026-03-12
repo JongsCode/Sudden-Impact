@@ -283,6 +283,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
 
         Debug.Log($"[GameManager] {roundStartDelay}초 후 다음 라운드 시작");
         yield return new WaitForSeconds(roundStartDelay);
+        FogOfWar.Instance.ResetFogOfWar();
         StartRound();
     }
 

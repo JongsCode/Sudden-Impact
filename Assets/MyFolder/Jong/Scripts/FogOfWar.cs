@@ -3,6 +3,8 @@ using UnityEngine.Rendering;
 
 public class FogOfWar : MonoBehaviour
 {
+    public static FogOfWar Instance;
+
     [Header("Camera")]
     public Camera cameraAlpha;
     
@@ -18,7 +20,17 @@ public class FogOfWar : MonoBehaviour
     public int blurDetail = 1;
     private void Awake()
     {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
         ClearRenderTexture(rt_Overlap);
+
     }
     private void Start()
     {
@@ -89,5 +101,14 @@ public class FogOfWar : MonoBehaviour
         RenderTexture.active = _rt;
         GL.Clear(true, true, Color.black);
         RenderTexture.active = null;
+    }
+
+    public void ResetFogOfWar()
+    {
+        if (rt_Overlap != null) ClearRenderTexture(rt_Overlap);
+        if (rt_Current != null) ClearRenderTexture(rt_Current);
+        if (rt_BlurOverlap != null) ClearRenderTexture(rt_BlurOverlap);
+        if (rt_BlurCurrent != null) ClearRenderTexture(rt_BlurCurrent);
+        if (rt_Temp != null) ClearRenderTexture(rt_Temp);
     }
 }
