@@ -9,7 +9,6 @@ public class Door : Furniture, IInteractable
     [SerializeField] private Transform spawnPivot;
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
-    [SerializeField] private Collider collider;
 
     
     public AudioClip doorSound;
