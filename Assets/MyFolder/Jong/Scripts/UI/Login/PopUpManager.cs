@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 public enum PopUpType
 {
-    SignUp
+    SignUpPopUp,
+    ResultPopUp
 }
 public class PopUpManager : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class PopUpManager : MonoBehaviour
         if (Instance == null) Instance = this;
     }
 
-    public void Show(PopUpType _popUpType) // PopUpManager Instance에서 type에 해당하는 PopUp을 호출 및 생성(없는 경우)
+    public void Show(PopUpType _popUpType, string _text = "") // PopUpManager Instance에서 type에 해당하는 PopUp을 호출 및 생성(없는 경우)
     {
         backgroundPanel.SetActive(true);
         GameObject newPopUp = null;
@@ -35,6 +36,12 @@ public class PopUpManager : MonoBehaviour
             }
             newPopUp.transform.SetParent(canvas.transform, false);
             PopUpList.Add(_popUpType, newPopUp);
+        }
+        newPopUp.transform.SetAsLastSibling();
+
+        if(_popUpType == PopUpType.ResultPopUp)
+        {
+            newPopUp.GetComponent<ResultPopUp>().SetResultText(_text);
         }
     }
 

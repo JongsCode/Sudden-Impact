@@ -63,10 +63,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             textReadyButton.text = "Wait";
+            textReadyButton.color = Color.green;
+
             SetReadyState(true);
         }
         else
         {
+            textReadyButton.color = Color.black;
             textReadyButton.text = "Ready";
         }
     }
@@ -107,11 +110,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
             if (textReadyButton.text == "Ready")
             {
                 textReadyButton.text = "Wait Other Players";
+                textReadyButton.color = Color.darkGreen;
                 SetReadyState(true);
             }
             else
             {
                 textReadyButton.text = "Ready";
+                textReadyButton.color = Color.black;
                 SetReadyState(false);
             }
         }
@@ -161,6 +166,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             PlayerIcon playerIcon = playerIconGo.GetComponent<PlayerIcon>();
             playerIcon.SetUserInfo(player.NickName, player.ActorNumber, playerTeam);
             playerIcon.SetReady(isReady);
+            playerIcon.SetImage(playerTeam);
         }
     }
 
@@ -214,10 +220,13 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (readyCount == (PhotonNetwork.CurrentRoom.PlayerCount - 1) && PhotonNetwork.CurrentRoom.PlayerCount > 1)
         {
             textReadyButton.text = "AllReady";
+            textReadyButton.color = Color.darkGreen;
+
         }
         else
         {
             textReadyButton.text = "Wait Other Players";
+            textReadyButton.color = Color.darkGreen;
         }
     }
     public void SetLeaveButton()

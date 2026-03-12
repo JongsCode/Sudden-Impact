@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/MyFolder/Jong/Scenes/LoginTest.unity
+    guid: c43d9fd51a074694ead2866efb84ad69
+  - enabled: 1
     path: Assets/MyFolder/Jong/Scenes/Login.unity
     guid: d66d4bddc2fcc014dbe5314eb734bb90
   - enabled: 1
