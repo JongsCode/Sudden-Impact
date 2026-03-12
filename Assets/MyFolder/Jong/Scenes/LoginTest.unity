@@ -751,7 +751,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 02523ef596c33471f92669938f91ab29, type: 3}
+  m_Resource: {fileID: 8300000, guid: 3e8aa596634f07347b192c3689741aab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -849,7 +849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78e1090ffb947c6439c1aa372820948e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIButtonEffect
-  clickParticlePrefab: {fileID: 0}
+  bulletHolePrefab: {fileID: 8157028613521789381, guid: 9ac286fdddad5704ea74930d8a6b1ec5, type: 3}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0.6784314, g: 0.84705883, b: 0.9019608, a: 1}
   clickColor: {r: 0, g: 0.8509804, b: 1, a: 1}
@@ -1281,7 +1281,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 02523ef596c33471f92669938f91ab29, type: 3}
+  m_Resource: {fileID: 8300000, guid: 3e8aa596634f07347b192c3689741aab, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1394,7 +1394,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78e1090ffb947c6439c1aa372820948e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIButtonEffect
-  clickParticlePrefab: {fileID: 0}
+  bulletHolePrefab: {fileID: 8157028613521789381, guid: 9ac286fdddad5704ea74930d8a6b1ec5, type: 3}
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0.6784314, g: 0.84705883, b: 0.9019608, a: 1}
   clickColor: {r: 0, g: 0.8509804, b: 1, a: 1}
