@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private Vector3 lastMoveDir;
     private bool isSprinting;
     private float lastRollTime;
+    private float _pickupCooldownEnd = 0f;
 
     public int MyTeam { get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
@@ -400,15 +401,22 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     public void PickUpAndDrop(InputAction.CallbackContext ctx)
     {
         if (!photonView.IsMine || !ctx.performed) return;
+        if (Time.time < _pickupCooldownEnd) return;
 
-        // 1. 주변에 주울 수 있는 표지판이 있다면? 줍기!
-        if (closestNode != null && closestNode.IsAvailable)
+        // 1. 주변에 노드가 있으면 (가용 여부 무관) 드롭 차단
+        if (closestNode != null)
         {
-            closestNode.RequestPickup(photonView.ViewID);
+            if (closestNode.IsAvailable)
+            {
+                closestNode.RequestPickup(photonView.ViewID);
+                // RPC 왕복 지연 동안 Q 재입력으로 TryThrow 방지
+                _pickupCooldownEnd = Time.time + 0.5f;
+            }
             closestNode = null;
+            return;
         }
-        // 2. 없다면? 현재 든 총 버리기!
-        else if (myEquippedGun != null && useGun)
+        // 2. 노드가 완전히 없을 때만 던지기
+        if (myEquippedGun != null && useGun)
         {
             photonView.RPC(nameof(RPC_TryThrow), RpcTarget.All, (int)((Gun)myEquippedGun).WeaponType);
         }
@@ -528,7 +536,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log($"[PlayerController] ForceEquipWeapon Called type : {typeInt}, Ammo : {ammo}");
         Weapon.EWeaponType type = (Weapon.EWeaponType)typeInt;
 
-        if (myEquippedGun != null) DropWeapon(); // 기존 총은 바닥에 표지판으로 생성
+        if (myEquippedGun != null) DropWeapon();
 
         Gun newGun = FindGunByType(type);
         if (newGun != null)
@@ -539,6 +547,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             useGun = true;
             photonView.RPC(nameof(SwapWeapon), RpcTarget.All, true);
         }
+
+        // 장착 직후 Q 연타로 발 밑 노드를 즉시 줍는 루프 방지
+        if (photonView.IsMine) _pickupCooldownEnd = Time.time + 0.4f;
     }
 
     [PunRPC]
