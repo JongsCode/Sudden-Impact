@@ -56,17 +56,31 @@ public class InputManager : MonoBehaviour
         onZoomAction = myInputAction.FindAction("Zoom");
         onMenuAction = myInputAction.FindAction("Menu");
 
+        SetConnectActionMap(false);
+
         myPlayerRegistry.OnPlayerRegistered += GetmyPlayer;
         myMainCamera = Camera.main;
-
-
-
     }
 
+    private void OnDestroy()
+    {
+        myPlayerRegistry.OnPlayerRegistered -= GetmyPlayer;
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnPlayerUIDead += HandlePlayerDeath;
+        GameEvents.OnRoundStart += HandlePlayerRespawn;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerUIDead -= HandlePlayerDeath;
+        GameEvents.OnRoundStart -= HandlePlayerRespawn;
+    }
     private void LateUpdate()
     {
-        if (player == null || !player.gameObject.activeInHierarchy || player.GetPlayerState == PlayerController.PlayerState.Dead) 
-            return;
+        if (player == null ) return;
 
         Ray ray = myMainCamera.ScreenPointToRay(onMousePosAction.ReadValue<Vector2>());
         if (aimPlane.Raycast(ray, out float enter))
@@ -77,12 +91,39 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    private void HandlePlayerDeath(int deadActorNumber)
+    {
+        if (player != null && player.photonView.Owner.ActorNumber == deadActorNumber)
+        {
+            // 1. 캐릭터 조작 끄기
+            SetConnectActionMap(false);
+
+            Debug.Log("[InputManager] 로컬 플레이어 사망: 조작 차단");
+        }
+    }
+
+    private void HandlePlayerRespawn()
+    {
+        if (player != null)
+        {
+            // 1. 캐릭터 조작 켜기
+            SetConnectActionMap(true);
+
+            Debug.Log("[InputManager] 로컬 플레이어 리스폰: 조작 차단 해제");
+        }
+    }
+
     private void SetConnectActionMap(bool _isConnect)
     {
         if (_isConnect)
+        {
             playerMap.Enable();
+        }
         else
-            playerMap.Disable();
+        {
+            playerMap.Disable(); 
+            onMenuAction.Enable(); // 메뉴 끄기 버튼(ESC)만 다시 살리기
+        }
     }
 
     private IEnumerator GetInputValue()
@@ -137,7 +178,7 @@ public class InputManager : MonoBehaviour
     {
         if (targetGroup == null || targetGroup.Targets.Count < 2) return;
 
-        float targetWeight = isAiming ? 0.5f : 0f;
+        float targetWeight = isAiming ? 0.8f : 0f;
 
         var target = targetGroup.Targets[1];
 
@@ -159,7 +200,7 @@ public class InputManager : MonoBehaviour
         isFireHeld = false;
     }
 
-    private void OnPauseToggle(InputAction.CallbackContext ctx)
+    private void OnMenuToggle(InputAction.CallbackContext ctx)
     {
         isOnMenu = !isOnMenu;
 
@@ -191,7 +232,7 @@ public class InputManager : MonoBehaviour
         onSwapAction.performed += player.TrySwapWeapon;
         onInteractAction.performed += player.TryInteract;
 
-        onMenuAction.performed += OnPauseToggle;
+        onMenuAction.performed += OnMenuToggle;
 
         onFireAction.performed += OnFireStart;
         onFireAction.canceled += OnFireEnd;

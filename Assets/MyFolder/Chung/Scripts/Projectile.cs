@@ -54,8 +54,8 @@ public class Projectile : MonoBehaviourPun, IPunInstantiateMagicCallback
         Vector3 hitPoint = other.ClosestPoint(transform.position);
         Vector3 hitNormal = -transform.forward;
 
-        RPC_PlayHitEffect(hitPoint, hitNormal);  // 로컬: 직접 호출 (Destroy 전 실행 100% 보장)
-        photonView.RPC(nameof(RPC_PlayHitEffect), RpcTarget.Others, hitPoint, hitNormal);  // 원격만 RPC
+        HitEffectManager.Instance.SpawnEffect(hitPoint, hitNormal);
+
 
         // 데미지 처리는 리시버인 경우에만 수행
         if (isReceiver)

@@ -19,13 +19,15 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         NotReady, Idle, Sprint, Rolling, Stunned, Dead
     }
-
+    [Header("PlayerReference")]
     [SerializeField] private Rigidbody myRigidbody;
     [SerializeField] private PhotonTransformView myTransformView;
     [SerializeField] private Transform weaponAttachPoint;
     [SerializeField] private Weapon myKnife;
     [SerializeField] private PlayerRegistry registry;
     [SerializeField] private GameObject dummyFlagMesh;
+    [Tooltip("혈흔 프리팹")]
+    [SerializeField] private GameObject neonBloodPrefab; 
 
     [Header("Parameters")]
     [SerializeField] private float maxHp = 100f;
@@ -159,12 +161,12 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     }
 
     // 라운드 시작시 초기화 목적으로 호출
-    public void Respawn(Vector3 spawnPos)
+    public void Respawn(Vector3 _spawnPos)
     {
         curHp = maxHp;
         SetPlayerState(PlayerState.Idle);
-        transform.position = spawnPos;
         gameObject.SetActive(true);
+        myRigidbody.position = _spawnPos;
         dummyFlagMesh.SetActive(false);
         GameEvents.HpChanged(curHp);
     }
@@ -210,8 +212,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         lastMoveDir = _moveAxis.normalized;
         curMoveInput = _moveAxis;
-        //Vector3 moveVector = transform.position + ((_moveAxis.normalized * moveSpeed) * Time.deltaTime);
-        //myRigidbody.MovePosition(moveVector);
     }
 
     public void RotatePlayer(Vector3 _aimPos)
@@ -264,8 +264,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private IEnumerator RollCoroutine()
     {
-        Debug.Log($"코루틴 시작 | IsMine: {photonView.IsMine} | forward: {transform.forward} | startPos: {transform.position}");
-
         if (playerState == PlayerState.Rolling
             || playerState == PlayerState.Stunned
             || playerState == PlayerState.Dead)
@@ -381,13 +379,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (useGun)
         {
             myEquippedGun.Attack(_isHeld);
-            Debug.Log("[PlayerController] Im Start Fire");
         }
 
         else
         {
             myKnife.Attack(_isHeld);
-            Debug.Log("[PlayerController] Im Start MeleeAtack");
         }
 
     }
@@ -440,13 +436,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             if (!nearbyNodes.Remove(node)) return;
 
             if (node == closestNode) closestNode.HideLabel();
-
-            //if (nearbyNodes.Count == 0)
-            //{
-            //    StopCoroutine(curCheckClosestNodeCoroutine);
-            //    closestNode = null;
-            //    curCheckClosestNodeCoroutine = null;
-            //}
         }
     }
 
@@ -482,13 +471,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             {
                 if (prevClosest != null)
                 {
-                    prevClosest.HideLabel();
                     GameEvents.PickupUIUpdate(false, Vector3.zero);
                     Debug.Log("[Player] PickUpUIOff");
                 }
                 if (tempClosest != null)
                 {
-                    tempClosest.ShowLabel();
                     GameEvents.PickupUIUpdate(true, tempClosest.transform.position, $"{tempClosest.WeaponType} [Q]");
                 }
                 prevClosest = tempClosest;
@@ -500,7 +487,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         // 주위에 더이상 노드가 없을 떄
         if (closestNode != null) 
         {
-            closestNode.HideLabel();
             GameEvents.PickupUIUpdate(false, Vector3.zero);
             Debug.Log("[Player] PickUpUIOff");
         }
@@ -583,57 +569,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         return null;
     }
 
-    //[PunRPC]
-    //public void PickUpItem(int _viewID)
-    //{
-    //    if (!photonView.IsMine)
-    //    {
-    //        PhotonView targetView = PhotonView.Find(_viewID);
-
-    //        if (targetView == null) return;
-    //        closestGun = targetView.GetComponent<Weapon>();
-    //    }
-
-    //    DropWeapon();
-
-    //    if (nearbyItems.Contains(myEquippedGun))
-    //    {
-    //        nearbyItems.Remove(myEquippedGun);
-    //    }
-
-    //    myEquippedGun = closestGun;
-    //    nearbyItems.Remove(closestGun);
-    //    closestGun = null;
-
-    //    myEquippedGun.gameObject.layer = 11;
-    //    myEquippedGun.SetOwner(PhotonNetwork.LocalPlayer.ActorNumber, myTeam);
-
-    //    if (photonView.IsMine)
-    //    {
-    //        myEquippedGun.photonView.RequestOwnership();
-    //    }
-    //    Item item = myEquippedGun.GetComponent<Item>();
-    //    item.PickItem();
-    //    Debug.Log("PickItem");
-
-    //    myEquippedGun.transform.SetParent(weaponAttachPoint);
-    //    myEquippedGun.transform.localPosition = Vector3.zero;
-    //    myEquippedGun.transform.localRotation = Quaternion.identity;
-
-    //    useGun = true;
-    //    SwapWeapon(useGun);
-
-    //}
-
-    //private void DropWeapon()
-    //{
-    //    if (myEquippedGun != null)
-    //    {
-    //        myEquippedGun.gameObject.SetActive(true);
-    //        myEquippedGun.transform.SetParent(null);
-    //        myEquippedGun = null;
-    //    }
-    //}
     #endregion
 
     #region 던지기
@@ -737,6 +672,9 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
                 { damageImpulseSource.GenerateImpulseWithVelocity(shakeDir.normalized * damageShakeForce); }
             }
         }
+
+        Vector3 bloodPos = new Vector3(transform.position.x, 0.01f, transform.position.z);
+        Instantiate(neonBloodPrefab, bloodPos, Quaternion.identity);
 
         if (curHp <= 0)
         {

@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using Unity.Cinemachine;
+using System.Collections;
 
 public abstract class Gun : Weapon
 {
@@ -13,6 +14,9 @@ public abstract class Gun : Weapon
     [Header("Parameter")]
     [SerializeField] protected int maxAmmo = 30;
     [SerializeField] protected float fireRate = 0.1f;         // 연사 속도 
+
+    [Header("MuzzleFlash")]
+    [SerializeField] private Light flashLight;
 
     [Header("Ripple Setting")]
     [Tooltip("리플 생성 시간 최소 간격")]
@@ -75,7 +79,7 @@ public abstract class Gun : Weapon
 
         // 실제 탄환 생성 로직
         FireProjectile();
-
+        photonView.RPC(nameof(RPC_MuzzleFlash), RpcTarget.All);
         
 
         if (photonView.IsMine && impulseSource != null)
@@ -112,6 +116,30 @@ public abstract class Gun : Weapon
             0,
             info
         );
+    }
+
+    [PunRPC]
+    public void RPC_MuzzleFlash()
+    {
+        StartCoroutine(FlashCoroutine());
+    }
+
+    private IEnumerator FlashCoroutine()
+    {
+        //  매번 빛의 세기(Intensity)와 크기를 랜덤으로
+        if (flashLight == null) yield break; 
+            
+        flashLight.intensity = Random.Range(10f, 20f); // 라이트 밝기 변화
+        flashLight.range = Random.Range(7f, 13f);
+
+        // 켜기
+        if (flashLight != null) flashLight.enabled = true;
+
+        // 타이밍은 0.02초 ~ 0.04초 동안 켜지게
+        yield return new WaitForSeconds(0.03f);
+
+        // 끄기
+        if (flashLight != null) flashLight.enabled = false;
     }
 
     [PunRPC]

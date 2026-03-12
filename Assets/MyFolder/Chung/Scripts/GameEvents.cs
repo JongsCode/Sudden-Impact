@@ -29,6 +29,10 @@ public static class GameEvents
     // 메뉴열기
     public static event Action<bool> OnMenuUIUpdate;
 
+    // 플로팅 텍스트 용
+    public static event Action<Vector3> OnKillFloat;
+
+
     #region 호출 메서드
     //  호출 메서드
     public static void HpChanged(float _hp)                             
@@ -70,6 +74,10 @@ public static class GameEvents
 
     public static void MenuUIUpdate(bool _isShow)
         => OnMenuUIUpdate?.Invoke(_isShow);
+
+    public static void KillFloat(Vector3 position)
+    => OnKillFloat?.Invoke(position);
+
     #endregion
 
 }

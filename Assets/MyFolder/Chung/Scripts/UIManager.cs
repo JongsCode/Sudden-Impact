@@ -268,7 +268,7 @@ public class UIManager : MonoBehaviour
     // 나가기 버튼의 OnClick 이벤트에 연결할 함수
     public void OnClickLeaveGame()
     {
-        //DebugGameManager.Instance.
+        DebugGameManager.Instance.LeaveGame();
     }
 
     private void HandlePickupUIUpdate(bool isShow, Vector3 pos, string text)

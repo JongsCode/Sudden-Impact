@@ -62,6 +62,12 @@ public class PlayerRegistry : ScriptableObject
         return false;
     }
 
+    public void RemoveFromTeam(int actorNumber)
+    {
+        teamA.RemoveAll(p => p == null || (p.photonView != null && p.photonView.Owner.ActorNumber == actorNumber));
+        teamB.RemoveAll(p => p == null || (p.photonView != null && p.photonView.Owner.ActorNumber == actorNumber));
+    }
+
     // 게임 종료 시 반드시 초기화
     public void Clear()
     {
