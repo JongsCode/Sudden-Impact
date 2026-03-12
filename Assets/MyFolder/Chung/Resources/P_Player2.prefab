@@ -647,6 +647,11 @@ MonoBehaviour:
   playerController: {fileID: 6355518173395185663}
   audioSource: {fileID: 3027336888692628965}
   footstepClips:
+  - {fileID: 8300000, guid: d1dde6d746274844da08e29af05469da, type: 3}
+  - {fileID: 8300000, guid: a7bac85086434234580c0c4f68b41c5b, type: 3}
+  - {fileID: 8300000, guid: 1853df3a1b4af9840b4d7b5d1e079950, type: 3}
+  - {fileID: 8300000, guid: 27d98807f9f36f94194230f6256d247a, type: 3}
+  runFootstepClips:
   - {fileID: 8300000, guid: aabe7b910fe8eb84688fff148c1749af, type: 3}
   - {fileID: 8300000, guid: fff4f32e192873d498af08da87acc6ec, type: 3}
   rollClip: {fileID: 8300000, guid: 990215866ec9c3f44be52250d1f0fe7d, type: 3}
@@ -654,6 +659,8 @@ MonoBehaviour:
   deathClip: {fileID: 0}
   weaponSwapClip: {fileID: 0}
   footstepVolume: 0.353
+  runFootstepVolume: 0.8
+  runThreshold: 1.4
   rollVolume: 0.404
   stunVolume: 1
   deathVolume: 1
