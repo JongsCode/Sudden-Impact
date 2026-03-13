@@ -65,6 +65,7 @@ public class InputManager : MonoBehaviour
     private void OnDestroy()
     {
         myPlayerRegistry.OnPlayerRegistered -= GetmyPlayer;
+        playerMap.Disable();
     }
 
     private void OnEnable()
