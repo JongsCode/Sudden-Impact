@@ -43,6 +43,9 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
     private readonly List<WeaponPickupNode> _activeSpawnNodes = new List<WeaponPickupNode>();
     private readonly List<WeaponPickupNode> _activeDropNodes = new List<WeaponPickupNode>();
 
+    // FIFO 풀: 반환된 노드는 뒤에 추가 → 방금 픽업된 노드가 즉시 재사용되지 않음
+    private readonly Queue<WeaponPickupNode> _freeDropQueue = new Queue<WeaponPickupNode>();
+
     // Gun.MaxAmmo 조회용 카탈로그 (PlayerController.Init()에서 MasterClient가 1회 등록)
     private readonly Dictionary<Weapon.EWeaponType, int> _gunMaxAmmos =
         new Dictionary<Weapon.EWeaponType, int>();
@@ -53,6 +56,10 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+
+        // 드롭 풀 초기화: 모든 노드를 FIFO 큐에 등록
+        foreach (var node in dropNodePool)
+            if (node != null) _freeDropQueue.Enqueue(node);
     }
 
     public override void OnEnable()
@@ -169,15 +176,20 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
     public void ReturnNodeToDropPool(WeaponPickupNode node)
     {
         _activeDropNodes.Remove(node);
+        _freeDropQueue.Enqueue(node); // 큐 뒤에 추가 → 즉시 재사용 방지
     }
 
     // ─── 유틸리티 ────────────────────────────────────────────────────
 
-    /// <summary>드롭 풀에서 현재 비활성 상태인 자유 노드를 반환.</summary>
+    /// <summary>드롭 풀에서 자유 노드를 FIFO 순서로 반환.</summary>
     private WeaponPickupNode GetFreeDropNode()
     {
-        foreach (var node in dropNodePool)
-            if (node != null && !node.IsAvailable) return node;
+        while (_freeDropQueue.Count > 0)
+        {
+            var node = _freeDropQueue.Dequeue();
+            if (node != null && !node.IsAvailable)
+                return node;
+        }
         return null;
     }
 

@@ -18,6 +18,11 @@ public abstract class Gun : Weapon
     [Header("MuzzleFlash")]
     [SerializeField] private Light flashLight;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip fireClip;
+    [SerializeField][Range(0f, 1f)] private float fireVolume = 1f;
+
     [Header("Ripple Setting")]
     [Tooltip("리플 생성 시간 최소 간격")]
     [SerializeField] private float rippleCooldown = 0.3f;
@@ -122,6 +127,8 @@ public abstract class Gun : Weapon
     public void RPC_MuzzleFlash()
     {
         StartCoroutine(FlashCoroutine());
+        if (audioSource != null && fireClip != null)
+            audioSource.PlayOneShot(fireClip, fireVolume);
     }
 
     private IEnumerator FlashCoroutine()

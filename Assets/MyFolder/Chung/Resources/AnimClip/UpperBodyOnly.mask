@@ -20,15 +20,15 @@ AvatarMask:
   - m_Path: FPS_HANDS/SK_Miliary_Military_FPS_Shirt3
     m_Weight: 1
   - m_Path: root
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: root/pelvis
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: root/pelvis/spine_01
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: root/pelvis/spine_01/spine_02
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: root/pelvis/spine_01/spine_02/spine_03
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: root/pelvis/spine_01/spine_02/spine_03/clavicle_l
     m_Weight: 1
   - m_Path: root/pelvis/spine_01/spine_02/spine_03/clavicle_l/upperarm_l

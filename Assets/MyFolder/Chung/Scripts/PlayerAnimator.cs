@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Photon.Pun;
 using System.Collections;
 
@@ -11,11 +11,20 @@ public class PlayerAnimator : MonoBehaviourPun
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] footstepClips;
+    [SerializeField] private AudioClip[] runFootstepClips;
     [SerializeField] private AudioClip rollClip;
     [SerializeField] private AudioClip stunClip;
     [SerializeField] private AudioClip deathClip;
     [SerializeField] private AudioClip weaponSwapClip;
+
+    [Header("Audio Volumes")]
     [SerializeField][Range(0f, 1f)] private float footstepVolume = 0.6f;
+    [SerializeField][Range(0f, 1f)] private float runFootstepVolume = 0.8f;
+    [SerializeField] private float runThreshold = 1.2f;
+    [SerializeField][Range(0f, 1f)] private float rollVolume = 0.8f;      
+    [SerializeField][Range(0f, 1f)] private float stunVolume = 1.0f;      
+    [SerializeField][Range(0f, 1f)] private float deathVolume = 1.0f;     
+    [SerializeField][Range(0f, 1f)] private float weaponSwapVolume = 0.7f;
 
     [Header("Animator Hashes")]
     private readonly int hashVelocityX = Animator.StringToHash("VelocityX");
@@ -28,9 +37,10 @@ public class PlayerAnimator : MonoBehaviourPun
     private readonly int hashRoll = Animator.StringToHash("Roll");
     private readonly int hashStun = Animator.StringToHash("Stun");
     private readonly int hashDead = Animator.StringToHash("Dead");
+    private readonly int hashSpeed = Animator.StringToHash("Speed");
 
     private float lastFootstepTime = 0f;
-    private bool _wasDead; // death sound once-flag
+    private bool _wasDead; // ì‚¬ë§ ì‚¬ìš´ë“œ 1íšŒ ì¬ìƒìš© í”Œë˜ê·¸
 
     private void Awake()
     {
@@ -40,21 +50,21 @@ public class PlayerAnimator : MonoBehaviourPun
 
     private void OnEnable()
     {
-        // ÀÌº¥Æ® ±¸µ¶ (ÄÁÆ®·Ñ·¯¿¡¼­ Çàµ¿ÀÌ ¹ß»ıÇÏ¸é ÀÚµ¿À¸·Î Æ®¸®°Å ÇÔ¼ö ½ÇÇà)
+        // ì´ë²¤íŠ¸ êµ¬ë… (ì»¨íŠ¸ë¡¤ëŸ¬ì—ì„œ í–‰ë™ì´ ë°œìƒí•˜ë©´ ìë™ìœ¼ë¡œ íŠ¸ë¦¬ê±° í•¨ìˆ˜ í˜¸ì¶œ)
         playerController.OnAttackEvent += TriggerAction;
         playerController.OnRollEvent += TriggerRoll;
         playerController.OnThrowEvent += TriggerThrow;
         playerController.OnInteractEvent += TriggerInteract;
         playerController.OnStunnedEvent += TriggerStun;
 
-        // ÃÊ±âÈ­
+        // ì´ˆê¸°í™”
         animator.SetLayerWeight(1, 1f);
         GameEvents.OnWeaponChanged += HandleWeaponChanged;
     }
 
     private void OnDisable()
     {
-        // ¸Ş¸ğ¸® ´©¼ö ¹æÁö ¹× ÂüÁ¶ ¿¡·¯ ¹æÁö
+        // ë©”ëª¨ë¦¬ ëˆ„ìˆ˜ ë°©ì§€ ë° ì´ë²¤íŠ¸ êµ¬ë… í•´ì œ
         playerController.OnAttackEvent -= TriggerAction;
         playerController.OnRollEvent -= TriggerRoll;
         playerController.OnThrowEvent -= TriggerThrow;
@@ -65,7 +75,7 @@ public class PlayerAnimator : MonoBehaviourPun
 
     private void LateUpdate()
     {
-        // »ç¸Á »óÅÂ Ã¼Å© (Trigger ´ë½Å Bool·Î È®½ÇÇÏ°Ô ´¯Çô³õ±â À§ÇÔ)
+        // ì‚¬ë§ ìƒíƒœ ì²´í¬ (Trigger ëŒ€ì‹  Boolë¡œ í™•ì‹¤í•˜ê²Œ ìƒíƒœ ìœ ì§€)
         bool isDead = playerController.GetPlayerState == PlayerController.PlayerState.Dead;
         animator.SetBool(hashDead, isDead);
 
@@ -84,27 +94,29 @@ public class PlayerAnimator : MonoBehaviourPun
 
     private void UpdateMovementAnimations()
     {
-        // ¸¶¿ì½º¸¦ ¹Ù¶óº¸´Â È¸ÀüÃà(·ÎÄÃ) ±âÁØÀ¸·Î ¹°¸® ¼Óµµ¸¦ º¯È¯
-        Vector3 localVelocity = transform.InverseTransformDirection(playerController.CurrentVelocity.normalized);
+        //  í”Œë ˆì´ì–´ ë²¨ë¡œì‹œí‹°(ë°©í–¥) ê¸°ì¤€ìœ¼ë¡œ ë¡œì»¬ ì†ë„ ë³€í™˜
+        Vector3 localVelocity = transform.InverseTransformDirection(playerController.CurrentVelocity)
+                                / playerController.MoveSpeed;
 
-        // Blend Tree·Î Àü´Ş (ÀüÈÄÁÂ¿ì 8¹æÇâ º¸°£¿ë)
+        // Blend Tree
         animator.SetFloat(hashVelocityX, localVelocity.x);
         animator.SetFloat(hashVelocityZ, localVelocity.z);
+        animator.SetFloat(hashSpeed, playerController.NormalizedSpeed);
     }
 
     private void UpdateWeaponState()
     {
-        // ±âº»°ªÀº 0 (Ä®/¸Ç¼Õ)
+        // ê¸°ë³¸ ë¬´ê¸° 0 (ì¹¼/ë§¨ì†)
         int currentWeaponType = 0;
 
-        // ÃÑÀ» µé°í ÀÖ°í, µé°í ÀÖ´Â ÃÑ ¿ÀºêÁ§Æ®°¡ È®½ÇÈ÷ Á¸ÀçÇÑ´Ù¸é
+        // ì´ì„ ë“¤ê³  ìˆê³ , ì¥ì°©ëœ ë¬´ê¸° ì˜¤ë¸Œì íŠ¸ê°€ í™•ì‹¤íˆ ì¡´ì¬í•œë‹¤ë©´
         if (playerController.UseGun && playerController.MyEquippedGun != null)
         {
-            // ÃÑÀÇ Enum Å¸ÀÔÀ» int·Î Çüº¯È¯
+            // ë¬´ê¸° Enum íƒ€ì…ì„ intë¡œ í˜•ë³€í™˜
             currentWeaponType = (int)playerController.MyEquippedGun.WeaponType;
         }
 
-        // ¾Ö´Ï¸ŞÀÌÅÍ·Î ÆÄ¶ó¹ÌÅÍ Àü¼Û (0, 1, 2, 3, 4°¡ ÀÚµ¿À¸·Î µé¾î°¨)
+        // ì• ë‹ˆë©”ì´í„°ë¡œ íŒŒë¼ë¯¸í„° ì „ì†¡ (0, 1, 2, 3, 4ê°€ ìë™ìœ¼ë¡œ ë“¤ì–´ê°)
         animator.SetInteger(hashWeaponType, currentWeaponType);
     }
 
@@ -116,34 +128,46 @@ public class PlayerAnimator : MonoBehaviourPun
         animator.SetLayerWeight(1, 1f);
     }
 
-    // --- ¾Ö´Ï¸ŞÀÌ¼Ç Æ®¸®°Å Àü¼Û ---
+    // --- ì• ë‹ˆë©”ì´ì…˜ íŠ¸ë¦¬ê±° ì „ì†¡ ---
     private void TriggerAction() => animator.SetTrigger(hashAction);
     private void TriggerRoll()
     {
         StartCoroutine(RollCoroutine());
-        PlayClip(rollClip);
+        PlayClip(rollClip, rollVolume);
     }
     private void TriggerThrow() => animator.SetTrigger(hashThrow);
     private void TriggerInteract() => animator.SetTrigger(hashInteract);
 
-    // ¿¡´Ï¸ŞÀÌ¼Ç ÀÌº¥Æ® -- ¿¡´Ï¸ŞÀÌ¼Ç Å¬¸³¿¡¼­ È£Ãâ
+    // ì• ë‹ˆë©”ì´ì…˜ ì´ë²¤íŠ¸ -- ì• ë‹ˆë©”ì´ì…˜ í´ë¦½ì—ì„œ í˜¸ì¶œ
     public void PlayFootstep()
     {
-        // ¹æ±İ ¼Ò¸®°¡ ³µ´Ù¸é(0.2ÃÊ ÀÌ³») ¹«½Ã (ÅÇ´í½º ¹æ¾î)
+        // ë°©ê¸ˆ ì†Œë¦¬ê°€ ë‚¬ë‹¤ë©´(0.2ì´ˆ ì´ë‚´) ë¬´ì‹œ (íƒ­ëŒ„ìŠ¤ ë°©ì–´)
         if (Time.time - lastFootstepTime < 0.2f) return;
 
-        if (footstepClips == null || footstepClips.Length == 0) return;
-        PlayClip(footstepClips[Random.Range(0, footstepClips.Length)], footstepVolume);
+        AudioClip[] clips;
+        float vol;
+
+        float speed = playerController.NormalizedSpeed;
+        if (speed >= runThreshold && runFootstepClips != null && runFootstepClips.Length > 0)
+        {
+            clips = runFootstepClips;
+            vol = runFootstepVolume;
+        }
+        else
+        {
+            clips = footstepClips;
+            vol = footstepVolume;
+        }
+        if (clips == null || clips.Length == 0) return;
+        PlayClip(clips[Random.Range(0, clips.Length)], vol);
 
         lastFootstepTime = Time.time;
-
-        Debug.Log($"[PlayerAnimator] Play Foot Step Sound");
     }
 
     private void HandleWeaponChanged(string _name, bool _isGun)
     {
         if (!photonView.IsMine) return;
-        PlayClip(weaponSwapClip);
+        PlayClip(weaponSwapClip, weaponSwapVolume);
     }
 
     private void PlayClip(AudioClip clip, float volume = 1f)
@@ -154,6 +178,6 @@ public class PlayerAnimator : MonoBehaviourPun
     private void TriggerStun()
     {
         animator.SetTrigger(hashStun);
-        PlayClip(stunClip);
+        PlayClip(stunClip, stunVolume);
     }
 }
