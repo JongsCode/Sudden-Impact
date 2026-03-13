@@ -697,6 +697,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (curHp <= 0)
         {
             DiePlayer(_attackerNum);
+
             if(photonView.IsMine) 
             GameEvents.LocalPlayerDeath();
         }
