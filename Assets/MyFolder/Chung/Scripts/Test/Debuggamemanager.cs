@@ -19,6 +19,10 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
     [Header("경기 설정")]
     [SerializeField] private int winScore = 5;          // 5선승
     [SerializeField] private float roundStartDelay = 3f;
+    public float RoundStartDelay
+    {
+        get { return roundStartDelay; }
+    }
 
     [Header("스폰 설정")]
     [SerializeField] private Transform[] teamASpawnPoints;
@@ -265,7 +269,7 @@ public class DebugGameManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        GameEvents.RoundEnd();
+        GameEvents.RoundEnd(winTeam);
 
         StartCoroutine(NextRoundCoroutine());
     }
