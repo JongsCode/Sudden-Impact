@@ -50,7 +50,7 @@ public class CRTController : MonoBehaviour
         Trigger(deathMaxIntensity, deathRampUp, deathHold, 0f);
     }
 
-    private void HandleRoundEnd()
+    private void HandleRoundEnd(int winTeam)
     {
         // 라운드 종료: 더 강하게 올렸다가 서서히 복구
         Trigger(roundEndMaxIntensity, roundEndRampUp, roundEndHold, roundEndRampDown);

@@ -1,8 +1,6 @@
-using Photon.Pun;
-using System.Collections;
 using TMPro;
 using UnityEngine;
-
+using System.Collections;
 /// <summary>
 /// 전체 HUD 관리 매니저.
 /// </summary>
@@ -49,7 +47,11 @@ public class UIManager : MonoBehaviour
     [Header("Pause UI")]
     [SerializeField] private GameObject menuPanel; // ESC 메뉴 패널 연결
 
-
+    [Header("Round UI")]
+    [SerializeField] private AudioClip endRoundAudio;
+    private AudioSource audiosource;
+    [SerializeField] private TextMeshProUGUI roundWinner;
+    [SerializeField] private TextMeshProUGUI roundLeftTime;
 
     private Camera mainCam;
     private Coroutine crosshairCoroutine;
@@ -60,9 +62,7 @@ public class UIManager : MonoBehaviour
     private Vector3 targetPickupPos;
     private bool isPickupUIActive = false;
 
-    [SerializeField]
-    private AudioClip endRoundAudio;
-    private AudioSource audiosource;
+    
 
     // 라이프사이클
     private void Awake()
@@ -117,8 +117,9 @@ public class UIManager : MonoBehaviour
         GameEvents.OnMatchEnd += HandleMatchEnd;
         GameEvents.OnPickupUIUpdate += HandlePickupUIUpdate;
         GameEvents.OnMenuUIUpdate += HandleMenuUI;
-        GameEvents.OnRoundStart += HandleAudioStart;
-        GameEvents.OnRoundEnd += HandleAudioEnd;
+        GameEvents.OnRoundStart += HandleRoundStart;
+        GameEvents.OnRoundEnd += HandleRoundEnd;
+        GameEvents.OnLocalPlayerDeath += HandleLocalPlayerDead;
 
     }
 
@@ -138,11 +139,17 @@ public class UIManager : MonoBehaviour
         GameEvents.OnMatchEnd -= HandleMatchEnd;
         GameEvents.OnPickupUIUpdate -= HandlePickupUIUpdate;
         GameEvents.OnMenuUIUpdate -= HandleMenuUI;
-        GameEvents.OnRoundStart -= HandleAudioStart;
-        GameEvents.OnRoundEnd -= HandleAudioEnd;
+        GameEvents.OnRoundStart -= HandleRoundStart;
+        GameEvents.OnRoundEnd -= HandleRoundEnd;
+        GameEvents.OnLocalPlayerDeath -= HandleLocalPlayerDead;
+
     }
     #endregion
 
+    private void Start()
+    {
+        StartCoroutine(StartCountDown());
+    }
     private void Update()
     {
         // 회복 로직: 총기(AutomaticGun)의 MoveTowards와 동일한 수식 사용
@@ -327,15 +334,61 @@ public class UIManager : MonoBehaviour
         return null;
     }
 
-    private void HandleAudioStart()
+    private void HandleRoundStart()
     {
         if (audiosource != null)
             audiosource.Play();
+    
     }
 
-    private void HandleAudioEnd()
+    private void HandleRoundEnd(int winTeam)
     {
         if (audiosource != null)
             audiosource.PlayOneShot(endRoundAudio);
+        roundWinner.gameObject.SetActive(true);
+        roundLeftTime.gameObject.SetActive(true);
+
+        StartCoroutine(EndCountDown(winTeam));
+    }
+
+    private void HandleLocalPlayerDead()
+    {
+        if (audiosource != null)
+            audiosource.PlayOneShot(endRoundAudio);
+    }
+
+    private IEnumerator EndCountDown(int winTeam)
+    {
+        float time = 0;
+        while(time < DebugGameManager.Instance.RoundStartDelay)
+        {
+            time += Time.deltaTime;
+            int timeToInt = Mathf.RoundToInt(DebugGameManager.Instance.RoundStartDelay - time);
+            string textColor = (winTeam == 1) ? "red" : "blue";
+            roundWinner.text = string.Format("This round winner is team <color={0}><size=60>{1}", textColor, winTeam);
+            roundLeftTime.text = string.Format("The round starts in <color={0}><size=60>{1}</color></size> seconds.", textColor, timeToInt);
+
+            yield return null;
+        }
+        roundWinner.gameObject.SetActive(false);
+        roundLeftTime.gameObject.SetActive(false);
+
+    }
+
+    private IEnumerator StartCountDown()
+    {
+        roundLeftTime.gameObject.SetActive(true);
+
+        float time = 0;
+        while (time < 3f)
+        {
+            time += Time.deltaTime;
+            int timeToInt = Mathf.RoundToInt(3f - time);
+            roundLeftTime.text = string.Format("The round starts in <color=yellow><size=60>{0}</color></size> seconds.", timeToInt);
+
+            yield return null;
+        }
+        roundLeftTime.gameObject.SetActive(false);
+
     }
 }

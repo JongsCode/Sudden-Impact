@@ -108,7 +108,7 @@ public class WeaponSpawnManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void OnRoundEnd()
+    private void OnRoundEnd(int winTeam)
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
