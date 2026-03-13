@@ -44,10 +44,6 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.ConnectUsingSettings();
         }
-        else
-        {
-            PhotonNetwork.JoinLobby();
-        }
         flashTr = flashPivot.GetComponent<RectTransform>();
     }
 

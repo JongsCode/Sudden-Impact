@@ -46,6 +46,8 @@ public class UIManager : MonoBehaviour
 
     [Header("Pause UI")]
     [SerializeField] private GameObject menuPanel; // ESC 메뉴 패널 연결
+    [SerializeField] private CRTController crtController;
+    private bool usingCRT = true;
 
     [Header("Round UI")]
     [SerializeField] private AudioClip endRoundAudio;
@@ -336,14 +338,14 @@ public class UIManager : MonoBehaviour
 
     private void HandleRoundStart()
     {
-        if (audiosource != null)
+        if (audiosource != null && usingCRT)
             audiosource.Play();
     
     }
 
     private void HandleRoundEnd(int winTeam)
     {
-        if (audiosource != null)
+        if (audiosource != null && usingCRT)
             audiosource.PlayOneShot(endRoundAudio);
         roundWinner.gameObject.SetActive(true);
         roundLeftTime.gameObject.SetActive(true);
@@ -353,7 +355,7 @@ public class UIManager : MonoBehaviour
 
     private void HandleLocalPlayerDead()
     {
-        if (audiosource != null)
+        if (audiosource != null && usingCRT)
             audiosource.PlayOneShot(endRoundAudio);
     }
 
@@ -390,5 +392,24 @@ public class UIManager : MonoBehaviour
         }
         roundLeftTime.gameObject.SetActive(false);
 
+    }
+
+    public void SetCRT(bool _isActive)
+    {
+        usingCRT = _isActive;
+        if (crtController != null)
+        {
+            crtController.gameObject.SetActive(_isActive);
+        }
+    }
+
+    public void SetBloorWhite(bool _isActive)
+    {
+
+    }
+
+    public void SetGameSound(float _soundValue)
+    {
+        AudioListener.volume = _soundValue;
     }
 }
