@@ -60,6 +60,10 @@ public class UIManager : MonoBehaviour
     private Vector3 targetPickupPos;
     private bool isPickupUIActive = false;
 
+    [SerializeField]
+    private AudioClip endRoundAudio;
+    private AudioSource audiosource;
+
     // 라이프사이클
     private void Awake()
     {
@@ -91,6 +95,8 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
 
         pickupUIRect.gameObject.SetActive(false);
+
+        audiosource = GetComponent<AudioSource>();
     }
 
     #region 이벤트 관리
@@ -111,6 +117,9 @@ public class UIManager : MonoBehaviour
         GameEvents.OnMatchEnd += HandleMatchEnd;
         GameEvents.OnPickupUIUpdate += HandlePickupUIUpdate;
         GameEvents.OnMenuUIUpdate += HandleMenuUI;
+        GameEvents.OnRoundStart += HandleAudioStart;
+        GameEvents.OnRoundEnd += HandleAudioEnd;
+
     }
 
     /// <summary>
@@ -129,7 +138,8 @@ public class UIManager : MonoBehaviour
         GameEvents.OnMatchEnd -= HandleMatchEnd;
         GameEvents.OnPickupUIUpdate -= HandlePickupUIUpdate;
         GameEvents.OnMenuUIUpdate -= HandleMenuUI;
-
+        GameEvents.OnRoundStart -= HandleAudioStart;
+        GameEvents.OnRoundEnd -= HandleAudioEnd;
     }
     #endregion
 
@@ -315,5 +325,17 @@ public class UIManager : MonoBehaviour
                 return slot;
         }
         return null;
+    }
+
+    private void HandleAudioStart()
+    {
+        if (audiosource != null)
+            audiosource.Play();
+    }
+
+    private void HandleAudioEnd()
+    {
+        if (audiosource != null)
+            audiosource.PlayOneShot(endRoundAudio);
     }
 }
