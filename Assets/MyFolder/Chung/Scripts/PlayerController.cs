@@ -718,9 +718,20 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         }
         myRigidbody.Sleep();
 
-        this.gameObject.SetActive(false);
+        // 시체가 살아있는 플레이어 이동을 막지 않도록 콜라이더 비활성화
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
 
+        StartCoroutine(DeathRoutine());
     }
+
+    private IEnumerator DeathRoutine()
+    {
+        yield return new WaitForSeconds(deathAnimDuration);
+        // this.gameObject.SetActive(false);
+        gameObject.SetActive(false);
+    }
+
 
 
     private void StunPlayer()
