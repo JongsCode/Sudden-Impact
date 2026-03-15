@@ -91,5 +91,17 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
             //}
             col.enabled = false;
         }
+
+        // 고스트 콜라이더만 다시 활성화 (FOW가 고스트 감지에 사용)
+        Item item2 = GetComponent<Item>();
+        if (item2 != null && item2.ghostObject != null)
+        {
+            Collider ghostCol = item2.ghostObject.GetComponentInChildren<Collider>();
+            if (ghostCol != null)
+            {
+                ghostCol.enabled = true;
+                Debug.Log($"[Furniture] ghost collider 재활성화: {ghostCol.name}");
+            }
+        }
     }
 }
