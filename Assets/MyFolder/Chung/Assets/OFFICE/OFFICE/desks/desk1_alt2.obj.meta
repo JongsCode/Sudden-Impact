@@ -3,7 +3,12 @@ guid: f5cd64ecf8898d644a7afe3234315638
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: desk_1
+    second: {fileID: 2100000, guid: a760f9c24ccfd474ba0561559736b3c8, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

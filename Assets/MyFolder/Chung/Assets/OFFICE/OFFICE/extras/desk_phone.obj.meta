@@ -3,7 +3,12 @@ guid: 83f30a12fe5d45d4f9d411e497fb7990
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: desk_phone
+    second: {fileID: 2100000, guid: 18a0d247ab0a5774f952e72974ebb80f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

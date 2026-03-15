@@ -3,7 +3,12 @@ guid: f79484a856a418e43b1fc5884d10fdcb
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: watercooler
+    second: {fileID: 2100000, guid: 7bc0679b57a31924d8c7c699ee0e411b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
