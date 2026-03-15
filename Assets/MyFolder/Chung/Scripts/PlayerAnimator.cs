@@ -21,10 +21,20 @@ public class PlayerAnimator : MonoBehaviourPun
     [SerializeField][Range(0f, 1f)] private float footstepVolume = 0.6f;
     [SerializeField][Range(0f, 1f)] private float runFootstepVolume = 0.8f;
     [SerializeField] private float runThreshold = 1.2f;
-    [SerializeField][Range(0f, 1f)] private float rollVolume = 0.8f;      
-    [SerializeField][Range(0f, 1f)] private float stunVolume = 1.0f;      
-    [SerializeField][Range(0f, 1f)] private float deathVolume = 1.0f;     
+    [SerializeField][Range(0f, 1f)] private float rollVolume = 0.8f;
+    [SerializeField][Range(0f, 1f)] private float stunVolume = 1.0f;
+    [SerializeField][Range(0f, 1f)] private float deathVolume = 1.0f;
     [SerializeField][Range(0f, 1f)] private float weaponSwapVolume = 0.7f;
+
+    [Header("Stun Visual")]
+    [SerializeField] private Renderer[] bodyRenderers;
+    [SerializeField] private Color stunColor = new Color(0.4f, 0.6f, 1f);
+    [SerializeField][Range(0.05f, 0.3f)] private float blinkInterval = 0.12f;
+
+    private Color _originalColor;
+    private MaterialPropertyBlock _mpb;
+    private Coroutine _stunBlinkCoroutine;
+    private static readonly int s_BaseColor = Shader.PropertyToID("_BaseColor");
 
     [Header("Animator Hashes")]
     private readonly int hashVelocityX = Animator.StringToHash("VelocityX");
@@ -38,6 +48,7 @@ public class PlayerAnimator : MonoBehaviourPun
     private readonly int hashStun = Animator.StringToHash("Stun");
     private readonly int hashDead = Animator.StringToHash("Dead");
     private readonly int hashSpeed = Animator.StringToHash("Speed");
+    private readonly int hashIsDead = Animator.StringToHash("IsDead");
 
     private float lastFootstepTime = 0f;
     private bool _wasDead; // 사망 사운드 1회 재생용 플래그
@@ -46,6 +57,12 @@ public class PlayerAnimator : MonoBehaviourPun
     {
         if (animator == null) animator = GetComponent<Animator>();
         if (playerController == null) playerController = GetComponent<PlayerController>();
+
+        _mpb = new MaterialPropertyBlock();
+        if (bodyRenderers == null || bodyRenderers.Length == 0)
+            bodyRenderers = GetComponentsInChildren<Renderer>();
+        if (bodyRenderers.Length > 0)
+            _originalColor = bodyRenderers[0].sharedMaterial.GetColor(s_BaseColor);
     }
 
     private void OnEnable()
@@ -60,6 +77,7 @@ public class PlayerAnimator : MonoBehaviourPun
         // 초기화
         animator.SetLayerWeight(1, 1f);
         GameEvents.OnWeaponChanged += HandleWeaponChanged;
+        GameEvents.OnRoundStart += HandleRoundStart;
     }
 
     private void OnDisable()
@@ -71,22 +89,34 @@ public class PlayerAnimator : MonoBehaviourPun
         playerController.OnInteractEvent -= TriggerInteract;
         playerController.OnStunnedEvent -= TriggerStun;
         GameEvents.OnWeaponChanged -= HandleWeaponChanged;
+        GameEvents.OnRoundStart -= HandleRoundStart;
+    }
+
+    private void HandleRoundStart()
+    {
+        _wasDead = false;
+        animator.SetBool(hashIsDead, false);
+        animator.SetLayerWeight(1, 1f);
+        animator.CrossFade("Locomotion", 0.1f, 0);
     }
 
     private void LateUpdate()
     {
-        // 사망 상태 체크 (Trigger 대신 Bool로 확실하게 상태 유지)
         bool isDead = playerController.GetPlayerState == PlayerController.PlayerState.Dead;
-        animator.SetBool(hashDead, isDead);
 
-        if (isDead && !_wasDead) PlayClip(deathClip);
+        animator.SetBool(hashIsDead, isDead);
+
+        if (isDead && !_wasDead)
+        {
+            //animator.SetTrigger(hashDead);
+            //animator.SetLayerWeight(1, 0f);
+            animator.CrossFade("Die", 0.1f, 0);
+            PlayClip(deathClip);
+            //StartCoroutine(SafeDisableUpperBodyLayer());
+        }
         _wasDead = isDead;
 
-        if (isDead)
-        {
-            animator.SetLayerWeight(1, 0f);
-            return;
-        }
+        if (isDead) return;
 
         UpdateMovementAnimations();
         UpdateWeaponState();
@@ -179,5 +209,38 @@ public class PlayerAnimator : MonoBehaviourPun
     {
         animator.SetTrigger(hashStun);
         PlayClip(stunClip, stunVolume);
+        if (_stunBlinkCoroutine != null) StopCoroutine(_stunBlinkCoroutine);
+        _stunBlinkCoroutine = StartCoroutine(StunBlinkCoroutine());
+    }
+
+    private IEnumerator StunBlinkCoroutine()
+    {
+        Debug.Log("[PlayerAnimator]StartBlink");
+        SetRenderersColor(stunColor);
+        bool visible = true;
+        while (playerController.GetPlayerState == PlayerController.PlayerState.Stunned)
+        {
+            visible = !visible;
+            SetRenderersVisible(visible);
+            yield return new WaitForSeconds(blinkInterval);
+        }
+        SetRenderersVisible(true);
+        SetRenderersColor(_originalColor);
+        _stunBlinkCoroutine = null;
+    }
+
+    private void SetRenderersColor(Color color)
+    {
+        foreach (var r in bodyRenderers)
+        {
+            r.GetPropertyBlock(_mpb);
+            _mpb.SetColor(s_BaseColor, color);
+            r.SetPropertyBlock(_mpb);
+        }
+    }
+
+    private void SetRenderersVisible(bool visible)
+    {
+        foreach (var r in bodyRenderers) r.enabled = visible;
     }
 }

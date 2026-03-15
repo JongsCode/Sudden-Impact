@@ -6,6 +6,7 @@ using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Photon.Pun.UtilityScripts.PunTeams;
 
 public class PlayerController : MonoBehaviourPun, IAttackReceiver
 {
@@ -39,6 +40,11 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float stunDuration = 1.5f;
     [SerializeField] private float rollCooldown = 4f;
     [SerializeField] private float deathAnimDuration = 2.0f;
+    [SerializeField] private float meleeAttackCooldown = 0.5f;
+
+    [SerializeField] private Renderer armBandRenderer;
+    [SerializeField] private Color teamAColor = Color.blue;
+    [SerializeField] private Color teamBColor = Color.red;
 
     [Header("Interaction Settings")]
     [SerializeField] private float interactRadius = 2.0f;
@@ -81,6 +87,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private bool isSprinting;
     private float lastRollTime;
     private float _pickupCooldownEnd = 0f;
+    private float _meleeCooldownEnd = 0f;
+    Collider col;
 
     public int MyTeam { get { return myTeam; } }
     public bool HasEnemyFlag { get { return hasEnemyFlag; } }
@@ -94,6 +102,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         {
             myRigidbody.isKinematic = false;
         }
+
+        col = GetComponent<Collider>();
     }
 
     private void OnEnable()
@@ -101,6 +111,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         curHp = maxHp;
         SetPlayerState(PlayerState.Idle);
         GameEvents.WeaponChanged(myKnife.WeaponType.ToString(), false);
+        col.enabled = true;
 
         if(PhotonNetwork.IsMasterClient)
         { WeaponSpawnManager.Instance.RegisterGunCatalog(allGuns); }
@@ -173,6 +184,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         myRigidbody.position = _spawnPos;
         dummyFlagMesh.SetActive(false);
         GameEvents.HpChanged(curHp);
+        SetTeamColor(myTeam);
+        col.enabled = true;
     }
 
     // 라운드 종료 시 즉각적인 초기화 및 조작 차단
@@ -181,7 +194,8 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         Debug.Log($"[OnRoundEndReset] called, myEquippedGun = {myEquippedGun?.name ?? "null"}");
 
         // 상태를 NotReady로 바꿔서 모든 조작(이동, 사격)을 막음
-        SetPlayerState(PlayerState.NotReady);
+        if (GetPlayerState != PlayerState.Dead)
+            SetPlayerState(PlayerState.NotReady);
 
         // 깃발 상태 초기화 및 시각적 가짜 깃발 끄기
         hasEnemyFlag = false;
@@ -197,6 +211,15 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private void SetPlayerState(PlayerState _state)
     {
         playerState = _state;
+    }
+
+    public void SetTeamColor(int team)
+    {
+        Color col = team == 1 ? teamAColor : teamBColor;
+        MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+        armBandRenderer.GetPropertyBlock(mpb);
+        mpb.SetColor("_Color", col);
+        armBandRenderer.SetPropertyBlock(mpb);
     }
 
     #region 깃발 로직
@@ -392,8 +415,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         else
         {
+            if (Time.time < _meleeCooldownEnd) return;
             myKnife.Attack(_isHeld);
             OnAttackEvent?.Invoke();
+            _meleeCooldownEnd = Time.time + meleeAttackCooldown;
         }
 
     }
@@ -663,6 +688,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         if (_data.type == DamageType.Throw)
         {
             StunPlayer();
+            return;
         }
 
         //내가 쏜 총알이 아니면 데미지 RPC호출
@@ -720,7 +746,6 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         myRigidbody.Sleep();
 
         // 시체가 살아있는 플레이어 이동을 막지 않도록 콜라이더 비활성화
-        Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
         StartCoroutine(DeathRoutine());
@@ -731,6 +756,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         yield return new WaitForSeconds(deathAnimDuration);
         // this.gameObject.SetActive(false);
         gameObject.SetActive(false);
+        
     }
 
 
@@ -738,6 +764,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     private void StunPlayer()
     {
         photonView.RPC(nameof(StunRPC), photonView.Owner);
+        OnStunnedEvent?.Invoke();
 
     }
 
@@ -746,6 +773,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     {
         if (!gameObject.activeSelf) return;
         StartCoroutine(StunCoroutine());
+        OnStunnedEvent?.Invoke();
     }
 
     private IEnumerator StunCoroutine()
