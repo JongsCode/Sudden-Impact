@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     [SerializeField] private float pickUpDistance = 1f;
     [SerializeField] private float stunDuration = 1.5f;
     [SerializeField] private float rollCooldown = 4f;
+    [SerializeField] private float deathAnimDuration = 2.0f;
 
     [Header("Interaction Settings")]
     [SerializeField] private float interactRadius = 2.0f;

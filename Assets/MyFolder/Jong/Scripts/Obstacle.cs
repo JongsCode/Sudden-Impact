@@ -20,6 +20,12 @@ public class Obstacle : MonoBehaviour
     {
         originObject.SetActive(false);
         brokenObject.SetActive(true);
+
+        // 비주얼이 자식으로 분리된 구조에서 루트 콜라이더가 남아
+        // FOW 레이캐스트를 막아 고스트 감지 실패하는 문제 수정
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
         if (fow != null)
         {
             if (fow.CheckVisible(this.transform))
