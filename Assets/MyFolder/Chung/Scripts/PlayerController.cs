@@ -719,7 +719,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
             }
         }
 
-        Vector3 bloodPos = new Vector3(transform.position.x, -1.4f, transform.position.z);
+        Vector3 bloodPos = new Vector3(transform.position.x, -1.35f, transform.position.z);
         Instantiate(neonBloodPrefab, bloodPos, Quaternion.identity);
 
         if (curHp <= 0)
