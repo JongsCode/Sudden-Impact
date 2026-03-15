@@ -3,7 +3,12 @@ guid: b2d8c7209f83c2f4795230a5aa8f8b3c
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: carpet
+    second: {fileID: 2100000, guid: 2250d8e45e6e0904584ed67d5f7e6517, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

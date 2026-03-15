@@ -393,6 +393,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         else
         {
             myKnife.Attack(_isHeld);
+            OnAttackEvent?.Invoke();
         }
 
     }
