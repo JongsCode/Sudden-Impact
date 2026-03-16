@@ -3,6 +3,9 @@ Shader "Custom/EnemyShader"
     Properties {
         _MainTex ("Enemy Texture", 2D) = "white" {} 
         _Color ("Color", Color) = (1,1,1,1) // 몬스터 색상 조절용
+
+        // 깜빡이는 기능을 위해 추가
+        _FlashIntensity ("Flash Intensity", Range(0,1)) = 0 
     }
     SubShader {
         Tags { "RenderType"="Opaque" } 
@@ -25,6 +28,9 @@ Shader "Custom/EnemyShader"
 
             sampler2D _MainTex;
             fixed4 _Color;
+
+            // 깜빡이는 기능을 위해 추가
+            float _FlashIntensity; 
             
             sampler2D _GlobalCurrentMap; 
             float4 _MapParams; 
@@ -48,7 +54,9 @@ Shader "Custom/EnemyShader"
 
                 clip(currentValue - 0.01); 
 
-                return baseColor;
+                //return baseColor;
+                return lerp(baseColor, fixed4(1,1,1,1), _FlashIntensity);  // 깜빡이는 기능을 위해 추가
+
             }
             ENDCG
         }

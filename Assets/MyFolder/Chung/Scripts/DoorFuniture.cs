@@ -10,15 +10,26 @@ public class Door : Furniture, IInteractable
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
 
-    
+    // Furniture는 MonoBehaviour로 바뀌었으므로 PhotonView를 직접 캐싱
+    private PhotonView _pv;
+
     public AudioClip doorSound;
     private bool isOpen = false;
     private Coroutine doorCoroutine; // 중복 실행 방지용
 
+    // [CH 수정] Furniture가 MonoBehaviourPun → MonoBehaviour로 바뀌면서
+    // photonView 프로퍼티가 사라짐 → GetComponent로 직접 캐싱
+    // 기존: photonView.RPC(...) → _pv.RPC(...)
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _pv = GetComponent<PhotonView>();
+    }
+
     public void Interact(PlayerController player)
     {
-        // 내 위치가 아닌 플레이어의 위치를 전송하여 모든 클라이언트에서 같은 방향으로 열리게 함
-        photonView.RPC(nameof(RPC_ToggleDoor), RpcTarget.All, player.transform.position);
+        _pv.RPC(nameof(RPC_ToggleDoor), RpcTarget.All, player.transform.position);
     }
 
     [PunRPC]

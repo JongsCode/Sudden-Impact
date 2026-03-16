@@ -1,4 +1,5 @@
 using Photon.Pun;
+using Photon.Realtime;
 using PlayFab;
 using PlayFab.ClientModels;
 using UnityEngine;
@@ -9,6 +10,23 @@ public class LoginManager : MonoBehaviour
     private TMP_InputField inputEmail;
     [SerializeField]
     private TMP_InputField inputPassword;
+
+    // [CH 추가] Awake에서 Photon 연결을 미리 시작
+    // 기존에는 LobbyManager.Start()에서 연결했기 때문에,
+    // 빌드 2개를 동시에 실행하면 두 인스턴스가 같은 타이밍에 ConnectUsingSettings()를 호출 →
+    // Photon DNS/TLS 초기화가 메인 스레드를 블로킹하면서 두 창이 동시에 "응답 없음" 발생.
+    // 로그인 화면에서 미리 연결을 시작하면, 사용자가 ID/PW를 입력하는 동안 백그라운드에서
+    // 연결이 완료되어 로비 진입 시 ConnectUsingSettings() 재호출이 불필요해짐.
+    private void Awake()
+    {
+        PhotonNetwork.GameVersion = Application.version;
+        PhotonNetwork.AutomaticallySyncScene = false;
+        // NetworkClientState == Disconnected 일 때만 Connect (연결 중/완료 상태에서 중복 호출 방지)
+        if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+        {
+            PhotonNetwork.ConnectUsingSettings();
+        }
+    }
 
     public void OnLogin() // 로그인 버튼
     {
@@ -28,9 +46,9 @@ public class LoginManager : MonoBehaviour
 
     public void Success(LoginResult _loginResult)
     {
-        // 로그인에 성공했으니, 서버에 피로한 정보를 가져오기 위해 자동 씬 전환은 false로 설정
-        PhotonNetwork.AutomaticallySyncScene = false;
-        PhotonNetwork.GameVersion = Application.version;
+        // [CH 수정] 아래 두 줄은 Awake()로 이동 (로그인 전에 미리 설정되어야 하므로)
+        // PhotonNetwork.AutomaticallySyncScene = false;
+        // PhotonNetwork.GameVersion = Application.version;
 
         var request = new GetAccountInfoRequest();
         PlayFabClientAPI.GetAccountInfo(request, SuccessInfo, FailInfo);

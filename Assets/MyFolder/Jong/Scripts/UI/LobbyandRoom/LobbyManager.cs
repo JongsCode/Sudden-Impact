@@ -3,7 +3,6 @@ using Photon.Realtime;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
@@ -38,14 +37,33 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     private Dictionary<string, GameObject> roomDictionary = new Dictionary<string, GameObject>();
 
+    // [CH 수정] Start() 연결 로직 개선
+    // 기존 코드:
+    //   if (!PhotonNetwork.IsConnected) { PhotonNetwork.ConnectUsingSettings(); }
+    //
+    // 문제: LoginManager.Awake()에서 이미 연결을 시작했기 때문에,
+    //   1) 이미 연결 완료된 경우 → ConnectUsingSettings() 건너뛰고 OnConnectedToMaster도 안 불림
+    //      → JoinLobby()가 영영 호출되지 않아 방 목록이 표시되지 않는 버그 발생
+    //   2) 아직 연결 중인 경우 (Disconnected가 아님) → ConnectUsingSettings() 중복 호출 위험
+    //
+    // 수정: 3가지 상태를 분기 처리
     private void Start()
     {
-        if (!PhotonNetwork.IsConnected)
+        if (PhotonNetwork.IsConnected)
         {
+            // 로그인 씬에서 이미 연결 완료 → OnConnectedToMaster는 재호출되지 않으므로 직접 JoinLobby
+            PhotonNetwork.JoinLobby(new TypedLobby("ASIA", LobbyType.Default));
+        }
+        else if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+        {
+            // 연결 시도가 전혀 없는 경우에만 Connect (디버그 씬 직접 진입 등 예외 상황 대비)
+            PhotonNetwork.GameVersion = Application.version;
             PhotonNetwork.ConnectUsingSettings();
         }
+        // else (Disconnected가 아님 = 연결 중): LoginManager에서 연결 중 → OnConnectedToMaster 콜백 대기
         flashTr = flashPivot.GetComponent<RectTransform>();
     }
+
 
     private void Update()
     {

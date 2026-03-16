@@ -34,7 +34,7 @@ public class Obstacle : MonoBehaviour
         // 시야 밖: 콜라이더/레이어는 유지한 채로 고스트 먼저 등록
         // (등록 전에 콜라이더를 끄면 CheckGhostItem 레이캐스트가 문을 통과해
         //  IsVisible = true 로 오판하여 고스트가 즉시 꺼지는 버그 방지)
-        if (ghostPrefab != null)
+        if (ghostPrefab != null && fow != null)
         {
             GameObject go = Instantiate(ghostPrefab, transform.position, transform.rotation);
             GhostItem ghostItem = go.GetComponent<GhostItem>();

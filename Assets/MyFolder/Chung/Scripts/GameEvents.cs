@@ -5,6 +5,9 @@ using UnityEngine;
 public static class GameEvents
 {
     public static event Action<float> OnHpChanged;
+
+    //구르기 시작 시 쿨다운 지속 시간을 전달(PlayerWorldUI 링 애니메이션용)
+    public static event Action<float> OnRollStarted;
     public static event Action<string, bool> OnWeaponChanged;
     public static event Action<int, int> OnAmmoChanged;
     public static event Action<int, int> OnScoreChanged;
@@ -40,6 +43,10 @@ public static class GameEvents
     //  호출 메서드
     public static void HpChanged(float _hp)                             
         => OnHpChanged?.Invoke(_hp);
+
+    //구르기 쿨다운 이벤트 호출 메서드
+    public static void RollStarted(float _cooldownDuration)
+        => OnRollStarted?.Invoke(_cooldownDuration);
 
     public static void WeaponChanged(string _name, bool _isGun)         
         => OnWeaponChanged?.Invoke(_name, _isGun);
