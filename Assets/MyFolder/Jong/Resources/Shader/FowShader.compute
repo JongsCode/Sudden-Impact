@@ -29,8 +29,9 @@ void Blur(uint3 id : SV_DispatchThreadID)
             sum += RT_Overlap[id.xy + int2(x, y)];
         }
     }
-
-    RT_BlurOverlap[id.xy] = sum / 9.0;
+    float length = BlurDetail * 2 + 1;
+    float total = length * length;
+    RT_BlurOverlap[id.xy] = sum / total;
 }
 
 #pragma kernel BlurCurrent
@@ -49,8 +50,13 @@ void BlurCurrent(uint3 id : SV_DispatchThreadID)
             sum += RT_Current_RW[id.xy + int2(x, y)];
         }
     }
-    float4 blurred = sum / 9.0;
+    float length = BlurDetail * 2 + 1;
+    float total = length * length;
+    float4 blurred = sum / total;
     float4 original = RT_Current_RW[id.xy];
+    
+    float brightness = 2;
 
-    RT_BlurCurrent[id.xy] = blurred * original;
+    // max()로 합친 후 밝기를 곱하고, saturate()로 안전하게 0~1 사이로 묶어줍니다.
+    RT_BlurCurrent[id.xy] = saturate(max(blurred, original) * brightness);
 }
