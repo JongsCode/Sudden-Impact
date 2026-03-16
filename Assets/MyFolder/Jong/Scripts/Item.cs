@@ -30,6 +30,7 @@ public class Item : MonoBehaviour
     {
         SetVisible(false);
     }
+
     public void SetFOW(GameObject _gameObject)
     {
         fow = _gameObject.GetComponent<FieldofView>();
@@ -145,6 +146,7 @@ public class Item : MonoBehaviour
         ghostObject.gameObject.SetActive(_isActive);
 
     }
+
     public void SetShader(Shader _shader)
     {
         foreach (MeshRenderer mr in mrs)

@@ -9,15 +9,19 @@ public class MeleeKnife : Weapon
     [SerializeField] private float attackOffset = 1.0f; // 캐릭터 중심으로부터 얼마나 앞에서 판정이 생길지
     [SerializeField] private LayerMask targetLayer;       // 대상 레이어 (Player, Furniture 등)
 
-    [Header("Parameter")]
-    
+
+    [Header("Cooldown")]
+    [SerializeField] private float attackCooldown = 0.5f;
+    private float _cooldownEnd = 0f;
 
     [Header("ForDebug")]
     [SerializeField] private bool isDebugMode;
     
     public override void Attack(bool _isHeld = true)
     {
-        if(_isHeld) { return; }
+        if (_isHeld) { return; }
+        if (Time.time < _cooldownEnd) return;
+        _cooldownEnd = Time.time + attackCooldown;
 
         // 1. 판정 중심점 계산 (에임 방향으로 attackOffset만큼 떨어진 곳)
         Vector3 attackPos = attackPoint.position;

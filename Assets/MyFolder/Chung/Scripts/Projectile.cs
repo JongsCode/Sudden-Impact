@@ -50,8 +50,12 @@ public class Projectile : MonoBehaviourPun, IPunInstantiateMagicCallback
         // 부딪히는 대상이 아니면 무시 (트리거 통과)
         if (!isReceiver && !isObstacle) return;
 
-        // 충돌 지점과 노멀값 계산
-        Vector3 hitPoint = other.ClosestPoint(transform.position);
+        // 충돌 히트포인트 계산 (non-convex MeshCollider는 ClosestPoint 미지원 → transform.position 폴백)
+        // Vector3 hitPoint = other.ClosestPoint(transform.position);
+        MeshCollider mc = other as MeshCollider;
+        Vector3 hitPoint = (mc != null && !mc.convex)
+            ? transform.position
+            : other.ClosestPoint(transform.position);
         Vector3 hitNormal = -transform.forward;
 
         HitEffectManager.Instance.SpawnEffect(hitPoint, hitNormal);
