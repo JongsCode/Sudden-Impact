@@ -29,8 +29,13 @@ Shader "Custom/ItemShaderLit"
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
-            #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS _FORWARD_PLUS
             #pragma multi_compile_fragment _ _ADDITIONAL_LIGHT_SHADOWS
+
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BLENDING
+            #pragma multi_compile_fragment _ _REFLECTION_PROBE_BOX_PROJECTION
+
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile _ DIRLIGHTMAP_COMBINED
             #pragma multi_compile_fog
@@ -111,6 +116,7 @@ Shader "Custom/ItemShaderLit"
                 lightData.positionWS             = input.positionWS;
                 lightData.normalWS               = normalWS;
                 lightData.viewDirectionWS        = GetWorldSpaceNormalizeViewDir(input.positionWS);
+                lightData.shadowCoord            = TransformWorldToShadowCoord(input.positionWS);
                 lightData.bakedGI                = SAMPLE_GI(input.lightmapUV, input.vertexSH, normalWS);
                 lightData.shadowMask             = SAMPLE_SHADOWMASK(input.lightmapUV);
                 lightData.normalizedScreenSpaceUV = GetNormalizedScreenSpaceUV(input.positionCS);

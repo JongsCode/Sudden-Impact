@@ -328,13 +328,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutomaticGun
   weaponType: 2
-  damage: 10
+  damage: 15
   attackPoint: {fileID: 2011714653479142288}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
   thrownWeaponPrefab: {fileID: 1224518282085482664, guid: 03d9717be52031e4ca345d28ab62f3df, type: 3}
   impulseSource: {fileID: 6112018721592849405}
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
-  maxAmmo: 300
+  maxAmmo: 25
   fireRate: 0.05
   flashLight: {fileID: 3159916749006728146}
   audioSource: {fileID: 5027501232171976077}
@@ -344,9 +344,9 @@ MonoBehaviour:
   rippleMinDistance: 8
   isAutomatic: 1
   baseSpread: 1
-  maxSpread: 50
-  spreadIncreasePerShot: 8
-  spreadRecoveryRate: 50
+  maxSpread: 20
+  spreadIncreasePerShot: 2
+  spreadRecoveryRate: 20
 --- !u!82 &5027501232171976077
 AudioSource:
   m_ObjectHideFlags: 0
