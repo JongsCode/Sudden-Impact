@@ -47151,12 +47151,12 @@ MonoBehaviour:
   registry: {fileID: 11400000, guid: 59eed9396b7e5a0419003df23a221d5b, type: 2}
   playerStatusPanel: {fileID: 363516840}
   hpRingImage: {fileID: 674346351}
-  hpFullColor: {r: 0, g: 1, b: 0, a: 1}
-  hpLowColor: {r: 1, g: 0, b: 0, a: 1}
+  hpFullColor: {r: 0, g: 1, b: 0.4509804, a: 0.3137255}
+  hpLowColor: {r: 1, g: 0, b: 1, a: 0.3137255}
   lowHpThreshold: 0.3
   rollRingImage: {fileID: 602699291}
-  rollReadyColor: {r: 0, g: 1, b: 1, a: 1}
-  rollCooldownColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  rollReadyColor: {r: 0, g: 1, b: 1, a: 0.3137255}
+  rollCooldownColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.3137255}
 --- !u!82 &1040070388
 AudioSource:
   m_ObjectHideFlags: 0
