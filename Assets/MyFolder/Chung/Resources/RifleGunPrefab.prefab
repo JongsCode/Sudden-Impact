@@ -302,7 +302,7 @@ MonoBehaviour:
   thrownWeaponPrefab: {fileID: 1224518282085482664, guid: 03d9717be52031e4ca345d28ab62f3df, type: 3}
   impulseSource: {fileID: 7586025366498464752}
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
-  maxAmmo: 300
+  maxAmmo: 30
   fireRate: 0.15
   flashLight: {fileID: 4703952120829632645}
   audioSource: {fileID: -2030411606731141268}
@@ -312,9 +312,9 @@ MonoBehaviour:
   rippleMinDistance: 8
   isAutomatic: 1
   baseSpread: 1
-  maxSpread: 20
-  spreadIncreasePerShot: 4
-  spreadRecoveryRate: 20
+  maxSpread: 15
+  spreadIncreasePerShot: 2
+  spreadRecoveryRate: 15
 --- !u!82 &-2030411606731141268
 AudioSource:
   m_ObjectHideFlags: 0

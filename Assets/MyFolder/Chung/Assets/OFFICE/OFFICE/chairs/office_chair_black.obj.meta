@@ -3,7 +3,12 @@ guid: 5904e464ec4f5aa4dbcb863f39a82bb2
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: office_chair_black
+    second: {fileID: 2100000, guid: 61b7cf919bf5fe64c8651d250ccbfa82, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

@@ -296,13 +296,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shotgun
   weaponType: 3
-  damage: 10
+  damage: 25
   attackPoint: {fileID: 9004452560616142900}
   projectilePrefab: {fileID: 5953183707610585707, guid: e9b7b63533a202440b32a0a66c217916, type: 3}
   thrownWeaponPrefab: {fileID: 4539979239478777330, guid: 7bb7bef01f2c1b24787acf6f54f8a846, type: 3}
   impulseSource: {fileID: 6094253173441992267}
   ripple: {fileID: 7933777626879979688, guid: 91aed5659c57951498f908b5b3ab8be9, type: 3}
-  maxAmmo: 30
+  maxAmmo: 7
   fireRate: 1
   flashLight: {fileID: 2768733542446025685}
   audioSource: {fileID: 7159632997923664690}
@@ -312,8 +312,8 @@ MonoBehaviour:
   rippleMinDistance: 8
   isAutomatic: 0
   pelletCount: 5
-  startAngle: -10
-  angleStep: 5
+  startAngle: -7.5
+  angleStep: 3
   randomNoise: 2
 --- !u!82 &7159632997923664690
 AudioSource:
