@@ -6,7 +6,10 @@ public class Obstacle : MonoBehaviour
     public GameObject brokenObject;
     public GameObject originObject;
     public FieldofView fow;
-    
+
+    [Header("Crumble Effect")]
+    public GameObject fracturedPrefab;
+
     private void Awake()
     {
         originObject.SetActive(true);
@@ -20,6 +23,25 @@ public class Obstacle : MonoBehaviour
     public void Broken()
     {
         originObject.SetActive(false);
+        if (fracturedPrefab != null)
+        {
+            // 파편 소환 (오브젝트의 현재 위치와 회전값 사용)
+            GameObject fractured = Instantiate(fracturedPrefab, transform.position, transform.rotation);
+
+            // 크기 동기화 (오류 방지)
+            fractured.transform.localScale = transform.localScale;
+
+            // 무너뜨리기 스크립트 실행 (안전장치 포함)
+            Crumble crumble = fractured.GetComponent<Crumble>();
+            if (crumble != null)
+            {
+                crumble.SetCrumble();
+            }
+            else
+            {
+                Debug.LogError($"[장애물 파괴] {fracturedPrefab.name}에 CrumbleTutorialScript가 없습니다!");
+            }
+        }
         brokenObject.SetActive(true);
 
         if (fow != null && fow.CheckVisible(this.transform))
