@@ -49,18 +49,17 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     // 수정: 3가지 상태를 분기 처리
     private void Start()
     {
-        if (PhotonNetwork.IsConnected)
+        if (PhotonNetwork.NetworkClientState == ClientState.ConnectedToMasterServer)
         {
-            // 로그인 씬에서 이미 연결 완료 → OnConnectedToMaster는 재호출되지 않으므로 직접 JoinLobby
             PhotonNetwork.JoinLobby(new TypedLobby("ASIA", LobbyType.Default));
         }
-        else if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+        // [수정됨] 여기도 단순히 '연결되지 않았을 때'로 변경
+        else if (!PhotonNetwork.IsConnected)
         {
-            // 연결 시도가 전혀 없는 경우에만 Connect (디버그 씬 직접 진입 등 예외 상황 대비)
             PhotonNetwork.GameVersion = Application.version;
             PhotonNetwork.ConnectUsingSettings();
         }
-        // else (Disconnected가 아님 = 연결 중): LoginManager에서 연결 중 → OnConnectedToMaster 콜백 대기
+
         flashTr = flashPivot.GetComponent<RectTransform>();
     }
 

@@ -22,8 +22,9 @@ public class LoginManager : MonoBehaviour
         PhotonNetwork.GameVersion = Application.version;
         PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "kr";
         PhotonNetwork.AutomaticallySyncScene = false;
-        // NetworkClientState == Disconnected 일 때만 Connect (연결 중/완료 상태에서 중복 호출 방지)
-        if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+
+        // [수정됨] Disconnected가 아니라 단순히 '연결되지 않았을 때'로 변경
+        if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.ConnectUsingSettings();
         }
