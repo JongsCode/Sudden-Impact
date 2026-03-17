@@ -118,7 +118,7 @@ MonoBehaviour:
   brokenObject: {fileID: 1327449939904872693}
   originObject: {fileID: 6887885070380218994}
   fow: {fileID: 0}
-  fracturedPrefab: {fileID: 1060158063134803332, guid: 0895ae4896ad5074eb56a9492bcccc25, type: 3}
+  fracturedPrefab: {fileID: 9158036534249627054, guid: e33d15ffe078ff74bb89d28d386d1456, type: 3}
 --- !u!82 &6243226388962205331
 AudioSource:
   m_ObjectHideFlags: 0
