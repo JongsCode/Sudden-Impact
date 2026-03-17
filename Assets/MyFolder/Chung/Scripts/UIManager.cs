@@ -116,6 +116,7 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
 
         pickupUIRect.gameObject.SetActive(false);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
 
         audiosource = GetComponent<AudioSource>();
     }
@@ -409,6 +410,7 @@ public class UIManager : MonoBehaviour
         if (hpRingImage != null) { hpRingImage.fillAmount = 1f; hpRingImage.color = hpFullColor; }
         if (_rollCooldownCoroutine != null) { StopCoroutine(_rollCooldownCoroutine); _rollCooldownCoroutine = null; }
         if (rollRingImage != null) { rollRingImage.fillAmount = 1f; rollRingImage.color = rollReadyColor; }
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(true);
     }
 
     private void HandleRoundEnd(int winTeam)
@@ -417,6 +419,7 @@ public class UIManager : MonoBehaviour
             audiosource.PlayOneShot(endRoundAudio);
         roundWinner.gameObject.SetActive(true);
         roundLeftTime.gameObject.SetActive(true);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
 
         StartCoroutine(EndCountDown(winTeam));
     }
@@ -425,6 +428,8 @@ public class UIManager : MonoBehaviour
     {
         if (audiosource != null && usingCRT)
             audiosource.PlayOneShot(endRoundAudio);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
+
     }
 
     private IEnumerator EndCountDown(int winTeam)
