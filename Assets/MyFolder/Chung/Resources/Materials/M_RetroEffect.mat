@@ -126,8 +126,8 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ScanlineCount: 500
-    - _ScanlineOpacity: 0.094
-    - _ScrollSpeed: 1
+    - _ScanlineOpacity: 0.15
+    - _ScrollSpeed: 3
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

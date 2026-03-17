@@ -72,6 +72,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Color rollReadyColor = Color.cyan;
     [SerializeField] private Color rollCooldownColor = Color.gray;
 
+    // [CH 추가] 라운드 시작 전 전체 화면을 가리는 커버 패널
+    // 인스펙터에서 Canvas 가장 아래(최상위 렌더) 전체 사이즈 Panel을 연결
+    // 기본값: 활성(SetActive true), 라운드 시작 시 SetActive(false)로 제거
+    [Header("Initial Cover")]
+    [SerializeField] private GameObject initialCoverPanel;
+
     private Coroutine _rollCooldownCoroutine;
 
     private Camera mainCam;
@@ -405,6 +411,9 @@ public class UIManager : MonoBehaviour
     {
         if (audiosource != null && usingCRT)
             audiosource.Play();
+
+        // [CH 추가] 라운드 시작 시 커버 패널 제거 (이미 비활성이면 no-op)
+        if (initialCoverPanel != null) initialCoverPanel.SetActive(false);
 
         // [CH 추가] 라운드 시작 시 링 초기화
         if (hpRingImage != null) { hpRingImage.fillAmount = 1f; hpRingImage.color = hpFullColor; }

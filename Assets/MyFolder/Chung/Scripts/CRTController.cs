@@ -10,8 +10,11 @@ public class CRTController : MonoBehaviour
     [Header("Death Effect (로컬 플레이어 사망)")]
     [SerializeField][Range(0f, 1f)] private float deathMaxIntensity = 0.85f;
     [SerializeField] private float deathRampUp = 0.3f;
+    // 다음 라운드 시작 전까지 켜두려면 충분히 큰 값, 자동 종료는 원하는 초로 설정
+    // [CH 추가] 홀드 후 서서히 꺼지는 시간 (0이면 즉시 꺼짐)
+    [SerializeField] private float deathRampDown = 1f;
     // 라운드 종료 이벤트가 덮어쓰므로 사실상 무한 유지
-    [SerializeField] private float deathHold = 999f;
+    [SerializeField] private float deathHold = 5f;
 
     [Header("Round End Effect (라운드 종료)")]
     [SerializeField][Range(0f, 1f)] private float roundEndMaxIntensity = 1.0f;
@@ -47,7 +50,8 @@ public class CRTController : MonoBehaviour
     private void HandleLocalDeath()
     {
         // 사망 후 강도 유지, 라운드 종료 이벤트가 Override
-        Trigger(deathMaxIntensity, deathRampUp, deathHold, 0f);
+        // [CH 수정] 0f(즉시 종료) → deathRampDown(인스펙터 조절 가능)
+        Trigger(deathMaxIntensity, deathRampUp, deathHold, deathRampDown);
     }
 
     private void HandleRoundEnd(int winTeam)
