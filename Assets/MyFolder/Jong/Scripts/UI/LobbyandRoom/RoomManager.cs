@@ -102,7 +102,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
             if (textReadyButton.text == "AllReady")
             {
                 Debug.Log("모든 플레이어 준비 완료! 게임 씬으로 이동합니다!");
-                PhotonNetwork.LoadLevel("MainSceneTest");
+                PhotonNetwork.LoadLevel("MainScene");
             }
         }
         else

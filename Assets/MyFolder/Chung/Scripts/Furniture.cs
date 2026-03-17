@@ -1,13 +1,17 @@
 using UnityEngine;
-using Photon.Pun;
 
-public class Furniture : MonoBehaviourPun, IAttackReceiver
+public class Furniture : MonoBehaviour, IAttackReceiver
 {
     [Header("Stats")]
     [SerializeField] protected float maxHp = 50f;
     protected float curHp;
     protected bool isDestroyed = false;
     protected Vector3 lastHitNormal = Vector3.up;
+
+    // FurnitureNetworkManager가 부여하는 씬 고유 인덱스
+    private int _index = -1;
+    public bool IsDestroyed => isDestroyed;
+    public void SetIndex(int index) => _index = index;
 
     protected AudioSource audioSource;
     protected virtual void Awake()
@@ -16,34 +20,63 @@ public class Furniture : MonoBehaviourPun, IAttackReceiver
         audioSource = GetComponent<AudioSource>();
     }
 
-    // IAttackReceiver 구현
+    // [CH 수정] 기존 OnReceiveImpact + RPC_ApplyDamage → 매니저 위임 방식으로 교체
+    // ── 기존 코드 ──────────────────────────────────────────────
+    // public virtual void OnReceiveImpact(ImpactData _data)
+    // {
+    //     Debug.Log($" {gameObject.name}이 맞았습니다! 받은 데미지: {_data.damage}");
+    //     if (isDestroyed) return;
+    //     if (photonView == null)
+    //     {
+    //         Debug.LogError("가구에 PhotonView 컴포넌트가 없습니다!");
+    //         return;
+    //     }
+    //     // 네트워크 모든 인스턴스에 데미지 동기화
+    //     photonView.RPC(nameof(RPC_ApplyDamage), RpcTarget.All, _data.damage, _data.hitNormal);
+    // }
+    //
+    // [PunRPC]
+    // protected void RPC_ApplyDamage(float _damage, Vector3 _hitNormal)
+    // {
+    //     lastHitNormal = _hitNormal;
+    //     curHp -= _damage;
+    //     Debug.Log($"RPC 데미지 적용! 현재 체력: {curHp}");
+    //     if (curHp <= 0 && !isDestroyed)
+    //     {
+    //         Debug.Log($"{gameObject.name} 체력 0 이하! 파괴됩니다!");
+    //         OnBroken();
+    //     }
+    // }
+    // ────────────────────────────────────────────────────────────
+
+    // IAttackReceiver 구현 → 매니저에 위임
     public virtual void OnReceiveImpact(ImpactData _data)
     {
-        Debug.Log($" {gameObject.name}가 맞았습니다! 들어온 데미지: {_data.damage}");
-
         if (isDestroyed) return;
-
-        if (photonView == null)
-        {
-            Debug.LogError("가구에 PhotonView 컴포넌트가 없습니다!");
-            return;
-        }
-
-        // 네트워크 상의 모든 인스턴스에 데미지 동기화
-        photonView.RPC(nameof(RPC_ApplyDamage), RpcTarget.All, _data.damage, _data.hitNormal);
+        if (FurnitureNetworkManager.Instance == null) return;
+        FurnitureNetworkManager.Instance.ReportHit(_index, _data.damage, _data.hitNormal);
     }
 
-    [PunRPC]
-    protected void RPC_ApplyDamage(float _damage, Vector3 _hitNormal)
+    // 매니저 RPC가 모든 클라이언트에서 호출
+    public void LocalApplyDamage(float damage, Vector3 hitNormal)
     {
-        lastHitNormal = _hitNormal;
-        curHp -= _damage;
-        Debug.Log($"RPC 통신 성공! 남은 체력: {curHp}");
-        if (curHp <= 0 && !isDestroyed)
+        if (isDestroyed) return;
+        lastHitNormal = hitNormal;
+        curHp -= damage;
+        if (curHp <= 0)
         {
-            Debug.Log($"{gameObject.name} 체력 0 도달! 부서짐 실행!");
             OnBroken();
+            // MasterClient가 RoomProperties 업데이트 (늦참 동기화용)
+            FurnitureNetworkManager.Instance?.ReportDestroyed(_index);
         }
+    }
+
+    // 늦참 클라이언트 상태 복원용 (비주얼/사운드 없이 상태만)
+    public void ForceBreak()
+    {
+        if (isDestroyed) return;
+        lastHitNormal = Vector3.up;
+        OnBroken();
     }
 
     protected virtual void OnBroken()

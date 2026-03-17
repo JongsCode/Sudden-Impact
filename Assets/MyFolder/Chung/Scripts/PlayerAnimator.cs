@@ -28,13 +28,21 @@ public class PlayerAnimator : MonoBehaviourPun
 
     [Header("Stun Visual")]
     [SerializeField] private Renderer[] bodyRenderers;
+    [Tooltip("히트 플래시/스턴에서 제외할 렌더러 (완장 등)")]
+    [SerializeField] private Renderer[] excludeFromFlash;
     [SerializeField] private Color stunColor = new Color(0.4f, 0.6f, 1f);
     [SerializeField][Range(0.05f, 0.3f)] private float blinkInterval = 0.12f;
+
+    [Header("Hit Flash Visual")]
+    [SerializeField][Range(0.05f, 0.3f)] private float hitFlashDuration = 0.1f;
 
     private Color _originalColor;
     private MaterialPropertyBlock _mpb;
     private Coroutine _stunBlinkCoroutine;
+    private Coroutine _hitFlashCoroutine;
     private static readonly int s_BaseColor = Shader.PropertyToID("_BaseColor");
+    private static readonly int s_Color = Shader.PropertyToID("_Color");
+    private static readonly int s_FlashIntensity = Shader.PropertyToID("_FlashIntensity");
 
     [Header("Animator Hashes")]
     private readonly int hashVelocityX = Animator.StringToHash("VelocityX");
@@ -60,9 +68,29 @@ public class PlayerAnimator : MonoBehaviourPun
 
         _mpb = new MaterialPropertyBlock();
         if (bodyRenderers == null || bodyRenderers.Length == 0)
-            bodyRenderers = GetComponentsInChildren<Renderer>();
+        {
+            // 자동 수집 후 excludeFromFlash에 있는 렌더러 제외
+            var all = GetComponentsInChildren<Renderer>();
+            if (excludeFromFlash != null && excludeFromFlash.Length > 0)
+            {
+                var excludeSet = new System.Collections.Generic.HashSet<Renderer>(excludeFromFlash);
+                var filtered = new System.Collections.Generic.List<Renderer>();
+                foreach (var r in all)
+                    if (!excludeSet.Contains(r)) filtered.Add(r);
+                bodyRenderers = filtered.ToArray();
+            }
+            else
+            {
+                bodyRenderers = all;
+            }
+        }
         if (bodyRenderers.Length > 0)
-            _originalColor = bodyRenderers[0].sharedMaterial.GetColor(s_BaseColor);
+        {
+            var mat = bodyRenderers[0].sharedMaterial;
+            if (mat.HasProperty(s_BaseColor)) _originalColor = mat.GetColor(s_BaseColor);
+            else if (mat.HasProperty(s_Color)) _originalColor = mat.GetColor(s_Color);
+            else _originalColor = Color.white;
+        }
     }
 
     private void OnEnable()
@@ -73,6 +101,7 @@ public class PlayerAnimator : MonoBehaviourPun
         playerController.OnThrowEvent += TriggerThrow;
         playerController.OnInteractEvent += TriggerInteract;
         playerController.OnStunnedEvent += TriggerStun;
+        playerController.OnHitEvent += TriggerHitFlash;
 
         // 초기화
         animator.SetLayerWeight(1, 1f);
@@ -88,6 +117,7 @@ public class PlayerAnimator : MonoBehaviourPun
         playerController.OnThrowEvent -= TriggerThrow;
         playerController.OnInteractEvent -= TriggerInteract;
         playerController.OnStunnedEvent -= TriggerStun;
+        playerController.OnHitEvent -= TriggerHitFlash;
         GameEvents.OnWeaponChanged -= HandleWeaponChanged;
         GameEvents.OnRoundStart -= HandleRoundStart;
     }
@@ -213,6 +243,31 @@ public class PlayerAnimator : MonoBehaviourPun
         _stunBlinkCoroutine = StartCoroutine(StunBlinkCoroutine());
     }
 
+    private void TriggerHitFlash()
+    {
+        if (_hitFlashCoroutine != null) StopCoroutine(_hitFlashCoroutine);
+        _hitFlashCoroutine = StartCoroutine(HitFlashCoroutine());
+    }
+
+    private IEnumerator HitFlashCoroutine()
+    {
+        // _FlashIntensity 1 → 텍스처를 흰색으로 lerp (EnemyShader 전용 프로퍼티)
+        SetFlash(1f);
+        yield return new WaitForSeconds(hitFlashDuration);
+        SetFlash(0f);
+        _hitFlashCoroutine = null;
+    }
+
+    private void SetFlash(float intensity)
+    {
+        foreach (var r in bodyRenderers)
+        {
+            r.GetPropertyBlock(_mpb);
+            _mpb.SetFloat(s_FlashIntensity, intensity);
+            r.SetPropertyBlock(_mpb);
+        }
+    }
+
     private IEnumerator StunBlinkCoroutine()
     {
         Debug.Log("[PlayerAnimator]StartBlink");
@@ -234,7 +289,8 @@ public class PlayerAnimator : MonoBehaviourPun
         foreach (var r in bodyRenderers)
         {
             r.GetPropertyBlock(_mpb);
-            _mpb.SetColor(s_BaseColor, color);
+            _mpb.SetColor(s_BaseColor, color); // URP Lit (_BaseColor)
+            _mpb.SetColor(s_Color, color);     // Standard / 커스텀 셰이더 (_Color)
             r.SetPropertyBlock(_mpb);
         }
     }

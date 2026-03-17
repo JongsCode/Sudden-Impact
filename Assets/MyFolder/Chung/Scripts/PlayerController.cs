@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     public event Action OnThrowEvent;
     public event Action OnInteractEvent;
     public event Action OnStunnedEvent;
+    public event Action OnHitEvent;
 
     [Header("ForDebug")]
     [SerializeField] private float curHp;
@@ -276,6 +277,10 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
         // 이동 코루틴
         StartCoroutine(RollCoroutine());
+
+        // 구르기 쿨다운 시작 이벤트 → PlayerWorldUI의 쿨다운 링 애니메이션 트리거
+        // TryRoll은 로컬 플레이어 입력에서만 호출되므로 IsMine 보장됨
+        GameEvents.RollStarted(rollCooldown);
 
         // 무적 RPC
         photonView.RPC(nameof(StartRollCRP), RpcTarget.All);
@@ -704,6 +709,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
     public void TakeDamage(float _damage, Vector3 _hitNormal, int _attackerNum)
     {
         curHp -= _damage;
+        OnHitEvent?.Invoke();
         Debug.Log($"[PlayerController] <color=red> Hit </color> {photonView.Owner.ActorNumber}'s Hp Is : {curHp}");
 
         // 피격 카메라 쉐이크
@@ -763,8 +769,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
 
     private void StunPlayer()
     {
-        photonView.RPC(nameof(StunRPC), photonView.Owner);
-        OnStunnedEvent?.Invoke();
+        photonView.RPC(nameof(StunRPC), RpcTarget.All);
 
     }
 

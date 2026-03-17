@@ -57,12 +57,9 @@ public class KillFloatText : MonoBehaviour
 
         // ── 항상 전면 렌더링 — Distance Field Overlay 셰이더 교체 ──
         // Overlay 셰이더는 ZTest Always → 벽/바닥에 가려지지 않음
-        Shader overlay = Shader.Find("TextMeshPro/Distance Field Overlay");
-        if (overlay != null)
-            _mat.shader = overlay;
-        else
-            Debug.LogWarning("[KillFloatText] 'TextMeshPro/Distance Field Overlay' not found. " +
-                             "TMP 패키지가 설치되어 있는지 확인하거나 머티리얼 셰이더를 직접 교체하세요.");
+        // Material Variant는 셰이더 교체 불가 → 프리팹에 Distance Field Overlay 머티리얼 직접 연결할 것
+        // Shader overlay = Shader.Find("TextMeshPro/Distance Field Overlay");
+        // if (overlay != null) _mat.shader = overlay;
     }
 
     // ─────────────────────────────────────────────────────────

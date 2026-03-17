@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 /// <summary>
 /// 전체 HUD 관리 매니저.
 /// </summary>
@@ -54,6 +55,24 @@ public class UIManager : MonoBehaviour
     private AudioSource audiosource;
     [SerializeField] private TextMeshProUGUI roundWinner;
     [SerializeField] private TextMeshProUGUI roundLeftTime;
+
+    //  플레이어 발밑 추적 UI (Screen Space, WorldToScreenPoint로 위치 이동)
+    [Header("Player Status UI (발밑 추적)")]
+    [Tooltip("PlayerRegistry ScriptableObject - registry.LocalPlayer.transform으로 위치 추적")]
+    [SerializeField] private PlayerRegistry registry;
+    [Tooltip("HP링/구르기링/무기텍스트를 묶은 부모 RectTransform")]
+    [SerializeField] private RectTransform playerStatusPanel;
+    [Tooltip("체력 원형 링 Image (Filled, Radial 360)")]
+    [SerializeField] private Image hpRingImage;
+    [SerializeField] private Color hpFullColor = Color.green;
+    [SerializeField] private Color hpLowColor = Color.red;
+    [SerializeField][Range(0f, 1f)] private float lowHpThreshold = 0.3f;
+    [Tooltip("구르기 쿨다운 원형 링 Image (Filled, Radial 360)")]
+    [SerializeField] private Image rollRingImage;
+    [SerializeField] private Color rollReadyColor = Color.cyan;
+    [SerializeField] private Color rollCooldownColor = Color.gray;
+
+    private Coroutine _rollCooldownCoroutine;
 
     private Camera mainCam;
     private Coroutine crosshairCoroutine;
@@ -110,6 +129,8 @@ public class UIManager : MonoBehaviour
 
         GameEvents.OnHpChanged += HandleHpChanged;
         GameEvents.OnWeaponChanged += HandleWeaponChanged;
+        GameEvents.OnRollStarted += HandleRollStarted;
+
         GameEvents.OnAmmoChanged += HandleAmmoChanged;
         GameEvents.OnScoreChanged += HandleScoreChanged;
         GameEvents.OnSpreadUpdated += HandleSpreadUpdate;
@@ -132,6 +153,8 @@ public class UIManager : MonoBehaviour
     {
         GameEvents.OnHpChanged -= HandleHpChanged;
         GameEvents.OnWeaponChanged -= HandleWeaponChanged;
+        GameEvents.OnRollStarted += HandleRollStarted;
+
         GameEvents.OnAmmoChanged -= HandleAmmoChanged;
         GameEvents.OnScoreChanged -= HandleScoreChanged;
 
@@ -185,6 +208,13 @@ public class UIManager : MonoBehaviour
             pickupUIRect.position = mainCam.WorldToScreenPoint(offsetPos);
         }
 
+        // [CH 추가] playerStatusPanel을 로컬 플레이어 발밑 위치로 이동
+        // registry.LocalPlayer는 PlayerController.Awake에서 등록됨 (스폰 전엔 null)
+        if (registry != null && registry.LocalPlayer != null && playerStatusPanel != null)
+        {
+            playerStatusPanel.position = mainCam.WorldToScreenPoint(registry.LocalPlayer.transform.position);
+        }
+
         if (targetTransform == null || crosshairUI == null) return;
 
         // 월드 좌표 -> 스크린 좌표 변환 후 UI 배치
@@ -208,7 +238,41 @@ public class UIManager : MonoBehaviour
         targetTransform = _target;
     }
     private void HandleHpChanged(float _hp)
-        => hpText.text = $"HP: {_hp} / 100";
+    {
+        hpText.text = $"HP: {_hp} / 100";
+
+        // [CH 추가] 체력 링 업데이트
+        if (hpRingImage != null)
+        {
+            float ratio = Mathf.Clamp01(_hp / 100f);
+            hpRingImage.fillAmount = ratio;
+            hpRingImage.color = ratio <= lowHpThreshold ? hpLowColor : hpFullColor;
+        }
+    }
+
+    // 구르기 쿨다운 링 애니메이션
+    private void HandleRollStarted(float cooldownDuration)
+    {
+        if (rollRingImage == null) return;
+        if (_rollCooldownCoroutine != null) StopCoroutine(_rollCooldownCoroutine);
+        _rollCooldownCoroutine = StartCoroutine(RollCooldownCoroutine(cooldownDuration));
+    }
+
+    private IEnumerator RollCooldownCoroutine(float duration)
+    {
+        rollRingImage.fillAmount = 0f;
+        rollRingImage.color = rollCooldownColor;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            rollRingImage.fillAmount = elapsed / duration;
+            yield return null;
+        }
+        rollRingImage.fillAmount = 1f;
+        rollRingImage.color = rollReadyColor;
+        _rollCooldownCoroutine = null;
+    }
 
     private void HandleAmmoChanged(int _cur, int _max)
         => ammoText.text = $"{_cur} / {_max}";
@@ -340,7 +404,11 @@ public class UIManager : MonoBehaviour
     {
         if (audiosource != null && usingCRT)
             audiosource.Play();
-    
+
+        // [CH 추가] 라운드 시작 시 링 초기화
+        if (hpRingImage != null) { hpRingImage.fillAmount = 1f; hpRingImage.color = hpFullColor; }
+        if (_rollCooldownCoroutine != null) { StopCoroutine(_rollCooldownCoroutine); _rollCooldownCoroutine = null; }
+        if (rollRingImage != null) { rollRingImage.fillAmount = 1f; rollRingImage.color = rollReadyColor; }
     }
 
     private void HandleRoundEnd(int winTeam)

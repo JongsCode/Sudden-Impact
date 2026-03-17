@@ -113,11 +113,19 @@ public abstract class Gun : Weapon
             ownerActorNumber, ownerTeam, 0f
         };
 
-        // 던져지는 무기도 네트워크상에서 모두에게 보여야 하므로 Photon Instantiate 사용
-        GameObject thrownObj = PhotonNetwork.Instantiate(
+        // 기존: transform.position / rotation(총 몸체 기준) → 방향 오류
+        // 총알과 동일하게 attackPoint 기준으로 발사 (PistolGun.FireProjectile 참고)
+        // 기존: PhotonNetwork.Instantiate(..., transform.position, transform.rotation, ...)
+        Vector3 throwDir = attackPoint.forward;
+        throwDir.y = 0f;
+        Quaternion throwRotation = throwDir.sqrMagnitude > 0.001f
+            ? Quaternion.LookRotation(throwDir)
+            : transform.rotation;
+
+        PhotonNetwork.Instantiate(
             thrownWeaponPrefab.name,
-            transform.position,
-            transform.rotation,
+            attackPoint.position,
+            throwRotation,
             0,
             info
         );
