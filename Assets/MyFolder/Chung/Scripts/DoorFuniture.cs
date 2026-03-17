@@ -10,6 +10,10 @@ public class Door : Furniture, IInteractable
     [SerializeField] private float openAngle = 90f;
     [SerializeField] private float openSpeed = 5f; // 문 열리는 속도
 
+    [Header("Crumble Effect")]
+    [SerializeField] private Transform originDoor;
+    [SerializeField] private GameObject fracturedPrefab;
+
     // Furniture는 MonoBehaviour로 바뀌었으므로 PhotonView를 직접 캐싱
     private PhotonView _pv;
 
@@ -21,6 +25,7 @@ public class Door : Furniture, IInteractable
     // photonView 프로퍼티가 사라짐 → GetComponent로 직접 캐싱
     // 기존: photonView.RPC(...) → _pv.RPC(...)
 
+    
     protected override void Awake()
     {
         base.Awake();
@@ -71,5 +76,43 @@ public class Door : Furniture, IInteractable
 
         doorPivot.localRotation = targetRot;
         doorCoroutine = null;
+    }
+
+    protected override void OnBroken()
+    {
+        if (fracturedPrefab != null)
+        {
+
+            GameObject fractured = Instantiate(fracturedPrefab, originDoor.position, originDoor.rotation, transform.parent);
+            fractured.transform.localScale = transform.localScale;
+
+            // 무너뜨리기 스크립트 실행 (안전장치 포함)
+            Crumble crumble = fractured.GetComponent<Crumble>();
+            if (crumble != null)
+            {
+                crumble.SetCrumble();
+            }
+            else
+            {
+                Debug.LogError($"[장애물 파괴] {fracturedPrefab.name}에 CrumbleTutorialScript가 없습니다!");
+            }
+        }
+        base.OnBroken();
+        // 파괴 파티클 (BoxCollider 기준 크기 + 머티리얼 색상)
+        //    if (FurnitureBreakEffectManager.Instance != null)
+        //    {
+        //        var col = GetComponentInChildren<BoxCollider>();
+        //        var rend = GetComponentInChildren<Renderer>();
+        //        if (col != null && rend != null)
+        //        {
+        //            FurnitureBreakEffectManager.Instance.Spawn(
+        //                col.bounds.size,
+        //                rend.material.color,
+        //                col.bounds.center,
+        //                lastHitNormal
+        //            );
+        //        }
+        //    }
+        
     }
 }

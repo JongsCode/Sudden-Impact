@@ -30433,6 +30433,10 @@ PrefabInstance:
       propertyPath: rolloffCustomCurve.m_Curve.Array.data[1].outWeight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1910617816936263263, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: fracturedPrefab
+      value: 
+      objectReference: {fileID: 7611902667664005203, guid: a11b0f20d762a114ba06bf698360329c, type: 3}
     - target: {fileID: 2090144078745677839, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: m_Name
       value: TestDoor (6)
