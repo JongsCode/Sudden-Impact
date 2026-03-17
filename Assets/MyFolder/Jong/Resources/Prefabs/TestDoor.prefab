@@ -167,7 +167,8 @@ MonoBehaviour:
   spawnPivot: {fileID: 8470442387150196741}
   openAngle: 90
   openSpeed: 5
-  collider: {fileID: 6117534194188615249}
+  originDoor: {fileID: 8470442387150196741}
+  fracturedPrefab: {fileID: 7611902667664005203, guid: a11b0f20d762a114ba06bf698360329c, type: 3}
   doorSound: {fileID: 8300000, guid: 9d6f6e7bf56a7814f89f77c0fb91a20a, type: 3}
 --- !u!114 &9089074816583589550
 MonoBehaviour:
