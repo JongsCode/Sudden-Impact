@@ -301,7 +301,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6827,6 +6827,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -7018,6 +7022,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 69649238}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -7206,6 +7218,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -7330,6 +7350,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -7581,6 +7609,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -8025,6 +8057,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -8787,6 +8823,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 139248931}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -9005,7 +9049,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 2143100945692910762, guid: ad08b2551822b844db8e36390595ec86, type: 3}
   spawnPoints: []
   autoConnect: 1
-  showGUI: 1
+  showGUI: 0
 --- !u!114 &139902222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11357,6 +11401,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -11694,6 +11746,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -11875,6 +11935,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -18129,6 +18197,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -18630,6 +18702,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -18828,6 +18908,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -19115,6 +19199,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -19239,6 +19331,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -19423,6 +19523,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -25799,6 +25903,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -26029,6 +26137,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 426790217}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -27527,6 +27643,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -28107,7 +28231,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -28143,7 +28267,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0.2901961}
 --- !u!1001 &480121060
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28547,14 +28671,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -28590,7 +28714,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 0.2901961}
 --- !u!1 &510480091
 GameObject:
   m_ObjectHideFlags: 0
@@ -28726,6 +28850,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -29386,6 +29514,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -30378,6 +30510,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -30512,6 +30648,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -30673,7 +30813,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 0.2901961}
 --- !u!114 &572798368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30687,14 +30827,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -31301,6 +31441,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -32557,6 +32705,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -33027,6 +33179,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -33225,6 +33385,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -33543,6 +33707,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -35002,6 +35174,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -35241,6 +35421,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -35470,6 +35658,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -36461,6 +36657,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -37049,6 +37249,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -37684,6 +37888,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -43312,6 +43524,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -46139,6 +46355,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1003804067}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -46733,6 +46957,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 1027897337}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -47889,6 +48121,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1065384409}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -48822,6 +49062,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1100348849}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -48965,6 +49213,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -55045,7 +55301,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -55081,7 +55337,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0.2901961}
 --- !u!1001 &1155280440
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55935,7 +56191,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -56128,9 +56384,9 @@ RectTransform:
   - {fileID: 442553212}
   m_Father: {fileID: 465938919}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 335, y: -199}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -135, y: 27}
   m_SizeDelta: {x: 105, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1198844349
@@ -56354,6 +56610,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -56956,6 +57220,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -62024,6 +62296,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -62244,6 +62524,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -62437,6 +62725,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 1254171787}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -63029,7 +63325,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -63216,6 +63512,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -63524,6 +63824,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -64157,6 +64465,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1344752818}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -64651,7 +64967,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1358167137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64766,9 +65082,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 465938919}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -409.5, y: -105.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 102.29999, y: 52.699997}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1358333384
@@ -65143,6 +65459,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -66828,7 +67152,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -66977,6 +67301,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 1411674526}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -67539,7 +67871,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -77927,14 +78259,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -77970,7 +78302,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 0.2901961}
 --- !u!1 &1489191824
 GameObject:
   m_ObjectHideFlags: 0
@@ -78998,7 +79330,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0.2901961}
 --- !u!114 &1535881053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79019,7 +79351,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -79203,6 +79535,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -81193,6 +81533,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -81333,6 +81677,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -81818,6 +82170,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -81991,6 +82347,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -82897,6 +83261,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -83247,6 +83615,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -85270,6 +85646,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -85566,6 +85946,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -85970,7 +86358,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -86107,7 +86495,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -86256,6 +86644,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 1773354773}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -86447,7 +86843,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
-  m_sharedMaterial: {fileID: -5044111494191400389, guid: 1c28c154c2616094aa8f8ffeab551e16, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 46eb7cf815aaf2a45882e6eb858323dd, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -87589,6 +87985,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -88289,6 +88689,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1846429093}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -88463,6 +88871,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -89072,14 +89488,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89115,7 +89531,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 0.2901961}
 --- !u!1 &1876832298 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5949113183631130884, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
@@ -89190,6 +89606,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -89714,6 +90138,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1896300539}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -89857,6 +90289,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -90554,6 +90994,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -90857,6 +91301,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1916008831}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -91138,6 +91590,14 @@ PrefabInstance:
       propertyPath: originObject
       value: 
       objectReference: {fileID: 1924277768}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -91854,7 +92314,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 842911097, guid: 67c34bb955c72e6419b7528e10e73c53, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -91890,7 +92350,7 @@ MonoBehaviour:
   deadOverlay: {fileID: 0}
   teamAColor: {r: 0.2, g: 0.5, b: 1, a: 1}
   teamBColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  deadTint: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  deadTint: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 0.2901961}
 --- !u!1 &1947399796
 GameObject:
   m_ObjectHideFlags: 0
@@ -92540,6 +93000,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -92739,6 +93207,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -92922,6 +93394,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -93813,6 +94289,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1765717950}
     m_Modifications:
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 1264888571683541929, guid: c7afb657a7201ca4a9e5924bb6700818, type: 3}
       propertyPath: MaxDistance
       value: 25
@@ -100011,6 +100495,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 763722769}
     m_Modifications:
     - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: -3051735001115572389, guid: dfde23a14452a07498be94fcc2084c67, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -105781,6 +106269,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 6243226388962205331, guid: f181fade27081ac41b546ebfdaa8fac2, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -106345,6 +106841,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4956290783487561564}
     - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
+    - target: {fileID: 7781405384453215296, guid: eacc25784e8c66e48b79fc69e073bd30, type: 3}
       propertyPath: MaxDistance
       value: 25
       objectReference: {fileID: 0}
@@ -106470,6 +106974,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Volume
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: c86a51153d70d4c4db34719d877b854c, type: 3}
     - target: {fileID: 6726277557356448620, guid: 2d56f38357ede76459943f31d65f0aca, type: 3}
       propertyPath: MaxDistance
       value: 25

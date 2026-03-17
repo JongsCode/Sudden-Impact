@@ -20,9 +20,11 @@ public class LoginManager : MonoBehaviour
     private void Awake()
     {
         PhotonNetwork.GameVersion = Application.version;
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "kr";
         PhotonNetwork.AutomaticallySyncScene = false;
-        // NetworkClientState == Disconnected 일 때만 Connect (연결 중/완료 상태에서 중복 호출 방지)
-        if (PhotonNetwork.NetworkClientState == ClientState.Disconnected)
+
+        // [수정됨] Disconnected가 아니라 단순히 '연결되지 않았을 때'로 변경
+        if (!PhotonNetwork.IsConnected)
         {
             PhotonNetwork.ConnectUsingSettings();
         }
@@ -61,14 +63,14 @@ public class LoginManager : MonoBehaviour
         if(string.IsNullOrEmpty(nickname))
         {
             // 닉네임이 없는 경우 로그인 씬으로 이동
-            PhotonNetwork.LoadLevel("Login");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Login");
             Debug.LogError("닉네임 설정 실패 -> 로그인 씬으로 이동");
         }
         else
         {
             PhotonNetwork.NickName = nickname;
             Debug.LogError("Photon Nickname 설정 완료");
-            PhotonNetwork.LoadLevel("Lobby");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
         }
     }
     public void Fail(PlayFabError _error)
