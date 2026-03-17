@@ -62,14 +62,14 @@ public class LoginManager : MonoBehaviour
         if(string.IsNullOrEmpty(nickname))
         {
             // 닉네임이 없는 경우 로그인 씬으로 이동
-            PhotonNetwork.LoadLevel("Login");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Login");
             Debug.LogError("닉네임 설정 실패 -> 로그인 씬으로 이동");
         }
         else
         {
             PhotonNetwork.NickName = nickname;
             Debug.LogError("Photon Nickname 설정 완료");
-            PhotonNetwork.LoadLevel("Lobby");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Lobby");
         }
     }
     public void Fail(PlayFabError _error)
