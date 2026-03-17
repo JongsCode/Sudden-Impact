@@ -72,4 +72,24 @@ public class Door : Furniture, IInteractable
         doorPivot.localRotation = targetRot;
         doorCoroutine = null;
     }
+
+    protected override void OnBroken()
+    {
+        base.OnBroken();
+        // 파괴 파티클 (BoxCollider 기준 크기 + 머티리얼 색상)
+        if (FurnitureBreakEffectManager.Instance != null)
+        {
+            var col = GetComponentInChildren<BoxCollider>();
+            var rend = GetComponentInChildren<Renderer>();
+            if (col != null && rend != null)
+            {
+                FurnitureBreakEffectManager.Instance.Spawn(
+                    col.bounds.size,
+                    rend.material.color,
+                    col.bounds.center,
+                    lastHitNormal
+                );
+            }
+        }
+    }
 }

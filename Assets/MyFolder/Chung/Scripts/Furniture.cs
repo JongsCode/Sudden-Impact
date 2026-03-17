@@ -83,21 +83,7 @@ public class Furniture : MonoBehaviour, IAttackReceiver
     {
         isDestroyed = true;
 
-        // 파괴 파티클 (BoxCollider 기준 크기 + 머티리얼 색상)
-        if (FurnitureBreakEffectManager.Instance != null)
-        {
-            var col = GetComponentInChildren<BoxCollider>();
-            var rend = GetComponentInChildren<Renderer>();
-            if (col != null && rend != null)
-            {
-                FurnitureBreakEffectManager.Instance.Spawn(
-                    col.bounds.size,
-                    rend.material.color,
-                    col.bounds.center,
-                    lastHitNormal
-                );
-            }
-        }
+        
 
         if (audioSource != null)
             audioSource.Play();
