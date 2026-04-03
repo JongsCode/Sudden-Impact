@@ -358,7 +358,7 @@ public class UIManager : MonoBehaviour
     // 나가기 버튼의 OnClick 이벤트에 연결할 함수
     public void OnClickLeaveGame()
     {
-        DebugGameManager.Instance.LeaveGame();
+        RoundManager.Instance.LeaveGame();
     }
 
     private void HandlePickupUIUpdate(bool isShow, Vector3 pos, string text)
@@ -444,10 +444,10 @@ public class UIManager : MonoBehaviour
     private IEnumerator EndCountDown(int winTeam)
     {
         float time = 0;
-        while(time < DebugGameManager.Instance.RoundStartDelay)
+        while(time < RoundManager.Instance.RoundStartDelay)
         {
             time += Time.deltaTime;
-            int timeToInt = Mathf.RoundToInt(DebugGameManager.Instance.RoundStartDelay - time);
+            int timeToInt = Mathf.RoundToInt(RoundManager.Instance.RoundStartDelay - time);
             string textColor = (winTeam == 1) ? "red" : "blue";
             roundWinner.text = string.Format("This round winner is team <color={0}><size=60>{1}", textColor, winTeam);
             roundLeftTime.text = string.Format("The round starts in <color={0}><size=60>{1}</color></size> seconds.", textColor, timeToInt);

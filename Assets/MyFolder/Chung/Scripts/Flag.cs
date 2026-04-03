@@ -37,6 +37,6 @@ public class Flag : MonoBehaviour
         //주의: 오직 LocalPlayer 레이어하고만 충돌하게 세팅되어 있어야 함!
 
         // GetComponent 없이 즉시 매니저에게 "나(로컬) 터치함" 보고
-        DebugGameManager.Instance.OnLocalPlayerTouchedFlag(myTeam);
+        RoundManager.Instance.OnLocalPlayerTouchedFlag(myTeam);
     }
 }

@@ -9,9 +9,9 @@ using UnityEngine.SceneManagement;
 /// 디버그용 경기 흐름 관리
 /// 실제 GameManager로 재활용 예정
 /// </summary>
-public class DebugGameManager : MonoBehaviourPunCallbacks
+public class RoundManager : MonoBehaviourPunCallbacks
 {
-    public static DebugGameManager Instance { get; private set; }
+    public static RoundManager Instance { get; private set; }
 
     [Header("Registry")]
     [SerializeField] private PlayerRegistry playerRegistry;

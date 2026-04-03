@@ -742,7 +742,7 @@ public class PlayerController : MonoBehaviourPun, IAttackReceiver
         DropWeapon();
         playerState = PlayerState.Dead;
         // 인풋 메니저에게 콜백 필요
-        DebugGameManager.Instance?.OnPlayerDied(this, _attackerNum);
+        RoundManager.Instance?.OnPlayerDied(this, _attackerNum);
 
         if (hasEnemyFlag)
         {
