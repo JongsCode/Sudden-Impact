@@ -77,7 +77,7 @@ Shader "Custom/RetroEffect"
                 float2 pixUV  = floor(warpUV * blocks) / blocks;
 
                 // 4. RGB 채널 분리 (항상 미세하게 + CRT 강도만큼 추가)
-                float split = 0.001 + _ChromaStrength * _CRTIntensity;
+                float split = 0.003 + _ChromaStrength * _CRTIntensity;
                 float r = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, pixUV + float2( split, 0)).r;
                 float g = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, pixUV               ).g;
                 float b = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, pixUV - float2( split, 0)).b;

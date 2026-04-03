@@ -202,6 +202,7 @@ MonoBehaviour:
   popInDuration: 0.18
   idleDuration: 0.75
   popOutDuration: 0.12
+  useUnderlay: 1
   hueSpeed: 1.2
   underlayBrightness: 1
   underlayOffsetStrength: 1

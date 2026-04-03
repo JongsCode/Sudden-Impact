@@ -30,6 +30,8 @@ public class KillFloatText : MonoBehaviour
     [SerializeField] private float popOutDuration = 0.12f;
 
     [Header("Underlay Color")]
+    // [CH 추가] false로 끄면 UNDERLAY_ON 키워드 자체를 비활성화 → 잔상 완전 제거 (비교 촬영용)
+    [SerializeField] private bool useUnderlay = true;
     [SerializeField] private float hueSpeed = 1.2f;
     [SerializeField][Range(0f, 1f)] private float underlayBrightness = 0.55f;   // ↑ 기존 0.28
     [SerializeField] private float underlayOffsetStrength = 1.0f;        // ↑ 기존 0.35
@@ -50,10 +52,17 @@ public class KillFloatText : MonoBehaviour
         // 머티리얼 인스턴스 분리 후 캐싱 (첫 접근 시 자동 분리)
         _mat = tmp.fontMaterial;
 
-        // ── 언더레이 강제 활성화 (에디터에서 체크 안 해도 동작) ──
-        _mat.EnableKeyword("UNDERLAY_ON");
-        _mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.5f);
-        _mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.05f);
+        // [CH 수정] useUnderlay 토글로 잔상 키워드 활성 여부 결정 (비교 촬영용)
+        if (useUnderlay)
+        {
+            _mat.EnableKeyword("UNDERLAY_ON");
+            _mat.SetFloat(ShaderUtilities.ID_UnderlayDilate, 0.5f);
+            _mat.SetFloat(ShaderUtilities.ID_UnderlaySoftness, 0.05f);
+        }
+        else
+        {
+            _mat.DisableKeyword("UNDERLAY_ON");
+        }
 
         // ── 항상 전면 렌더링 — Distance Field Overlay 셰이더 교체 ──
         // Overlay 셰이더는 ZTest Always → 벽/바닥에 가려지지 않음

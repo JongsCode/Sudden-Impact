@@ -35,6 +35,7 @@ public abstract class Gun : Weapon
     protected int currentAmmo;
     protected float lastFireTime;                             // 마지막으로 총을 쏜 시간을 기억하는 변수
     private float lastRippleTime;
+    private Coroutine flashCoroutine;
 
     public int CurrentAmmo => currentAmmo;
     public int MaxAmmo => maxAmmo;
@@ -134,9 +135,10 @@ public abstract class Gun : Weapon
     [PunRPC]
     public void RPC_MuzzleFlash()
     {
-        StartCoroutine(FlashCoroutine());
         if (audioSource != null && fireClip != null)
             audioSource.PlayOneShot(fireClip, fireVolume);
+        if(flashCoroutine == null)
+        flashCoroutine = StartCoroutine(FlashCoroutine());
     }
 
     private IEnumerator FlashCoroutine()

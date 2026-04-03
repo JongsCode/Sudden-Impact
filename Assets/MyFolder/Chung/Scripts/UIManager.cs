@@ -72,6 +72,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Color rollReadyColor = Color.cyan;
     [SerializeField] private Color rollCooldownColor = Color.gray;
 
+    // [CH 추가] 라운드 시작 전 전체 화면을 가리는 커버 패널
+    // 인스펙터에서 Canvas 가장 아래(최상위 렌더) 전체 사이즈 Panel을 연결
+    // 기본값: 활성(SetActive true), 라운드 시작 시 SetActive(false)로 제거
+    [Header("Initial Cover")]
+    [SerializeField] private GameObject initialCoverPanel;
+
     private Coroutine _rollCooldownCoroutine;
 
     private Camera mainCam;
@@ -116,6 +122,7 @@ public class UIManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
 
         pickupUIRect.gameObject.SetActive(false);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
 
         audiosource = GetComponent<AudioSource>();
     }
@@ -351,7 +358,7 @@ public class UIManager : MonoBehaviour
     // 나가기 버튼의 OnClick 이벤트에 연결할 함수
     public void OnClickLeaveGame()
     {
-        DebugGameManager.Instance.LeaveGame();
+        RoundManager.Instance.LeaveGame();
     }
 
     private void HandlePickupUIUpdate(bool isShow, Vector3 pos, string text)
@@ -405,10 +412,14 @@ public class UIManager : MonoBehaviour
         if (audiosource != null && usingCRT)
             audiosource.Play();
 
+        // [CH 추가] 라운드 시작 시 커버 패널 제거 (이미 비활성이면 no-op)
+        if (initialCoverPanel != null) initialCoverPanel.SetActive(false);
+
         // [CH 추가] 라운드 시작 시 링 초기화
         if (hpRingImage != null) { hpRingImage.fillAmount = 1f; hpRingImage.color = hpFullColor; }
         if (_rollCooldownCoroutine != null) { StopCoroutine(_rollCooldownCoroutine); _rollCooldownCoroutine = null; }
         if (rollRingImage != null) { rollRingImage.fillAmount = 1f; rollRingImage.color = rollReadyColor; }
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(true);
     }
 
     private void HandleRoundEnd(int winTeam)
@@ -417,6 +428,7 @@ public class UIManager : MonoBehaviour
             audiosource.PlayOneShot(endRoundAudio);
         roundWinner.gameObject.SetActive(true);
         roundLeftTime.gameObject.SetActive(true);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
 
         StartCoroutine(EndCountDown(winTeam));
     }
@@ -425,15 +437,17 @@ public class UIManager : MonoBehaviour
     {
         if (audiosource != null && usingCRT)
             audiosource.PlayOneShot(endRoundAudio);
+        if (playerStatusPanel != null) playerStatusPanel.gameObject.SetActive(false);
+
     }
 
     private IEnumerator EndCountDown(int winTeam)
     {
         float time = 0;
-        while(time < DebugGameManager.Instance.RoundStartDelay)
+        while(time < RoundManager.Instance.RoundStartDelay)
         {
             time += Time.deltaTime;
-            int timeToInt = Mathf.RoundToInt(DebugGameManager.Instance.RoundStartDelay - time);
+            int timeToInt = Mathf.RoundToInt(RoundManager.Instance.RoundStartDelay - time);
             string textColor = (winTeam == 1) ? "red" : "blue";
             roundWinner.text = string.Format("This round winner is team <color={0}><size=60>{1}", textColor, winTeam);
             roundLeftTime.text = string.Format("The round starts in <color={0}><size=60>{1}</color></size> seconds.", textColor, timeToInt);

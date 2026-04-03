@@ -58,7 +58,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &177222899007441007
 Transform:
   m_ObjectHideFlags: 0
@@ -137,8 +137,8 @@ MonoBehaviour:
   deathAnimDuration: 2
   meleeAttackCooldown: 0.5
   armBandRenderer: {fileID: 7338258209646112000}
-  teamAColor: {r: 0, g: 1, b: 1, a: 1}
-  teamBColor: {r: 1, g: 0, b: 1, a: 1}
+  teamAColor: {r: 1, g: 0, b: 1, a: 1}
+  teamBColor: {r: 0, g: 1, b: 1, a: 1}
   interactRadius: 2
   interactableLayer:
     serializedVersion: 2
